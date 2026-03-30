@@ -1,20 +1,23 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { projects } from '@/lib/projects'
+import { getProjects, getProjectBySlug, getProjectSlugs } from '@/lib/firebase/projects'
 import type { Metadata } from 'next'
+
+export const revalidate = 0
 
 interface Props {
   params: Promise<{ slug: string }>
 }
 
 export async function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }))
+  const slugs = await getProjectSlugs()
+  return slugs.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const project = projects.find((p) => p.slug === slug)
+  const project = await getProjectBySlug(slug)
   if (!project) return {}
   return {
     title: project.title,
@@ -32,7 +35,10 @@ function Tag({ children }: { children: React.ReactNode }) {
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params
-  const project = projects.find((p) => p.slug === slug)
+  const [project, projects] = await Promise.all([
+    getProjectBySlug(slug),
+    getProjects(),
+  ])
   if (!project) notFound()
 
   const currentIndex = projects.findIndex((p) => p.slug === slug)

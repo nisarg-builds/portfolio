@@ -2,11 +2,7 @@ import type { Metadata } from 'next'
 import { Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import { SITE_CONFIG } from '@/lib/constants'
-import { GrainOverlay } from '@/components/layout/grain-overlay'
-import { Navigation } from '@/components/layout/navigation'
-import { Footer } from '@/components/layout/footer'
-import { CustomCursor } from '@/components/layout/custom-cursor'
-import { ScrollProgress } from '@/components/layout/scroll-progress'
+import { Analytics } from '@vercel/analytics/next'
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-display',
@@ -60,12 +56,8 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-dvh antialiased">
-        <GrainOverlay />
-        <CustomCursor />
-        <ScrollProgress />
-        <Navigation />
-        <div className="pt-14 lg:pt-16">{children}</div>
-        <Footer />
+        {children}
+        <Analytics />
       </body>
     </html>
   )

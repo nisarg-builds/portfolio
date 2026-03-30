@@ -19,7 +19,7 @@ export function SectionHeading({
 }: SectionHeadingProps) {
   return (
     <div className={cn('mb-8', className)}>
-      <DynamicHeading text={title} as="h2" />
+      <DynamicHeading text={title} as="h2" triggerOnScroll />
       {wavyDivider && <WavyDivider className="mt-3 max-w-[200px]" />}
       {subtitle && (
         <p className="text-text-secondary text-lg mt-2">{subtitle}</p>

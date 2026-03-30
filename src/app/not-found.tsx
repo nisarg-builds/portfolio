@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { DynamicHeading } from '@/components/ui/dynamic-heading'
 
 export default function NotFound() {
   return (
@@ -7,9 +8,11 @@ export default function NotFound() {
         🌵
       </span>
 
-      <h1 className="mt-6 font-(family-name:--font-display) text-display font-bold text-accent">
-        404
-      </h1>
+      <DynamicHeading
+        text="404"
+        as="h1"
+        className="mt-6 justify-center font-(family-name:--font-display) text-display font-bold text-accent"
+      />
 
       <p className="mt-2 text-xl text-text-secondary">Page not found.</p>
 

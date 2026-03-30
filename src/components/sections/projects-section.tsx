@@ -1,14 +1,15 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useMotionValue } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { scrollFadeUp, easings } from '@/lib/easings'
-import { projects } from '@/lib/projects'
+import { scrollFadeUp } from '@/lib/easings'
+import type { Project } from '@/lib/projects'
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-block rounded-sm border border-border bg-bg-elevated px-2.5 py-0.5 font-(family-name:--font-mono) text-xs text-text-secondary">
+    <span className="inline-block rounded-sm border border-border bg-bg-elevated px-3 py-1 font-(family-name:--font-mono) text-xs text-text-secondary transition-colors duration-300 group-hover:border-accent/20 group-hover:text-accent/80">
       {children}
     </span>
   )
@@ -32,15 +33,11 @@ function ProjectCard({
   return (
     <motion.div
       variants={scrollFadeUp}
-      whileHover={{
-        scale: 1.02,
-        transition: { duration: 0.3, ease: easings.easeOut },
-      }}
-      className={featured ? 'md:col-span-2' : ''}
+      className={`will-change-transform ${featured ? 'md:col-span-2' : ''}`}
     >
       <Link
         href={`/projects/${slug}`}
-        className="group block overflow-hidden rounded-lg border border-border bg-bg-surface transition-[border-color,box-shadow] duration-300 hover:border-border-hover hover:shadow-card"
+        className={`card-shine group block overflow-hidden rounded-lg border border-border bg-bg-surface transition-all duration-300 hover:border-accent/30 hover:shadow-[0_0_30px_rgba(206,121,107,0.08)] ${featured ? 'border-l-[3px] border-l-accent/40' : ''}`}
         data-cursor="interactive"
       >
         <div className="overflow-hidden">
@@ -51,17 +48,26 @@ function ProjectCard({
               src={image}
               alt={title}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-cover transition-all duration-500 group-hover:scale-105 group-hover:brightness-[0.7]"
               sizes={
                 featured
                   ? '(max-width: 768px) 100vw, 80vw'
                   : '(max-width: 768px) 100vw, 40vw'
               }
             />
+            <div
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg-surface/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              aria-hidden="true"
+            />
+            {featured && (
+              <span className="absolute top-3 right-3 rounded-full bg-accent/90 px-3 py-1 font-(family-name:--font-mono) text-[10px] font-semibold tracking-wider text-bg uppercase">
+                Featured
+              </span>
+            )}
           </div>
         </div>
-        <div className="p-4 sm:p-5">
-          <h3 className="font-(family-name:--font-display) text-xl font-medium text-text-primary">
+        <div className="relative p-4 sm:p-5">
+          <h3 className="font-(family-name:--font-display) text-xl font-medium text-text-primary transition-colors duration-300 group-hover:text-accent">
             {title}
           </h3>
           <p className="mt-2 line-clamp-2 text-sm text-text-secondary leading-relaxed">
@@ -72,36 +78,185 @@ function ProjectCard({
               <Tag key={tag}>{tag}</Tag>
             ))}
           </div>
+          <span
+            className="absolute right-5 bottom-5 translate-x-[-8px] text-sm text-accent opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:rotate-[-45deg] group-hover:opacity-100"
+            aria-hidden="true"
+          >
+            &rarr;
+          </span>
         </div>
       </Link>
     </motion.div>
   )
 }
 
-function WavyLine() {
+function HorizontalProjectCard({
+  title,
+  slug,
+  description,
+  image,
+  tags,
+  featured,
+}: {
+  title: string
+  slug: string
+  description: string
+  image: string
+  tags: string[]
+  featured?: boolean
+}) {
   return (
-    <svg
-      width="100%"
-      height="12"
-      viewBox="0 0 287 15"
-      fill="none"
-      preserveAspectRatio="none"
-      className="mt-2 max-w-[160px]"
-    >
-      <path
-        d="M2 6.5C2 6.5 4.6 13 11.8 13C19 13 25.5 2 33.3 2C41 2 46.9 13 55.9 13C65 13 67.6 2 76.8 2C86 2 90.2 13 100.1 13C110 13 111.8 2 120.9 2C130 2 134.9 13 144.2 13C153.5 13 156.6 2 165.1 2C173.5 2 177.2 13 188.3 13C199.5 13 199.9 2 209.2 2C218.5 2 223 13 232.5 13C242 13 244 2 253.3 2C262.6 2 269 13 274.5 13C280 13 285 8.5 285 7.5"
-        stroke="var(--color-accent)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        fill="none"
-      />
-    </svg>
+    <div className="w-[60vw] max-w-[800px] flex-shrink-0">
+      <Link
+        href={`/projects/${slug}`}
+        className="card-shine group block overflow-hidden rounded-lg border border-border bg-bg-surface transition-all duration-300 hover:border-accent/30 hover:shadow-[0_0_30px_rgba(206,121,107,0.08)]"
+        data-cursor="interactive"
+      >
+        <div className="overflow-hidden">
+          <div className="relative aspect-[16/9]">
+            <Image
+              src={image}
+              alt={title}
+              fill
+              className="object-cover transition-all duration-500 group-hover:scale-105 group-hover:brightness-[0.7]"
+              sizes="60vw"
+            />
+            <div
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg-surface/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              aria-hidden="true"
+            />
+            {featured && (
+              <span className="absolute top-3 right-3 rounded-full bg-accent/90 px-3 py-1 font-(family-name:--font-mono) text-[10px] font-semibold tracking-wider text-bg uppercase">
+                Featured
+              </span>
+            )}
+          </div>
+        </div>
+        <div className="relative p-5 sm:p-6">
+          <h3 className="font-(family-name:--font-display) text-2xl font-medium text-text-primary transition-colors duration-300 group-hover:text-accent">
+            {title}
+          </h3>
+          <p className="mt-2 line-clamp-3 text-sm text-text-secondary leading-relaxed">
+            {description}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {tags.map((tag) => (
+              <Tag key={tag}>{tag}</Tag>
+            ))}
+          </div>
+          <span
+            className="absolute right-6 bottom-6 translate-x-[-8px] text-sm text-accent opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:rotate-[-45deg] group-hover:opacity-100"
+            aria-hidden="true"
+          >
+            &rarr;
+          </span>
+        </div>
+      </Link>
+    </div>
   )
 }
 
-export function ProjectsSection() {
+interface ProjectsSectionProps {
+  projects: Project[]
+}
+
+export function ProjectsSection({ projects }: ProjectsSectionProps) {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [isDesktop, setIsDesktop] = useState(false)
+  const scrollProgress = useMotionValue(0)
+
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024)
+    checkDesktop()
+    window.addEventListener('resize', checkDesktop)
+    return () => window.removeEventListener('resize', checkDesktop)
+  }, [])
+
+  useEffect(() => {
+    if (!isDesktop) return
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let ctx: { revert: () => void } | undefined
+
+    async function initGsap() {
+      const gsapModule = await import('gsap')
+      const scrollTriggerModule = await import('gsap/ScrollTrigger')
+      const gsap = gsapModule.default
+      const ScrollTrigger = scrollTriggerModule.ScrollTrigger
+
+      gsap.registerPlugin(ScrollTrigger)
+
+      const track = trackRef.current
+      const section = sectionRef.current
+      if (!track || !section) return
+
+      ctx = gsap.context(() => {
+        const totalWidth = track.scrollWidth
+        const viewportWidth = window.innerWidth
+
+        gsap.to(track, {
+          x: -(totalWidth - viewportWidth),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top top',
+            end: () => `+=${totalWidth}`,
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              scrollProgress.set(self.progress)
+            },
+          },
+        })
+      })
+    }
+
+    initGsap()
+
+    return () => {
+      if (ctx) ctx.revert()
+    }
+  }, [isDesktop, scrollProgress])
+
+  if (isDesktop) {
+    return (
+      <section id="projects">
+        <div ref={sectionRef} className="relative">
+          <div className="flex h-screen items-center overflow-hidden">
+            <div className="absolute top-20 left-8 z-10">
+              <h2 className="font-(family-name:--font-display) text-3xl font-bold text-text-primary">
+                Projects
+              </h2>
+              <div
+                className="mt-2 h-[3px] w-[120px] rounded-full bg-gradient-to-r from-accent to-accent/0"
+                aria-hidden="true"
+              />
+              <motion.div
+                className="mt-3 h-0.5 w-24 origin-left bg-accent/60"
+                style={{ scaleX: scrollProgress }}
+                aria-hidden="true"
+              />
+            </div>
+
+            <div
+              ref={trackRef}
+              className="flex gap-10 pl-[5vw] pt-16"
+            >
+              {projects.map((project) => (
+                <HorizontalProjectCard key={project.slug} {...project} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
-    <section id="projects" className="px-5 py-16 sm:px-6 lg:px-8 lg:py-24">
+    <section id="projects" className="px-5 py-20 sm:px-6 lg:px-8 lg:py-32">
       <motion.div
         className="mx-auto max-w-[1120px]"
         initial="hidden"
@@ -113,12 +268,20 @@ export function ProjectsSection() {
           <h2 className="font-(family-name:--font-display) text-3xl font-bold text-text-primary">
             Projects
           </h2>
-          <WavyLine />
+          <div
+            className="mt-2 h-[3px] w-[120px] rounded-full bg-gradient-to-r from-accent to-accent/0"
+            aria-hidden="true"
+          />
         </motion.div>
 
         <motion.div
-          className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-6"
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } } }}
+          className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:gap-8"
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+            },
+          }}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}

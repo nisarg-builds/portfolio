@@ -9,24 +9,7 @@ interface DynamicHeadingProps {
   className?: string
   animate?: boolean
   staggerDelay?: number
-}
-
-const characterVariants = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-    rotateX: -90,
-  },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    rotateX: 0,
-    transition: {
-      delay: i * 0.03,
-      duration: 0.4,
-      ease: [0.16, 1, 0.3, 1] as const,
-    },
-  }),
+  triggerOnScroll?: boolean
 }
 
 const tagMap = {
@@ -43,13 +26,17 @@ export function DynamicHeading({
   className,
   animate = true,
   staggerDelay = 30,
+  triggerOnScroll = false,
 }: DynamicHeadingProps) {
   const Tag = tagMap[as]
   const characters = text.split('')
 
-  // Override default delay with custom staggerDelay
   const getVariants = {
-    hidden: characterVariants.hidden,
+    hidden: {
+      opacity: 0,
+      y: 20,
+      rotateX: -90,
+    },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
@@ -61,6 +48,10 @@ export function DynamicHeading({
       },
     }),
   }
+
+  const scrollProps = triggerOnScroll
+    ? { whileInView: 'visible' as const, viewport: { once: true, amount: 0.5 } }
+    : { animate: 'visible' as const }
 
   return (
     <Tag className={cn('flex flex-wrap', className)}>
@@ -81,8 +72,7 @@ export function DynamicHeading({
             custom={i}
             variants={getVariants}
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.5 }}
+            {...scrollProps}
             whileHover={{
               scale: 1.15,
               color: 'var(--color-accent)',

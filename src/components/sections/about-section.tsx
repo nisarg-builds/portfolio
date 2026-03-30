@@ -1,8 +1,12 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { scrollFadeUp, staggerContainer } from '@/lib/easings'
+import { WavyDivider } from '@/components/ui/wavy-divider'
 
 const skills = [
   'React',
@@ -34,7 +38,7 @@ function SkillsMarquee() {
 
   return (
     <div
-      className="relative overflow-hidden py-4"
+      className="relative overflow-hidden py-5"
       aria-hidden="true"
       style={{
         maskImage:
@@ -48,9 +52,12 @@ function SkillsMarquee() {
         style={{ animation: 'marquee 25s linear infinite' }}
       >
         {doubled.map((skill, i) => (
-          <span key={i} className="whitespace-nowrap px-3 text-sm text-text-tertiary">
+          <span
+            key={i}
+            className="whitespace-nowrap px-3 text-[15px] text-text-secondary"
+          >
             {skill}
-            <span className="ml-3 text-border-hover">·</span>
+            <span className="ml-3 text-accent/40">·</span>
           </span>
         ))}
       </div>
@@ -58,30 +65,41 @@ function SkillsMarquee() {
   )
 }
 
-function WavyLine() {
-  return (
-    <svg
-      width="100%"
-      height="12"
-      viewBox="0 0 287 15"
-      fill="none"
-      preserveAspectRatio="none"
-      className="mt-2 max-w-[200px]"
-    >
-      <path
-        d="M2 6.5C2 6.5 4.6 13 11.8 13C19 13 25.5 2 33.3 2C41 2 46.9 13 55.9 13C65 13 67.6 2 76.8 2C86 2 90.2 13 100.1 13C110 13 111.8 2 120.9 2C130 2 134.9 13 144.2 13C153.5 13 156.6 2 165.1 2C173.5 2 177.2 13 188.3 13C199.5 13 199.9 2 209.2 2C218.5 2 223 13 232.5 13C242 13 244 2 253.3 2C262.6 2 269 13 274.5 13C280 13 285 8.5 285 7.5"
-        stroke="var(--color-accent)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        fill="none"
-      />
-    </svg>
-  )
+
+interface AboutSectionProps {
+  portraitUrl: string
+  portraitCrop?: { x: number; y: number; width: number; height: number } | null
 }
 
-export function AboutSection() {
+export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
+  const sectionRef = useRef<HTMLElement>(null)
+  const portraitRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || window.innerWidth < 1024) return
+
+    gsap.registerPlugin(ScrollTrigger)
+
+    const ctx = gsap.context(() => {
+      if (!portraitRef.current || !sectionRef.current) return
+
+      gsap.to(portraitRef.current, {
+        y: -30,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1,
+        },
+      })
+    })
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section id="about" className="px-5 py-16 sm:px-6 lg:px-8 lg:py-24">
+    <section ref={sectionRef} id="about" className="px-5 py-20 sm:px-6 lg:px-8 lg:py-32">
       <motion.div
         className="mx-auto max-w-[1120px]"
         variants={staggerContainer}
@@ -90,20 +108,34 @@ export function AboutSection() {
         viewport={{ once: true, amount: 0.15 }}
       >
         {/* Heading */}
-        <motion.div variants={scrollFadeUp} className="mb-10">
+        <motion.div variants={scrollFadeUp} className="relative mb-12">
+          <span
+            className="pointer-events-none absolute top-[-0.15em] left-[-0.03em] select-none font-(family-name:--font-display) text-[15vw] font-bold leading-none text-text-primary opacity-[0.03] lg:text-[12vw]"
+            aria-hidden="true"
+          >
+            01
+          </span>
           <h2 className="font-(family-name:--font-display) text-3xl font-bold text-text-primary">
             About Me
           </h2>
-          <WavyLine />
+          <WavyDivider width={200} />
+          <div
+            className="mt-3 h-[2px] w-20"
+            style={{
+              background:
+                'linear-gradient(to right, var(--color-accent), transparent)',
+            }}
+            aria-hidden="true"
+          />
         </motion.div>
 
         {/* Two-column layout */}
-        <div className="grid gap-8 lg:grid-cols-5 lg:gap-12">
+        <div className="grid gap-10 lg:grid-cols-5 lg:gap-14">
           {/* Bio — takes 3 cols on desktop */}
           <motion.div variants={scrollFadeUp} className="lg:col-span-3">
-            <div className="space-y-4 text-base text-text-secondary leading-relaxed">
-              <p>
-                <strong className="text-text-primary">Hello!</strong> My name is
+            <div className="space-y-5 border-l-2 border-accent/30 pl-5 text-base text-text-secondary leading-relaxed" data-cursor="text">
+              <p className="text-lg">
+                <strong className="text-accent">Hello!</strong> My name is
                 Nisarg Chaudhary. I&apos;m a Computer Science Honours student at
                 the University of Saskatchewan with a minor in Studio Arts.
                 Originally from India, I moved to Canada to pursue my passion
@@ -122,16 +154,26 @@ export function AboutSection() {
               </p>
             </div>
 
-            <div className="mt-6">
-              <a
+            <div className="mt-8">
+              <motion.a
                 href="/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-md border border-accent px-4 py-2 text-base text-accent transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent hover:text-bg"
+                className="glass inline-flex items-center gap-2.5 rounded-lg border border-accent/60 px-6 py-3 text-base font-medium text-accent transition-colors duration-200 hover:border-accent hover:bg-accent hover:text-bg"
                 data-cursor="interactive"
+                whileHover="hover"
               >
                 Resume
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <motion.svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  variants={{
+                    hover: { x: 3 },
+                  }}
+                  transition={{ duration: 0.2 }}
+                >
                   <path
                     d="M3.5 10.5L10.5 3.5M10.5 3.5H5M10.5 3.5V9"
                     stroke="currentColor"
@@ -139,31 +181,57 @@ export function AboutSection() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
-                </svg>
-              </a>
+                </motion.svg>
+              </motion.a>
             </div>
           </motion.div>
 
           {/* Portrait — takes 2 cols on desktop */}
-          <motion.div variants={scrollFadeUp} className="lg:col-span-2">
-            <div className="overflow-hidden rounded-xl border border-border bg-bg-surface">
-              <div className="relative aspect-[4/3] lg:aspect-square">
-                <Image
-                  src="/images/brand/portrait.png"
-                  alt="Nisarg Chaudhary"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                  priority={false}
-                />
+          <motion.div variants={scrollFadeUp} className="lg:col-span-2 lg:-ml-10 relative z-10">
+            <div ref={portraitRef}>
+              <div
+                className="overflow-hidden rounded-2xl border border-border border-l-[3px] border-l-accent bg-bg-surface"
+                style={{
+                  boxShadow: '0 0 60px rgba(206, 121, 107, 0.1)',
+                }}
+              >
+                <div className="relative aspect-[4/3] lg:aspect-square overflow-hidden">
+                  <Image
+                    src={portraitUrl}
+                    alt="Nisarg Chaudhary"
+                    fill
+                    className="object-cover"
+                    style={portraitCrop ? {
+                      objectPosition: `${portraitCrop.x}% ${portraitCrop.y}%`,
+                      transform: `scale(${100 / Math.min(portraitCrop.width, portraitCrop.height)})`,
+                      transformOrigin: `${portraitCrop.x}% ${portraitCrop.y}%`,
+                    } : undefined}
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                    priority={false}
+                  />
+                </div>
+              </div>
+              <div className="mt-3 flex justify-center">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-bg-surface/80 px-3 py-1 text-xs text-text-tertiary">
+                  <span aria-hidden="true">📍</span> Saskatchewan, Canada
+                </span>
               </div>
             </div>
           </motion.div>
         </div>
 
         {/* Skills Marquee — full width */}
-        <motion.div variants={scrollFadeUp} className="mt-10">
-          <div className="rounded-lg border border-border bg-bg-surface">
+        <motion.div variants={scrollFadeUp} className="mt-14">
+          <span className="mb-2 block font-(family-name:--font-mono) text-xs tracking-widest text-text-tertiary uppercase">
+            Technologies & Tools
+          </span>
+          <div
+            className="rounded-lg border border-border"
+            style={{
+              background:
+                'linear-gradient(135deg, var(--color-bg-surface) 0%, var(--color-bg) 50%, var(--color-bg-surface) 100%)',
+            }}
+          >
             <SkillsMarquee />
           </div>
         </motion.div>
