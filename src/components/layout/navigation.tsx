@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { NAV_LINKS, SOCIAL_LINKS } from '@/lib/constants'
 
@@ -94,8 +94,9 @@ export function Navigation({ className }: NavigationProps) {
       <nav
         aria-label="Main navigation"
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 border-b border-border bg-bg transition-all duration-300',
-          isScrolled && 'backdrop-blur-md bg-bg/80',
+          'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+          isScrolled &&
+            'backdrop-blur-xl bg-bg/60 border-b border-white/[0.04] shadow-[0_1px_0_rgba(206,121,107,0.05)]',
           className
         )}
       >
@@ -103,41 +104,51 @@ export function Navigation({ className }: NavigationProps) {
         <div className="mx-auto hidden h-16 max-w-7xl items-center justify-between px-6 lg:flex">
           <Link
             href="/"
-            className="font-display text-xl font-semibold text-text-primary"
+            className="font-display text-xl font-semibold text-text-primary transition-colors duration-300 hover:text-accent"
             data-cursor="interactive"
           >
             Nisarg
           </Link>
 
-          <div className="flex items-center gap-8">
-            {NAV_LINKS.map((link) => (
+          <LayoutGroup>
+            <div className="flex items-center gap-8">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    'nav-link relative text-sm text-text-secondary transition-colors duration-200 hover:text-text-primary',
+                    isActive(link.href) && 'text-accent'
+                  )}
+                  data-cursor="interactive"
+                >
+                  {link.label}
+                  {isActive(link.href) && (
+                    <motion.div
+                      layoutId="nav-indicator"
+                      className="absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-accent"
+                      style={{ boxShadow: '0 0 8px rgba(206, 121, 107, 0.4)' }}
+                      transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                    />
+                  )}
+                </Link>
+              ))}
               <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  'nav-link text-sm text-text-secondary transition-colors duration-200 hover:text-text-primary',
-                  isActive(link.href) && 'nav-link-active text-accent'
-                )}
+                href="/#contact"
+                className="glass rounded-full px-4 py-1.5 text-sm text-accent border border-accent/30 transition-all duration-200 hover:border-accent/60 hover:shadow-[var(--shadow-glow)] hover:scale-105"
                 data-cursor="interactive"
               >
-                {link.label}
+                Contact
               </Link>
-            ))}
-            <Link
-              href="/#contact"
-              className="rounded-md border border-accent px-4 py-2 text-sm text-accent transition-all duration-200 hover:bg-accent hover:text-bg"
-              data-cursor="interactive"
-            >
-              Contact
-            </Link>
-          </div>
+            </div>
+          </LayoutGroup>
         </div>
 
         {/* Mobile Nav */}
         <div className="flex h-14 items-center justify-between px-4 lg:hidden">
           <Link
             href="/"
-            className="font-display text-lg font-semibold text-text-primary"
+            className="font-display text-lg font-semibold text-text-primary transition-colors duration-300 hover:text-accent"
             data-cursor="interactive"
           >
             Nisarg
@@ -184,8 +195,14 @@ export function Navigation({ className }: NavigationProps) {
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-bg/95 backdrop-blur-md lg:hidden"
+            className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-gradient-to-b from-bg/95 to-bg-surface/95 backdrop-blur-md lg:hidden"
           >
+            {/* Decorative accent line at top */}
+            <div
+              className="absolute top-0 left-1/2 -translate-x-1/2 h-px w-24 bg-gradient-to-r from-transparent via-accent/60 to-transparent"
+              aria-hidden="true"
+            />
+
             <div className="flex flex-col items-center gap-8">
               {allNavLinks.map((link, i) => (
                 <motion.div
@@ -210,25 +227,25 @@ export function Navigation({ className }: NavigationProps) {
               ))}
             </div>
 
-            {/* Social icons */}
+            {/* Social icons in glass circles */}
             <motion.div
               variants={linkVariants}
               initial="closed"
               animate="open"
               custom={allNavLinks.length}
-              className="mt-12 flex items-center gap-6"
+              className="mt-12 flex items-center gap-4"
             >
               <a
                 href={SOCIAL_LINKS.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Visit GitHub profile"
-                className="text-text-secondary transition-colors duration-250 hover:text-accent"
+                className="glass flex h-11 w-11 items-center justify-center rounded-full text-text-secondary transition-all duration-250 hover:text-accent hover:border-accent/30"
                 data-cursor="interactive"
               >
                 <svg
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   xmlns="http://www.w3.org/2000/svg"
@@ -241,12 +258,12 @@ export function Navigation({ className }: NavigationProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Visit LinkedIn profile"
-                className="text-text-secondary transition-colors duration-250 hover:text-accent"
+                className="glass flex h-11 w-11 items-center justify-center rounded-full text-text-secondary transition-all duration-250 hover:text-accent hover:border-accent/30"
                 data-cursor="interactive"
               >
                 <svg
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   xmlns="http://www.w3.org/2000/svg"
@@ -259,12 +276,12 @@ export function Navigation({ className }: NavigationProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Visit Instagram profile"
-                className="text-text-secondary transition-colors duration-250 hover:text-accent"
+                className="glass flex h-11 w-11 items-center justify-center rounded-full text-text-secondary transition-all duration-250 hover:text-accent hover:border-accent/30"
                 data-cursor="interactive"
               >
                 <svg
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   xmlns="http://www.w3.org/2000/svg"
@@ -275,12 +292,12 @@ export function Navigation({ className }: NavigationProps) {
               <a
                 href={SOCIAL_LINKS.email}
                 aria-label="Send email"
-                className="text-text-secondary transition-colors duration-250 hover:text-accent"
+                className="glass flex h-11 w-11 items-center justify-center rounded-full text-text-secondary transition-all duration-250 hover:text-accent hover:border-accent/30"
                 data-cursor="interactive"
               >
                 <svg
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"

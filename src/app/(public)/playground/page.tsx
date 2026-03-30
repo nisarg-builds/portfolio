@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DynamicHeading } from '@/components/ui/dynamic-heading'
 
 export const metadata: Metadata = {
   title: 'Playground',
@@ -27,9 +28,11 @@ export default function PlaygroundPage() {
   return (
     <main className="min-h-dvh px-5 pb-16 pt-24 sm:px-6 lg:px-8 lg:pt-32">
       <div className="mx-auto max-w-[1120px]">
-        <h1 className="font-(family-name:--font-display) text-3xl font-bold text-text-primary">
-          Playground
-        </h1>
+        <DynamicHeading
+          text="Playground"
+          as="h1"
+          className="font-(family-name:--font-display) text-3xl font-bold text-text-primary"
+        />
         <svg
           width="100%"
           height="12"

@@ -15,6 +15,7 @@
   --color-accent: #ce796b;
   --color-accent-hover: #d98e82;
   --color-accent-secondary: #ea8589;
+  --color-accent-muted: rgba(206, 121, 107, 0.08);
   --color-border: #2a2927;
   --color-border-hover: #3d3b38;
 
@@ -45,6 +46,8 @@
   --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.5);
   --shadow-glow: 0 0 20px rgba(206, 121, 107, 0.15);
+  --shadow-glow-lg: 0 0 40px rgba(206, 121, 107, 0.2);
+  --shadow-glow-xl: 0 0 80px rgba(206, 121, 107, 0.12);
 }
 
 /* ========================================
@@ -160,5 +163,99 @@ h6 {
 }
 
 .nav-link-active::after {
-  width: 100%;
+  width: 0;
+}
+
+/* ========================================
+   Ambient Glow Effects
+   ======================================== */
+
+@keyframes ambient-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ========================================
+   Glassmorphism Utility
+   ======================================== */
+
+.glass {
+  background: rgba(26, 25, 23, 0.6);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  border: 1px solid rgba(229, 225, 221, 0.06);
+}
+
+.glass-subtle {
+  background: rgba(26, 25, 23, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ========================================
+   Gradient Text Utility
+   ======================================== */
+
+.text-gradient-accent {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ========================================
+   Card Shine Effect
+   ======================================== */
+
+.card-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-shine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(206, 121, 107, 0.03) 45%,
+    rgba(206, 121, 107, 0.06) 50%,
+    rgba(206, 121, 107, 0.03) 55%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ========================================
+   Section Divider Gradient
+   ======================================== */
+
+.section-fade-top {
+  mask-image: linear-gradient(to bottom, transparent, black 80px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 80px);
+}
+
+.section-fade-bottom {
+  mask-image: linear-gradient(to top, transparent, black 80px);
+  -webkit-mask-image: linear-gradient(to top, transparent, black 80px);
 }

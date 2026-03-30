@@ -1,13 +1,21 @@
-import Link from 'next/link'
-import { cn } from '@/lib/utils'
+'use client'
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/hooks'
+
+interface ButtonProps {
   variant?: 'primary' | 'outline' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
   href?: string
   external?: boolean
   children: React.ReactNode
   className?: string
+  onClick?: () => void
+  disabled?: boolean
+  type?: 'button' | 'submit' | 'reset'
+  'aria-label'?: string
 }
 
 const variantStyles = {
@@ -25,6 +33,8 @@ const sizeStyles = {
   lg: 'px-6 py-3 text-lg min-h-[48px]',
 }
 
+const springTransition = { type: 'spring', stiffness: 400, damping: 25 } as const
+
 export function Button({
   variant = 'outline',
   size = 'md',
@@ -32,8 +42,13 @@ export function Button({
   external,
   children,
   className,
-  ...props
+  onClick,
+  disabled,
+  type,
+  'aria-label': ariaLabel,
 }: ButtonProps) {
+  const prefersReduced = usePrefersReducedMotion()
+
   const classes = cn(
     'inline-flex items-center justify-center rounded-md transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2',
     variantStyles[variant],
@@ -41,31 +56,53 @@ export function Button({
     className,
   )
 
+  const motionProps = prefersReduced
+    ? {}
+    : {
+        whileHover: { y: -2 },
+        whileTap: { scale: 0.97 },
+        transition: springTransition,
+      }
+
   if (href) {
     if (external) {
       return (
-        <a
+        <motion.a
           href={href}
           target="_blank"
           rel="noopener noreferrer"
           className={classes}
           data-cursor="interactive"
+          {...motionProps}
         >
           {children}
-        </a>
+        </motion.a>
       )
     }
 
     return (
-      <Link href={href} className={classes} data-cursor="interactive">
-        {children}
-      </Link>
+      <motion.div
+        className="inline-block"
+        {...motionProps}
+      >
+        <Link href={href} className={classes} data-cursor="interactive">
+          {children}
+        </Link>
+      </motion.div>
     )
   }
 
   return (
-    <button className={classes} data-cursor="interactive" {...props}>
+    <motion.button
+      className={classes}
+      data-cursor="interactive"
+      onClick={onClick}
+      disabled={disabled}
+      type={type}
+      aria-label={ariaLabel}
+      {...motionProps}
+    >
       {children}
-    </button>
+    </motion.button>
   )
 }
