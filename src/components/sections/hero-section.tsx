@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { FloatingElement } from '@/components/decorative/floating-element'
 import { MagneticButton } from '@/components/ui/magnetic-button'
 import { useEffect, useState } from 'react'
+import { useScroll, useMotionValueEvent } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/lib/hooks'
 
 const containerVariants = {
@@ -170,6 +171,12 @@ const botanicalDropShadow = { filter: 'drop-shadow(0 0 20px rgba(206, 121, 107, 
 
 export function HeroSection() {
   const prefersReducedMotion = usePrefersReducedMotion()
+  const [scrollIndicatorVisible, setScrollIndicatorVisible] = useState(true)
+  const { scrollY } = useScroll()
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    setScrollIndicatorVisible(latest < 100)
+  })
 
   const floatingFadeIn = prefersReducedMotion
     ? undefined
@@ -344,12 +351,12 @@ export function HeroSection() {
           </MagneticButton>
         </motion.div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator — fades out after 100px scroll */}
         <motion.div
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={prefersReducedMotion ? { duration: 0 } : { delay: 1.5, duration: 0.4 }}
+          animate={{ opacity: scrollIndicatorVisible ? 1 : 0 }}
+          transition={prefersReducedMotion ? { duration: 0 } : { delay: scrollIndicatorVisible ? 1.5 : 0, duration: 0.4 }}
         >
           <motion.div
             animate={prefersReducedMotion ? undefined : { y: [0, 6, 0], opacity: [0.4, 1, 0.4] }}
