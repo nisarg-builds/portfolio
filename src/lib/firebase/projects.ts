@@ -20,17 +20,8 @@ function docToProject(doc: FirebaseFirestore.DocumentSnapshot): Project {
 }
 
 export async function getProjects(): Promise<Project[]> {
-  let snapshot
-  try {
-    snapshot = await adminDb
-      .collection('projects')
-      .orderBy('order', 'asc')
-      .get()
-  } catch {
-    // Fallback if order field doesn't exist on some docs
-    snapshot = await adminDb.collection('projects').get()
-  }
-
+  // Fetch without orderBy — Firestore silently excludes docs missing the order field
+  const snapshot = await adminDb.collection('projects').get()
   return snapshot.docs.map(docToProject).sort((a, b) => a.order - b.order)
 }
 

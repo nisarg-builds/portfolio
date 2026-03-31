@@ -4,12 +4,23 @@ import { ProjectList } from '@/components/admin/project-list'
 export const dynamic = 'force-dynamic'
 
 export default async function AdminProjectsPage() {
-  let snapshot
-  try {
-    snapshot = await adminDb.collection('projects').orderBy('order', 'asc').get()
-  } catch {
-    snapshot = await adminDb.collection('projects').get()
+  // Fetch without orderBy — Firestore silently excludes docs missing the order field
+  const snapshot = await adminDb.collection('projects').get()
+
+  // Backfill missing order fields so they appear in queries
+  const docsWithoutOrder = snapshot.docs.filter((doc) => doc.data().order === undefined)
+  if (docsWithoutOrder.length > 0) {
+    const batch = adminDb.batch()
+    const maxOrder = snapshot.docs.reduce((max, doc) => {
+      const order = doc.data().order
+      return typeof order === 'number' ? Math.max(max, order) : max
+    }, -1)
+    docsWithoutOrder.forEach((doc, i) => {
+      batch.update(doc.ref, { order: maxOrder + 1 + i })
+    })
+    await batch.commit()
   }
+
   const projects = snapshot.docs.map((doc) => {
     const data = doc.data()
     return {
