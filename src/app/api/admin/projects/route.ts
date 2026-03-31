@@ -15,19 +15,37 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const data = await request.json()
-  const { slug, ...rest } = data
+  try {
+    const data = await request.json()
+    const { slug, ...rest } = data
 
-  await adminDb.collection('projects').doc(slug).set({
-    slug,
-    ...rest,
-    createdAt: FieldValue.serverTimestamp(),
-    updatedAt: FieldValue.serverTimestamp(),
-  })
+    if (!slug || !rest.title) {
+      return NextResponse.json({ error: 'Missing required fields: slug and title' }, { status: 400 })
+    }
 
-  revalidateTag('projects')
-  revalidateTag('page')
-  return NextResponse.json({ success: true, slug })
+    const existing = await adminDb.collection('projects').doc(slug).get()
+    if (existing.exists) {
+      return NextResponse.json({ error: 'A project with this slug already exists' }, { status: 409 })
+    }
+
+    const countSnapshot = await adminDb.collection('projects').count().get()
+    const nextOrder = countSnapshot.data().count
+
+    await adminDb.collection('projects').doc(slug).set({
+      slug,
+      ...rest,
+      order: nextOrder,
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
+    })
+
+    revalidateTag('projects')
+    revalidateTag('page')
+    return NextResponse.json({ success: true, slug })
+  } catch (err) {
+    console.error('Failed to create project:', err)
+    return NextResponse.json({ error: 'Failed to create project' }, { status: 500 })
+  }
 }
 
 export async function PUT(request: Request) {
@@ -35,17 +53,22 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const data = await request.json()
-  const { slug, ...rest } = data
+  try {
+    const data = await request.json()
+    const { slug, ...rest } = data
 
-  await adminDb.collection('projects').doc(slug).update({
-    ...rest,
-    updatedAt: FieldValue.serverTimestamp(),
-  })
+    await adminDb.collection('projects').doc(slug).update({
+      ...rest,
+      updatedAt: FieldValue.serverTimestamp(),
+    })
 
-  revalidateTag('projects')
-  revalidateTag('page')
-  return NextResponse.json({ success: true })
+    revalidateTag('projects')
+    revalidateTag('page')
+    return NextResponse.json({ success: true })
+  } catch (err) {
+    console.error('Failed to update project:', err)
+    return NextResponse.json({ error: 'Failed to update project' }, { status: 500 })
+  }
 }
 
 export async function DELETE(request: Request) {

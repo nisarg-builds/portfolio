@@ -17,8 +17,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Missing file or path' }, { status: 400 })
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer())
-  const url = await uploadToStorage(buffer, path, file.type)
-
-  return NextResponse.json({ url })
+  try {
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const url = await uploadToStorage(buffer, path, file.type)
+    return NextResponse.json({ url })
+  } catch (err) {
+    console.error('Upload failed:', err)
+    return NextResponse.json({ error: 'Upload failed' }, { status: 500 })
+  }
 }

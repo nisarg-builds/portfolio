@@ -4,7 +4,12 @@ import { ProjectList } from '@/components/admin/project-list'
 export const dynamic = 'force-dynamic'
 
 export default async function AdminProjectsPage() {
-  const snapshot = await adminDb.collection('projects').orderBy('order', 'asc').get()
+  let snapshot
+  try {
+    snapshot = await adminDb.collection('projects').orderBy('order', 'asc').get()
+  } catch {
+    snapshot = await adminDb.collection('projects').get()
+  }
   const projects = snapshot.docs.map((doc) => {
     const data = doc.data()
     return {
@@ -20,7 +25,7 @@ export default async function AdminProjectsPage() {
       role: data.role ?? undefined,
       order: data.order ?? 0,
     }
-  })
+  }).sort((a, b) => a.order - b.order)
 
   return (
     <div>
