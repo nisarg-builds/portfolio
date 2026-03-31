@@ -18,7 +18,7 @@ export async function PUT(request: Request) {
     updatedAt: FieldValue.serverTimestamp(),
   }, { merge: true })
 
-  revalidateTag('about', 'page')
-  revalidateTag('page', 'page')
+  revalidateTag('about')
+  revalidateTag('page')
   return NextResponse.json({ success: true })
 }

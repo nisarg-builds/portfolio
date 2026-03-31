@@ -25,7 +25,8 @@ export async function POST(request: Request) {
     updatedAt: FieldValue.serverTimestamp(),
   })
 
-  revalidateTag('projects', 'page')
+  revalidateTag('projects')
+  revalidateTag('page')
   return NextResponse.json({ success: true, slug })
 }
 
@@ -42,7 +43,8 @@ export async function PUT(request: Request) {
     updatedAt: FieldValue.serverTimestamp(),
   })
 
-  revalidateTag('projects', 'page')
+  revalidateTag('projects')
+  revalidateTag('page')
   return NextResponse.json({ success: true })
 }
 
@@ -54,7 +56,8 @@ export async function DELETE(request: Request) {
   const { slug } = await request.json()
   await adminDb.collection('projects').doc(slug).delete()
 
-  revalidateTag('projects', 'page')
+  revalidateTag('projects')
+  revalidateTag('page')
   return NextResponse.json({ success: true })
 }
 
@@ -72,6 +75,7 @@ export async function PATCH(request: Request) {
   })
 
   await batch.commit()
-  revalidateTag('projects', 'page')
+  revalidateTag('projects')
+  revalidateTag('page')
   return NextResponse.json({ success: true })
 }

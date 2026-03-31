@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { NAV_LINKS, SOCIAL_LINKS } from '@/lib/constants'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 
 interface NavigationProps {
   className?: string
@@ -140,6 +141,7 @@ export function Navigation({ className }: NavigationProps) {
               >
                 Contact
               </Link>
+              <ThemeToggle />
             </div>
           </LayoutGroup>
         </div>
@@ -154,33 +156,36 @@ export function Navigation({ className }: NavigationProps) {
             Nisarg
           </Link>
 
-          <button
-            aria-expanded={isOpen}
-            aria-controls="mobile-menu"
-            aria-label={isOpen ? 'Close menu' : 'Open menu'}
-            onClick={() => setIsOpen(!isOpen)}
-            className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5"
-            data-cursor="interactive"
-          >
-            <span
-              className={cn(
-                'block h-0.5 w-6 bg-text-primary transition-all duration-300 ease-in-out',
-                isOpen && 'translate-y-2 rotate-45'
-              )}
-            />
-            <span
-              className={cn(
-                'block h-0.5 w-6 bg-text-primary transition-all duration-200 ease-in-out',
-                isOpen && 'opacity-0'
-              )}
-            />
-            <span
-              className={cn(
-                'block h-0.5 w-6 bg-text-primary transition-all duration-300 ease-in-out',
-                isOpen && '-translate-y-2 -rotate-45'
-              )}
-            />
-          </button>
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <button
+              aria-expanded={isOpen}
+              aria-controls="mobile-menu"
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
+              onClick={() => setIsOpen(!isOpen)}
+              className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5"
+              data-cursor="interactive"
+            >
+              <span
+                className={cn(
+                  'block h-0.5 w-6 bg-text-primary transition-all duration-300 ease-in-out',
+                  isOpen && 'translate-y-2 rotate-45'
+                )}
+              />
+              <span
+                className={cn(
+                  'block h-0.5 w-6 bg-text-primary transition-all duration-200 ease-in-out',
+                  isOpen && 'opacity-0'
+                )}
+              />
+              <span
+                className={cn(
+                  'block h-0.5 w-6 bg-text-primary transition-all duration-300 ease-in-out',
+                  isOpen && '-translate-y-2 -rotate-45'
+                )}
+              />
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -227,13 +232,24 @@ export function Navigation({ className }: NavigationProps) {
               ))}
             </div>
 
-            {/* Social icons in glass circles */}
+            {/* Theme toggle */}
             <motion.div
               variants={linkVariants}
               initial="closed"
               animate="open"
               custom={allNavLinks.length}
-              className="mt-12 flex items-center gap-4"
+              className="mt-8"
+            >
+              <ThemeToggle className="h-11 w-11" />
+            </motion.div>
+
+            {/* Social icons in glass circles */}
+            <motion.div
+              variants={linkVariants}
+              initial="closed"
+              animate="open"
+              custom={allNavLinks.length + 1}
+              className="mt-6 flex items-center gap-4"
             >
               <a
                 href={SOCIAL_LINKS.github}
