@@ -57,13 +57,7 @@ export function ContactSection() {
       >
         {/* Heading with ambient glow */}
         <motion.div variants={scrollFadeUp} className="relative">
-          <span
-            className="pointer-events-none absolute top-[-0.15em] left-[-0.03em] select-none font-(family-name:--font-display) text-[15vw] font-bold leading-none text-text-primary opacity-[0.03] lg:text-[12vw]"
-            aria-hidden="true"
-          >
-            03
-          </span>
-          <div
+<div
             className="pointer-events-none absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2"
             style={{
               background:

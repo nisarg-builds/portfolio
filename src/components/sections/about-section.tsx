@@ -109,13 +109,7 @@ export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
       >
         {/* Heading */}
         <motion.div variants={scrollFadeUp} className="relative mb-12">
-          <span
-            className="pointer-events-none absolute top-[-0.15em] left-[-0.03em] select-none font-(family-name:--font-display) text-[15vw] font-bold leading-none text-text-primary opacity-[0.03] lg:text-[12vw]"
-            aria-hidden="true"
-          >
-            01
-          </span>
-          <h2 className="font-(family-name:--font-display) text-3xl font-bold text-text-primary">
+<h2 className="font-(family-name:--font-display) text-3xl font-bold text-text-primary">
             About Me
           </h2>
           <WavyDivider width={200} />
