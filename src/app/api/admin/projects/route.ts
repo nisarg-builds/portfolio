@@ -3,6 +3,12 @@ import { cookies } from 'next/headers'
 import { revalidateTag } from 'next/cache'
 import { adminDb } from '@/lib/firebase/admin'
 import { FieldValue } from 'firebase-admin/firestore'
+import {
+  isValidSlug,
+  isStringArray,
+  validateProjectData,
+  sanitizeProjectData,
+} from '@/lib/validation'
 
 async function verifyAuth(): Promise<boolean> {
   const cookieStore = await cookies()
@@ -15,14 +21,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  let data: Record<string, unknown>
   try {
-    const data = await request.json()
-    const { slug, ...rest } = data
+    data = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+  }
 
-    if (!slug || !rest.title) {
-      return NextResponse.json({ error: 'Missing required fields: slug and title' }, { status: 400 })
-    }
+  const validation = validateProjectData(data)
+  if (!validation.valid) {
+    return NextResponse.json({ error: validation.error }, { status: 400 })
+  }
 
+  const slug = data.slug as string
+  const sanitized = sanitizeProjectData(data)
+
+  try {
     const existing = await adminDb.collection('projects').doc(slug).get()
     if (existing.exists) {
       return NextResponse.json({ error: 'A project with this slug already exists' }, { status: 409 })
@@ -32,8 +46,7 @@ export async function POST(request: Request) {
     const nextOrder = countSnapshot.data().count
 
     await adminDb.collection('projects').doc(slug).set({
-      slug,
-      ...rest,
+      ...sanitized,
       order: nextOrder,
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
@@ -42,8 +55,7 @@ export async function POST(request: Request) {
     revalidateTag('projects')
     revalidateTag('page')
     return NextResponse.json({ success: true, slug })
-  } catch (err) {
-    console.error('Failed to create project:', err)
+  } catch {
     return NextResponse.json({ error: 'Failed to create project' }, { status: 500 })
   }
 }
@@ -53,20 +65,31 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  let data: Record<string, unknown>
   try {
-    const data = await request.json()
-    const { slug, ...rest } = data
+    data = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+  }
 
+  const slug = data.slug
+  if (!isValidSlug(slug)) {
+    return NextResponse.json({ error: 'Invalid slug' }, { status: 400 })
+  }
+
+  const sanitized = sanitizeProjectData(data)
+  delete sanitized.slug
+
+  try {
     await adminDb.collection('projects').doc(slug).update({
-      ...rest,
+      ...sanitized,
       updatedAt: FieldValue.serverTimestamp(),
     })
 
     revalidateTag('projects')
     revalidateTag('page')
     return NextResponse.json({ success: true })
-  } catch (err) {
-    console.error('Failed to update project:', err)
+  } catch {
     return NextResponse.json({ error: 'Failed to update project' }, { status: 500 })
   }
 }
@@ -76,12 +99,26 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { slug } = await request.json()
-  await adminDb.collection('projects').doc(slug).delete()
+  let data: Record<string, unknown>
+  try {
+    data = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+  }
 
-  revalidateTag('projects')
-  revalidateTag('page')
-  return NextResponse.json({ success: true })
+  const slug = data.slug
+  if (!isValidSlug(slug)) {
+    return NextResponse.json({ error: 'Invalid slug' }, { status: 400 })
+  }
+
+  try {
+    await adminDb.collection('projects').doc(slug).delete()
+    revalidateTag('projects')
+    revalidateTag('page')
+    return NextResponse.json({ success: true })
+  } catch {
+    return NextResponse.json({ error: 'Failed to delete project' }, { status: 500 })
+  }
 }
 
 export async function PATCH(request: Request) {
@@ -89,16 +126,30 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { orderedSlugs } = await request.json()
-  const batch = adminDb.batch()
+  let data: Record<string, unknown>
+  try {
+    data = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+  }
 
-  orderedSlugs.forEach((slug: string, index: number) => {
-    const ref = adminDb.collection('projects').doc(slug)
-    batch.update(ref, { order: index, updatedAt: FieldValue.serverTimestamp() })
-  })
+  const { orderedSlugs } = data
+  if (!isStringArray(orderedSlugs) || !orderedSlugs.every(isValidSlug)) {
+    return NextResponse.json({ error: 'orderedSlugs must be an array of valid slugs' }, { status: 400 })
+  }
 
-  await batch.commit()
-  revalidateTag('projects')
-  revalidateTag('page')
-  return NextResponse.json({ success: true })
+  try {
+    const batch = adminDb.batch()
+    orderedSlugs.forEach((slug: string, index: number) => {
+      const ref = adminDb.collection('projects').doc(slug)
+      batch.update(ref, { order: index, updatedAt: FieldValue.serverTimestamp() })
+    })
+
+    await batch.commit()
+    revalidateTag('projects')
+    revalidateTag('page')
+    return NextResponse.json({ success: true })
+  } catch {
+    return NextResponse.json({ error: 'Failed to reorder projects' }, { status: 500 })
+  }
 }
