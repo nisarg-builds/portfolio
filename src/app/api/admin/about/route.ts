@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { adminDb } from '@/lib/firebase/admin'
 import { FieldValue } from 'firebase-admin/firestore'
 import { sanitizeAboutData } from '@/lib/validation'
@@ -30,8 +30,7 @@ export async function PUT(request: Request) {
       updatedAt: FieldValue.serverTimestamp(),
     }, { merge: true })
 
-    revalidateTag('about')
-    revalidateTag('page')
+    revalidatePath('/', 'layout')
     return NextResponse.json({ success: true })
   } catch {
     return NextResponse.json({ error: 'Failed to update about settings' }, { status: 500 })
