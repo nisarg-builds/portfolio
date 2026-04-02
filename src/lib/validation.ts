@@ -49,6 +49,7 @@ export function sanitizeFilename(name: string): string {
     .slice(0, 100)
 }
 
+// Only Firebase Storage hosts allowed — prevents SSRF attacks via image proxy
 const ALLOWED_PROXY_HOSTS = new Set([
   'storage.googleapis.com',
   'firebasestorage.googleapis.com',
@@ -113,14 +114,26 @@ export function validateProjectData(data: Record<string, unknown>): { valid: boo
   if (!isValidSlug(data.slug)) {
     return { valid: false, error: 'Invalid slug format (lowercase alphanumeric + hyphens, 2-100 chars)' }
   }
+  if (data.description !== undefined && typeof data.description !== 'string') {
+    return { valid: false, error: 'Description must be a string' }
+  }
+  if (data.fullDescription !== undefined && typeof data.fullDescription !== 'string') {
+    return { valid: false, error: 'Full description must be a string' }
+  }
   if (data.tags !== undefined && !isStringArray(data.tags)) {
     return { valid: false, error: 'Tags must be an array of strings' }
   }
   if (data.link !== undefined && !isValidUrl(data.link)) {
     return { valid: false, error: 'Invalid project URL' }
   }
+  if (data.image !== undefined && typeof data.image !== 'string') {
+    return { valid: false, error: 'Image must be a string URL' }
+  }
   if (data.screenshots !== undefined && !isStringArray(data.screenshots)) {
     return { valid: false, error: 'Screenshots must be an array of strings' }
+  }
+  if (data.featured !== undefined && typeof data.featured !== 'boolean') {
+    return { valid: false, error: 'Featured must be a boolean' }
   }
   return { valid: true }
 }

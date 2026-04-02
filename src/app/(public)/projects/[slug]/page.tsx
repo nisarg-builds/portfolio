@@ -29,15 +29,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: project.description,
       url,
       type: 'article',
-      ...(project.image && {
-        images: [{ url: project.image, width: 1200, height: 630, alt: project.title }],
-      }),
+      images: [{ url: project.image || `${SITE_CONFIG.url}/og-image.png`, width: 1200, height: 630, alt: project.title }],
     },
     twitter: {
       card: 'summary_large_image',
       title: project.title,
       description: project.description,
-      ...(project.image && { images: [project.image] }),
+      images: [project.image || `${SITE_CONFIG.url}/og-image.png`],
     },
     alternates: {
       canonical: url,
