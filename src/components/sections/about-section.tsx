@@ -109,13 +109,7 @@ export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
       >
         {/* Heading */}
         <motion.div variants={scrollFadeUp} className="relative mb-12">
-          <span
-            className="pointer-events-none absolute top-[-0.15em] left-[-0.03em] select-none font-(family-name:--font-display) text-[15vw] font-bold leading-none text-text-primary opacity-[0.03] lg:text-[12vw]"
-            aria-hidden="true"
-          >
-            01
-          </span>
-          <h2 className="font-(family-name:--font-display) text-3xl font-bold text-text-primary">
+<h2 className="font-(family-name:--font-display) text-3xl font-bold text-text-primary">
             About Me
           </h2>
           <WavyDivider width={200} />
@@ -142,10 +136,12 @@ export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
                 for technology and design.
               </p>
               <p>
-                Currently on an internship, I&apos;m passionate about crafting
+                Currently a Developer I at{' '}
+                <strong className="text-text-primary">Vendasta</strong>, I&apos;m
+                building AI-powered automation and listing data infrastructure
+                with Go, gRPC, and Temporal. I&apos;m passionate about crafting
                 beautiful, functional interfaces that bridge the gap between art
-                and engineering. I believe the best software feels human — it
-                should delight, not just function.
+                and engineering.
               </p>
               <p>
                 When I&apos;m not coding, you&apos;ll find me exploring new
@@ -234,6 +230,12 @@ export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
           >
             <SkillsMarquee />
           </div>
+          {/* Screen reader fallback — marquee is aria-hidden */}
+          <ul className="sr-only">
+            {skills.map((skill) => (
+              <li key={skill}>{skill}</li>
+            ))}
+          </ul>
         </motion.div>
       </motion.div>
     </section>

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { uploadToStorage } from '@/lib/firebase/storage'
+import { validateUploadFile, sanitizeFilename } from '@/lib/validation'
 
 export async function POST(request: Request) {
   const cookieStore = await cookies()
@@ -9,16 +10,33 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const formData = await request.formData()
-  const file = formData.get('file') as File | null
-  const path = formData.get('path') as string | null
+  let formData: FormData
+  try {
+    formData = await request.formData()
+  } catch {
+    return NextResponse.json({ error: 'Invalid form data' }, { status: 400 })
+  }
 
-  if (!file || !path) {
+  const file = formData.get('file') as File | null
+  const storagePath = formData.get('path') as string | null
+
+  if (!file || !storagePath) {
     return NextResponse.json({ error: 'Missing file or path' }, { status: 400 })
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer())
-  const url = await uploadToStorage(buffer, path, file.type)
+  const validation = validateUploadFile(file)
+  if (!validation.valid) {
+    return NextResponse.json({ error: validation.error }, { status: 400 })
+  }
 
-  return NextResponse.json({ url })
+  const safeName = `${Date.now()}-${sanitizeFilename(file.name)}`
+  const fullPath = `${storagePath}/${safeName}`
+
+  try {
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const url = await uploadToStorage(buffer, fullPath, file.type)
+    return NextResponse.json({ url })
+  } catch {
+    return NextResponse.json({ error: 'Upload failed' }, { status: 500 })
+  }
 }

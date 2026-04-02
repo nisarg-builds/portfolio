@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { NAV_LINKS, SOCIAL_LINKS } from '@/lib/constants'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 
 interface NavigationProps {
   className?: string
@@ -79,6 +80,40 @@ export function Navigation({ className }: NavigationProps) {
     setIsOpen(false)
   }, [pathname])
 
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  // Focus trap: cycle focus within mobile menu when open
+  useEffect(() => {
+    if (!isOpen || !menuRef.current) return
+    const menu = menuRef.current
+    const focusables = menu.querySelectorAll<HTMLElement>(
+      'a[href], button, [tabindex]:not([tabindex="-1"])'
+    )
+    if (focusables.length === 0) return
+
+    const first = focusables[0]
+    const last = focusables[focusables.length - 1]
+
+    first.focus()
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== 'Tab') return
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
+    }
+    menu.addEventListener('keydown', handleTab)
+    return () => menu.removeEventListener('keydown', handleTab)
+  }, [isOpen])
+
   const isActive = useCallback(
     (href: string) => {
       if (href === '/') return pathname === '/'
@@ -140,6 +175,7 @@ export function Navigation({ className }: NavigationProps) {
               >
                 Contact
               </Link>
+              <ThemeToggle />
             </div>
           </LayoutGroup>
         </div>
@@ -154,33 +190,36 @@ export function Navigation({ className }: NavigationProps) {
             Nisarg
           </Link>
 
-          <button
-            aria-expanded={isOpen}
-            aria-controls="mobile-menu"
-            aria-label={isOpen ? 'Close menu' : 'Open menu'}
-            onClick={() => setIsOpen(!isOpen)}
-            className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5"
-            data-cursor="interactive"
-          >
-            <span
-              className={cn(
-                'block h-0.5 w-6 bg-text-primary transition-all duration-300 ease-in-out',
-                isOpen && 'translate-y-2 rotate-45'
-              )}
-            />
-            <span
-              className={cn(
-                'block h-0.5 w-6 bg-text-primary transition-all duration-200 ease-in-out',
-                isOpen && 'opacity-0'
-              )}
-            />
-            <span
-              className={cn(
-                'block h-0.5 w-6 bg-text-primary transition-all duration-300 ease-in-out',
-                isOpen && '-translate-y-2 -rotate-45'
-              )}
-            />
-          </button>
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <button
+              aria-expanded={isOpen}
+              aria-controls="mobile-menu"
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
+              onClick={() => setIsOpen(!isOpen)}
+              className="relative z-50 flex h-12 w-12 flex-col items-center justify-center gap-1.5"
+              data-cursor="interactive"
+            >
+              <span
+                className={cn(
+                  'block h-0.5 w-6 bg-text-primary transition-all duration-300 ease-in-out',
+                  isOpen && 'translate-y-2 rotate-45'
+                )}
+              />
+              <span
+                className={cn(
+                  'block h-0.5 w-6 bg-text-primary transition-all duration-200 ease-in-out',
+                  isOpen && 'opacity-0'
+                )}
+              />
+              <span
+                className={cn(
+                  'block h-0.5 w-6 bg-text-primary transition-all duration-300 ease-in-out',
+                  isOpen && '-translate-y-2 -rotate-45'
+                )}
+              />
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -189,7 +228,9 @@ export function Navigation({ className }: NavigationProps) {
         {isOpen && (
           <motion.div
             id="mobile-menu"
+            ref={menuRef}
             role="dialog"
+            aria-modal="true"
             aria-label="Mobile navigation menu"
             variants={menuVariants}
             initial="closed"
@@ -227,19 +268,30 @@ export function Navigation({ className }: NavigationProps) {
               ))}
             </div>
 
-            {/* Social icons in glass circles */}
+            {/* Theme toggle */}
             <motion.div
               variants={linkVariants}
               initial="closed"
               animate="open"
               custom={allNavLinks.length}
-              className="mt-12 flex items-center gap-4"
+              className="mt-8"
+            >
+              <ThemeToggle className="h-11 w-11" />
+            </motion.div>
+
+            {/* Social icons in glass circles */}
+            <motion.div
+              variants={linkVariants}
+              initial="closed"
+              animate="open"
+              custom={allNavLinks.length + 1}
+              className="mt-6 flex items-center gap-4"
             >
               <a
                 href={SOCIAL_LINKS.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Visit GitHub profile"
+                aria-label="Visit GitHub profile (opens in new tab)"
                 className="glass flex h-11 w-11 items-center justify-center rounded-full text-text-secondary transition-all duration-250 hover:text-accent hover:border-accent/30"
                 data-cursor="interactive"
               >
@@ -257,7 +309,7 @@ export function Navigation({ className }: NavigationProps) {
                 href={SOCIAL_LINKS.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Visit LinkedIn profile"
+                aria-label="Visit LinkedIn profile (opens in new tab)"
                 className="glass flex h-11 w-11 items-center justify-center rounded-full text-text-secondary transition-all duration-250 hover:text-accent hover:border-accent/30"
                 data-cursor="interactive"
               >
@@ -275,7 +327,7 @@ export function Navigation({ className }: NavigationProps) {
                 href={SOCIAL_LINKS.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Visit Instagram profile"
+                aria-label="Visit Instagram profile (opens in new tab)"
                 className="glass flex h-11 w-11 items-center justify-center rounded-full text-text-secondary transition-all duration-250 hover:text-accent hover:border-accent/30"
                 data-cursor="interactive"
               >
@@ -291,7 +343,7 @@ export function Navigation({ className }: NavigationProps) {
               </a>
               <a
                 href={SOCIAL_LINKS.email}
-                aria-label="Send email"
+                aria-label="Send email to Nisarg Chaudhary"
                 className="glass flex h-11 w-11 items-center justify-center rounded-full text-text-secondary transition-all duration-250 hover:text-accent hover:border-accent/30"
                 data-cursor="interactive"
               >

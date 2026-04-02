@@ -36,7 +36,7 @@ const cardVariant = {
 
 export function PlaygroundPageContent() {
   return (
-    <main className="min-h-dvh px-5 pb-16 pt-24 sm:px-6 lg:px-8 lg:pt-32">
+    <main className="min-h-dvh px-5 pb-16 pt-8 sm:px-6 lg:px-8 lg:pt-12">
       <motion.div
         className="mx-auto max-w-[1120px]"
         variants={staggerContainer}

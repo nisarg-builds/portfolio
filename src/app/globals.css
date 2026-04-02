@@ -51,6 +51,31 @@
 }
 
 /* ========================================
+   Light Mode Overrides
+   ======================================== */
+
+html.light {
+  --color-bg: #faf9f7;
+  --color-bg-surface: #f0efec;
+  --color-bg-elevated: #e8e6e3;
+  --color-text-primary: #1a1917;
+  --color-text-secondary: #4a4845;
+  --color-text-tertiary: #8a8784;
+  --color-accent: #b85a4c;
+  --color-accent-hover: #a34d40;
+  --color-accent-secondary: #c96468;
+  --color-accent-muted: rgba(184, 90, 76, 0.08);
+  --color-border: #dddbd8;
+  --color-border-hover: #c5c3c0;
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 20px rgba(184, 90, 76, 0.1);
+  --shadow-glow-lg: 0 0 40px rgba(184, 90, 76, 0.12);
+  --shadow-glow-xl: 0 0 80px rgba(184, 90, 76, 0.08);
+}
+
+/* ========================================
    Base Styles
    ======================================== */
 
@@ -85,6 +110,10 @@ h6 {
 ::selection {
   background: rgba(206, 121, 107, 0.3);
   color: var(--color-text-primary);
+}
+
+html.light ::selection {
+  background: rgba(184, 90, 76, 0.2);
 }
 
 *:focus-visible {
@@ -202,10 +231,19 @@ h6 {
   border: 1px solid rgba(229, 225, 221, 0.06);
 }
 
+html.light .glass {
+  background: rgba(250, 249, 247, 0.7);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
 .glass-subtle {
   background: rgba(26, 25, 23, 0.4);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+}
+
+html.light .glass-subtle {
+  background: rgba(250, 249, 247, 0.5);
 }
 
 /* ========================================
@@ -258,4 +296,24 @@ h6 {
 .section-fade-bottom {
   mask-image: linear-gradient(to top, transparent, black 80px);
   -webkit-mask-image: linear-gradient(to top, transparent, black 80px);
+}
+
+/* Reduced motion: disable marquee and other CSS animations */
+@media (prefers-reduced-motion: reduce) {
+  .hover\:\[animation-play-state\:paused\],
+  [style*="animation: marquee"] {
+    animation: none !important;
+  }
+}
+
+/* Hide native cursor when custom cursor is active */
+body.custom-cursor,
+body.custom-cursor * {
+  cursor: none !important;
+}
+
+/* Treemap card hover — uses CSS custom properties set via inline style */
+.treemap-card:hover {
+  border-color: var(--hover-border) !important;
+  box-shadow: var(--hover-shadow);
 }

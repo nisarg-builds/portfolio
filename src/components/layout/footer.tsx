@@ -10,11 +10,11 @@ export function Footer({ className }: FooterProps) {
     <footer className={`py-8 lg:py-12 ${className ?? ''}`}>
       {/* Gradient separator */}
       <div
-        className="mx-auto mb-8 h-px max-w-7xl bg-gradient-to-r from-transparent via-border to-transparent lg:mb-12"
+        className="mx-auto mb-8 h-px max-w-[1120px] bg-gradient-to-r from-transparent via-border to-transparent lg:mb-12"
         aria-hidden="true"
       />
 
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1120px] px-6">
         {/* Desktop: three-column layout */}
         <div className="hidden items-center justify-between lg:flex">
           {/* Left: year */}
@@ -24,7 +24,7 @@ export function Footer({ className }: FooterProps) {
 
           {/* Center: attribution */}
           <p className="font-mono text-xs text-text-tertiary">
-            Designed &amp; crafted with care by{' '}
+            Designed &amp; Crafted by{' '}
             <span className="text-accent">Nisarg Chaudhary</span>
           </p>
 
@@ -35,7 +35,7 @@ export function Footer({ className }: FooterProps) {
                 href={SOCIAL_LINKS.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Visit GitHub profile"
+                aria-label="Visit GitHub profile (opens in new tab)"
                 className="text-text-secondary transition-colors duration-250 hover:text-accent"
                 data-cursor="interactive"
               >
@@ -53,7 +53,7 @@ export function Footer({ className }: FooterProps) {
                 href={SOCIAL_LINKS.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Visit LinkedIn profile"
+                aria-label="Visit LinkedIn profile (opens in new tab)"
                 className="text-text-secondary transition-colors duration-250 hover:text-accent"
                 data-cursor="interactive"
               >
@@ -71,7 +71,7 @@ export function Footer({ className }: FooterProps) {
                 href={SOCIAL_LINKS.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Visit Instagram profile"
+                aria-label="Visit Instagram profile (opens in new tab)"
                 className="text-text-secondary transition-colors duration-250 hover:text-accent"
                 data-cursor="interactive"
               >
@@ -87,7 +87,7 @@ export function Footer({ className }: FooterProps) {
               </a>
               <a
                 href={SOCIAL_LINKS.email}
-                aria-label="Send email"
+                aria-label="Send email to Nisarg Chaudhary"
                 className="text-text-secondary transition-colors duration-250 hover:text-accent"
                 data-cursor="interactive"
               >
@@ -118,7 +118,7 @@ export function Footer({ className }: FooterProps) {
               href={SOCIAL_LINKS.github}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Visit GitHub profile"
+              aria-label="Visit GitHub profile (opens in new tab)"
               className="text-text-secondary transition-colors duration-250 hover:text-accent"
               data-cursor="interactive"
             >
@@ -136,7 +136,7 @@ export function Footer({ className }: FooterProps) {
               href={SOCIAL_LINKS.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Visit LinkedIn profile"
+              aria-label="Visit LinkedIn profile (opens in new tab)"
               className="text-text-secondary transition-colors duration-250 hover:text-accent"
               data-cursor="interactive"
             >
@@ -154,7 +154,7 @@ export function Footer({ className }: FooterProps) {
               href={SOCIAL_LINKS.instagram}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Visit Instagram profile"
+              aria-label="Visit Instagram profile (opens in new tab)"
               className="text-text-secondary transition-colors duration-250 hover:text-accent"
               data-cursor="interactive"
             >
@@ -170,7 +170,7 @@ export function Footer({ className }: FooterProps) {
             </a>
             <a
               href={SOCIAL_LINKS.email}
-              aria-label="Send email"
+              aria-label="Send email to Nisarg Chaudhary"
               className="text-text-secondary transition-colors duration-250 hover:text-accent"
               data-cursor="interactive"
             >
@@ -192,7 +192,7 @@ export function Footer({ className }: FooterProps) {
           </div>
 
           <p className="font-mono text-xs text-text-tertiary">
-            &copy; 2026 &middot; Designed &amp; crafted with care by{' '}
+            &copy; 2026 &middot; Designed &amp; Crafted by{' '}
             <span className="text-accent">Nisarg Chaudhary</span>
           </p>
 

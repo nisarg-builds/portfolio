@@ -219,13 +219,13 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
         <label className={labelClasses}>Screenshots</label>
         <div className="space-y-3">
           {screenshots.map((url, i) => (
-            <div key={i} className="flex items-center gap-3 bg-bg-surface border border-border rounded-md p-3">
-              <img src={url} alt={`Screenshot ${i + 1}`} className="w-20 h-14 object-cover rounded" />
-              <span className="flex-1 text-sm text-text-tertiary truncate">{url}</span>
+            <div key={i} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 bg-bg-surface border border-border rounded-md p-3">
+              <img src={url} alt={`Screenshot ${i + 1}`} className="w-full sm:w-20 h-24 sm:h-14 object-cover rounded" />
+              <span className="flex-1 text-xs sm:text-sm text-text-tertiary truncate">{url}</span>
               <button
                 type="button"
                 onClick={() => removeScreenshot(i)}
-                className="text-text-tertiary hover:text-red-400 text-sm cursor-pointer"
+                className="text-text-tertiary hover:text-red-400 text-sm cursor-pointer self-end sm:self-auto"
               >
                 Remove
               </button>
@@ -243,24 +243,24 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
         <p className="text-red-400 text-sm">{error}</p>
       )}
 
-      <div className="flex items-center gap-3 pt-4">
+      <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3 pt-4">
+        <button
+          type="button"
+          onClick={() => router.push('/admin/projects')}
+          className="border border-border rounded-md px-6 py-3 sm:py-2.5 text-sm text-text-secondary hover:text-text-primary hover:border-border-hover transition-colors cursor-pointer text-center"
+        >
+          Cancel
+        </button>
         <button
           type="submit"
           disabled={isSubmitting}
-          className="bg-accent text-bg rounded-md px-6 py-2.5 text-sm font-medium hover:bg-accent-hover transition-colors disabled:opacity-50 cursor-pointer"
+          className="bg-accent text-bg rounded-md px-6 py-3 sm:py-2.5 text-sm font-medium hover:bg-accent-hover transition-colors disabled:opacity-50 cursor-pointer"
         >
           {isSubmitting
             ? 'Saving...'
             : mode === 'create'
               ? 'Create Project'
               : 'Update Project'}
-        </button>
-        <button
-          type="button"
-          onClick={() => router.push('/admin/projects')}
-          className="border border-border rounded-md px-6 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:border-border-hover transition-colors cursor-pointer"
-        >
-          Cancel
         </button>
       </div>
     </form>
