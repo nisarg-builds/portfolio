@@ -136,10 +136,12 @@ export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
                 for technology and design.
               </p>
               <p>
-                Currently on an internship, I&apos;m passionate about crafting
+                Currently a Developer I at{' '}
+                <strong className="text-text-primary">Vendasta</strong>, I&apos;m
+                building AI-powered automation and listing data infrastructure
+                with Go, gRPC, and Temporal. I&apos;m passionate about crafting
                 beautiful, functional interfaces that bridge the gap between art
-                and engineering. I believe the best software feels human — it
-                should delight, not just function.
+                and engineering.
               </p>
               <p>
                 When I&apos;m not coding, you&apos;ll find me exploring new
