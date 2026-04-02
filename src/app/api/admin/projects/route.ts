@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { adminDb } from '@/lib/firebase/admin'
 import { FieldValue } from 'firebase-admin/firestore'
 import {
@@ -52,8 +52,7 @@ export async function POST(request: Request) {
       updatedAt: FieldValue.serverTimestamp(),
     })
 
-    revalidateTag('projects')
-    revalidateTag('page')
+    revalidatePath('/', 'layout')
     return NextResponse.json({ success: true, slug })
   } catch {
     return NextResponse.json({ error: 'Failed to create project' }, { status: 500 })
@@ -86,8 +85,7 @@ export async function PUT(request: Request) {
       updatedAt: FieldValue.serverTimestamp(),
     })
 
-    revalidateTag('projects')
-    revalidateTag('page')
+    revalidatePath('/', 'layout')
     return NextResponse.json({ success: true })
   } catch {
     return NextResponse.json({ error: 'Failed to update project' }, { status: 500 })
@@ -113,8 +111,7 @@ export async function DELETE(request: Request) {
 
   try {
     await adminDb.collection('projects').doc(slug).delete()
-    revalidateTag('projects')
-    revalidateTag('page')
+    revalidatePath('/', 'layout')
     return NextResponse.json({ success: true })
   } catch {
     return NextResponse.json({ error: 'Failed to delete project' }, { status: 500 })
@@ -146,8 +143,7 @@ export async function PATCH(request: Request) {
     })
 
     await batch.commit()
-    revalidateTag('projects')
-    revalidateTag('page')
+    revalidatePath('/', 'layout')
     return NextResponse.json({ success: true })
   } catch {
     return NextResponse.json({ error: 'Failed to reorder projects' }, { status: 500 })
