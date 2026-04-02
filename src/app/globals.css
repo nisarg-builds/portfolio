@@ -298,6 +298,14 @@ html.light .glass-subtle {
   -webkit-mask-image: linear-gradient(to top, transparent, black 80px);
 }
 
+/* Reduced motion: disable marquee and other CSS animations */
+@media (prefers-reduced-motion: reduce) {
+  .hover\:\[animation-play-state\:paused\],
+  [style*="animation: marquee"] {
+    animation: none !important;
+  }
+}
+
 /* Treemap card hover — uses CSS custom properties set via inline style */
 .treemap-card:hover {
   border-color: var(--hover-border) !important;

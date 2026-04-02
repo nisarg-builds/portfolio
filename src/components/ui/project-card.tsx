@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { easings } from '@/lib/easings'
-import { useIsTouchDevice } from '@/lib/hooks'
+import { useIsTouchDevice, usePrefersReducedMotion } from '@/lib/hooks'
 import type { Project } from '@/lib/projects'
 import type { TreemapColor } from '@/lib/grid-layout'
 
@@ -256,6 +256,8 @@ export function TreemapProjectCard({
 }: TreemapProjectCardProps) {
   const { title, slug, description, tags, role } = project
   const isTouch = useIsTouchDevice()
+  const prefersReducedMotion = usePrefersReducedMotion()
+  const disableHoverAnimation = isTouch || prefersReducedMotion
   const maxTags = size === 'lg' ? 5 : size === 'md' ? 3 : 2
 
   const hoverBorderColor = `${color.border}80`
@@ -267,7 +269,7 @@ export function TreemapProjectCard({
       style={style}
       variants={cardVariants}
       initial="rest"
-      whileHover={isTouch ? undefined : 'hover'}
+      whileHover={disableHoverAnimation ? undefined : 'hover'}
       animate="rest"
       className="relative"
     >
@@ -300,7 +302,7 @@ export function TreemapProjectCard({
               </span>
             )}
             <motion.h3
-              variants={isTouch ? undefined : titleVariants}
+              variants={disableHoverAnimation ? undefined : titleVariants}
               className={cn(
                 'font-(family-name:--font-display) font-semibold leading-tight',
                 size === 'lg' && 'text-xl lg:text-2xl',
@@ -311,7 +313,7 @@ export function TreemapProjectCard({
             >
               {title}
             </motion.h3>
-            {size === 'lg' && !isTouch && (
+            {size === 'lg' && !disableHoverAnimation && (
               <p
                 className="mt-2 line-clamp-2 text-sm leading-relaxed opacity-50"
                 style={{ color: color.text }}
@@ -329,7 +331,7 @@ export function TreemapProjectCard({
               {tags.length} {tags.length === 1 ? 'tech' : 'technologies'}
             </span>
             <motion.span
-              variants={isTouch ? undefined : arrowVariants}
+              variants={disableHoverAnimation ? undefined : arrowVariants}
               className="text-lg"
               style={{ color: color.text }}
               aria-hidden="true"
@@ -340,7 +342,7 @@ export function TreemapProjectCard({
         </div>
 
         {/* Hover overlay — slides up from bottom */}
-        {!isTouch && (
+        {!disableHoverAnimation && (
           <motion.div
             variants={overlayVariants}
             className="absolute inset-0 z-20 flex flex-col justify-end rounded-lg p-4 lg:p-5"
@@ -386,7 +388,7 @@ export function TreemapProjectCard({
         )}
 
         {/* Touch: show expanded content inline */}
-        {isTouch && (
+        {disableHoverAnimation && (
           <div className="border-t px-4 pb-4" style={{ borderColor: `${color.border}20` }}>
             <p
               className="mb-2 line-clamp-2 text-sm leading-relaxed opacity-60"

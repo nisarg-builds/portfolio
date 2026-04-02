@@ -1,8 +1,17 @@
 import type { MetadataRoute } from 'next'
 import { SITE_CONFIG } from '@/lib/constants'
+import { getProjects } from '@/lib/firebase/projects'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_CONFIG.url
+
+  const projects = await getProjects()
+  const projectEntries: MetadataRoute.Sitemap = projects.map((project) => ({
+    url: `${baseUrl}/projects/${project.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }))
 
   return [
     {
@@ -11,6 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 1,
     },
+    ...projectEntries,
     {
       url: `${baseUrl}/blog`,
       lastModified: new Date(),

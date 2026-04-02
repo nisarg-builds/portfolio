@@ -305,7 +305,7 @@ export function HeroSection() {
           aria-hidden="true"
         >
           <div
-            className="h-px w-[200px]"
+            className="h-px w-3/5 max-w-[200px]"
             style={{
               background:
                 'linear-gradient(to right, transparent, var(--color-accent), transparent)',

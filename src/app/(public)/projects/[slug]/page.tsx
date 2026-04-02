@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getProjects, getProjectBySlug, getProjectSlugs } from '@/lib/firebase/projects'
+import { SITE_CONFIG } from '@/lib/constants'
 import type { Metadata } from 'next'
 
 export const revalidate = 0
@@ -19,9 +20,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const project = await getProjectBySlug(slug)
   if (!project) return {}
+  const url = `${SITE_CONFIG.url}/projects/${slug}`
   return {
     title: project.title,
     description: project.description,
+    openGraph: {
+      title: project.title,
+      description: project.description,
+      url,
+      type: 'article',
+      ...(project.image && {
+        images: [{ url: project.image, width: 1200, height: 630, alt: project.title }],
+      }),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: project.title,
+      description: project.description,
+      ...(project.image && { images: [project.image] }),
+    },
+    alternates: {
+      canonical: url,
+    },
   }
 }
 
@@ -101,9 +121,9 @@ export default async function ProjectPage({ params }: Props) {
           {/* Sidebar */}
           <div className="space-y-6">
             <div>
-              <h3 className="font-(family-name:--font-display) text-sm font-medium text-text-tertiary uppercase tracking-wider">
+              <h2 className="font-(family-name:--font-display) text-sm font-medium text-text-tertiary uppercase tracking-wider">
                 Technologies
-              </h3>
+              </h2>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {project.tags.map((tag) => (
                   <Tag key={tag}>{tag}</Tag>
@@ -112,9 +132,9 @@ export default async function ProjectPage({ params }: Props) {
             </div>
 
             <div>
-              <h3 className="font-(family-name:--font-display) text-sm font-medium text-text-tertiary uppercase tracking-wider">
+              <h2 className="font-(family-name:--font-display) text-sm font-medium text-text-tertiary uppercase tracking-wider">
                 Links
-              </h3>
+              </h2>
               <div className="mt-2">
                 <a
                   href={project.link}
@@ -173,6 +193,7 @@ export default async function ProjectPage({ params }: Props) {
               href={`/projects/${prevProject.slug}`}
               className="group flex items-center gap-2 text-sm text-text-secondary transition-colors hover:text-text-primary"
               data-cursor="interactive"
+              aria-label={`Previous project: ${prevProject.title}`}
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path
@@ -193,6 +214,7 @@ export default async function ProjectPage({ params }: Props) {
               href={`/projects/${nextProject.slug}`}
               className="group flex items-center gap-2 text-sm text-text-secondary transition-colors hover:text-text-primary"
               data-cursor="interactive"
+              aria-label={`Next project: ${nextProject.title}`}
             >
               {nextProject.title}
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

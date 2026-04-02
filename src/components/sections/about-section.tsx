@@ -228,6 +228,12 @@ export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
           >
             <SkillsMarquee />
           </div>
+          {/* Screen reader fallback — marquee is aria-hidden */}
+          <ul className="sr-only">
+            {skills.map((skill) => (
+              <li key={skill}>{skill}</li>
+            ))}
+          </ul>
         </motion.div>
       </motion.div>
     </section>

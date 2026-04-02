@@ -53,11 +53,20 @@ export const metadata: Metadata = {
     siteName: SITE_CONFIG.name,
     locale: 'en_US',
     type: 'website',
+    images: [
+      {
+        url: `${SITE_CONFIG.url}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: SITE_CONFIG.title,
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: SITE_CONFIG.title,
     description: SITE_CONFIG.description,
+    images: [`${SITE_CONFIG.url}/og-image.png`],
   },
   robots: {
     index: true,
@@ -88,6 +97,9 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
     >
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <meta name="theme-color" content="#111110" />
         <Script
           id="theme-init"
           strategy="beforeInteractive"

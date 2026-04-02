@@ -1,9 +1,15 @@
 'use client'
 
+import { usePrefersReducedMotion } from '@/lib/hooks'
+
 export function BackToTopButton() {
+  const prefersReducedMotion = usePrefersReducedMotion()
+
   return (
     <button
-      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      onClick={() =>
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' })
+      }
       aria-label="Back to top"
       className="glass flex h-10 w-10 items-center justify-center rounded-full text-text-tertiary transition-all duration-200 hover:text-accent hover:border-accent/30"
       data-cursor="interactive"
