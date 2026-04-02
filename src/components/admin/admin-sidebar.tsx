@@ -115,8 +115,8 @@ export function AdminSidebar() {
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           className="text-text-secondary hover:text-text-primary p-2 -mr-2 cursor-pointer"
-          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={mobileOpen}
+          aria-label="Toggle menu"
+          aria-expanded={mobileOpen || undefined}
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             {mobileOpen ? (

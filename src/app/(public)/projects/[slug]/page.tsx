@@ -65,7 +65,7 @@ export default async function ProjectPage({ params }: Props) {
     currentIndex < projects.length - 1 ? projects[currentIndex + 1] : null
 
   return (
-    <main className="min-h-dvh px-5 pb-16 pt-24 sm:px-6 lg:px-8 lg:pt-32">
+    <main className="min-h-dvh px-5 pb-16 pt-8 sm:px-6 lg:px-8 lg:pt-12">
       <div className="mx-auto max-w-[960px]">
         {/* Back link */}
         <Link

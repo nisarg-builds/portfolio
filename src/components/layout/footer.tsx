@@ -24,7 +24,7 @@ export function Footer({ className }: FooterProps) {
 
           {/* Center: attribution */}
           <p className="font-mono text-xs text-text-tertiary">
-            Designed &amp; crafted with care by{' '}
+            Designed &amp; Crafted by{' '}
             <span className="text-accent">Nisarg Chaudhary</span>
           </p>
 
@@ -192,7 +192,7 @@ export function Footer({ className }: FooterProps) {
           </div>
 
           <p className="font-mono text-xs text-text-tertiary">
-            &copy; 2026 &middot; Designed &amp; crafted with care by{' '}
+            &copy; 2026 &middot; Designed &amp; Crafted by{' '}
             <span className="text-accent">Nisarg Chaudhary</span>
           </p>
 

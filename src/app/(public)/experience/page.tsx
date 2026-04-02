@@ -68,7 +68,7 @@ export default function ExperiencePage() {
   const mode = resolvedTheme === 'light' ? 'light' : 'dark'
 
   return (
-    <main className="relative px-5 py-20 sm:px-6 lg:px-8 lg:py-32">
+    <main className="relative px-5 pb-20 pt-8 sm:px-6 lg:px-8 lg:pb-32 lg:pt-12">
       {/* Ambient glow */}
       <div
         className="pointer-events-none absolute inset-0 -top-20"
