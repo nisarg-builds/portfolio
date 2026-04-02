@@ -40,11 +40,11 @@ export default async function AdminProjectsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="font-(family-name:--font-display) text-2xl font-bold">Projects</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 sm:mb-8">
+        <h1 className="font-(family-name:--font-display) text-xl sm:text-2xl font-bold">Projects</h1>
         <a
           href="/admin/projects/new"
-          className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-bg hover:bg-accent-hover transition-colors"
+          className="inline-flex items-center justify-center gap-2 rounded-md bg-accent px-4 py-2.5 sm:py-2 text-sm font-medium text-bg hover:bg-accent-hover transition-colors"
         >
           + Add Project
         </a>

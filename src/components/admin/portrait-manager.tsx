@@ -92,9 +92,9 @@ export function PortraitManager({ initialPortraitUrl, initialGallery, initialCro
       {/* Current portrait */}
       <div>
         <h2 className="text-lg font-medium text-text-primary mb-4">Current Portrait</h2>
-        <div className="flex items-end gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
           {portraitUrl ? (
-            <div className="w-48 h-48 rounded-xl overflow-hidden border border-border">
+            <div className="w-36 h-36 sm:w-48 sm:h-48 rounded-xl overflow-hidden border border-border shrink-0">
               {isBlobUrl(portraitUrl) ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -119,12 +119,12 @@ export function PortraitManager({ initialPortraitUrl, initialGallery, initialCro
               )}
             </div>
           ) : (
-            <div className="w-48 h-48 rounded-xl bg-bg-surface border border-border flex items-center justify-center text-text-tertiary text-sm">
+            <div className="w-36 h-36 sm:w-48 sm:h-48 rounded-xl bg-bg-surface border border-border flex items-center justify-center text-text-tertiary text-sm shrink-0">
               No portrait set
             </div>
           )}
           {portraitUrl && (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-row sm:flex-col gap-2 flex-wrap">
               <button
                 onClick={() => setIsEditorOpen(true)}
                 className="px-4 py-2 rounded-md border border-border text-sm text-text-secondary hover:text-text-primary hover:border-border-hover transition-colors cursor-pointer"
@@ -161,7 +161,7 @@ export function PortraitManager({ initialPortraitUrl, initialGallery, initialCro
       {gallery.length > 0 && (
         <div>
           <h2 className="text-lg font-medium text-text-primary mb-4">Portrait Gallery</h2>
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {gallery.map((url) => (
               <div
                 key={url}
@@ -203,7 +203,7 @@ export function PortraitManager({ initialPortraitUrl, initialGallery, initialCro
                 )}
                 <button
                   onClick={() => handleRemoveFromGallery(url)}
-                  className="absolute top-1 right-1 bg-bg/80 text-text-tertiary hover:text-red-400 rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  className="absolute top-1 right-1 bg-bg/80 text-text-tertiary hover:text-red-400 rounded-full w-7 h-7 sm:w-6 sm:h-6 flex items-center justify-center text-xs opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                   aria-label="Remove from gallery"
                 >
                   x
