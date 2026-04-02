@@ -60,13 +60,13 @@ export function CustomCursor() {
     ).matches
     if (prefersReduced) return
 
-    document.body.style.cursor = 'none'
+    document.body.classList.add('custom-cursor')
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mouseover', handleMouseOver)
     document.addEventListener('mouseleave', handleMouseLeave)
 
     return () => {
-      document.body.style.cursor = ''
+      document.body.classList.remove('custom-cursor')
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('mouseover', handleMouseOver)
       document.removeEventListener('mouseleave', handleMouseLeave)

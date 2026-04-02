@@ -306,6 +306,12 @@ html.light .glass-subtle {
   }
 }
 
+/* Hide native cursor when custom cursor is active */
+body.custom-cursor,
+body.custom-cursor * {
+  cursor: none !important;
+}
+
 /* Treemap card hover — uses CSS custom properties set via inline style */
 .treemap-card:hover {
   border-color: var(--hover-border) !important;
