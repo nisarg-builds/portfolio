@@ -1,30 +1,35 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google'
+import localFont from 'next/font/local'
 import './globals.css'
 import { SITE_CONFIG } from '@/lib/constants'
 import { Analytics } from '@vercel/analytics/next'
 import Script from 'next/script'
 import { ThemeProvider } from '@/components/theme-provider'
 
-const spaceGrotesk = Space_Grotesk({
+const spaceGrotesk = localFont({
   variable: '--font-display',
-  subsets: ['latin'],
-  weight: ['500', '700'],
   display: 'swap',
+  src: [
+    { path: '../../public/fonts/SpaceGrotesk-Medium.woff2', weight: '500' },
+    { path: '../../public/fonts/SpaceGrotesk-Bold.woff2', weight: '700' },
+  ],
 })
 
-const inter = Inter({
+const inter = localFont({
   variable: '--font-body',
-  subsets: ['latin'],
-  weight: ['300', '400'],
   display: 'swap',
+  src: [
+    { path: '../../public/fonts/Inter-Light.woff2', weight: '300' },
+    { path: '../../public/fonts/Inter-Regular.woff2', weight: '400' },
+  ],
 })
 
-const jetbrainsMono = JetBrains_Mono({
+const jetbrainsMono = localFont({
   variable: '--font-mono',
-  subsets: ['latin'],
-  weight: ['400'],
   display: 'swap',
+  src: [
+    { path: '../../public/fonts/JetBrainsMono-Regular.woff2', weight: '400' },
+  ],
 })
 
 export const metadata: Metadata = {
