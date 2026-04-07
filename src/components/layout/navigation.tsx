@@ -76,9 +76,11 @@ export function Navigation({ className }: NavigationProps) {
   }, [isOpen])
 
   // Close menu on route change
-  useEffect(() => {
+  const [prevPathname, setPrevPathname] = useState(pathname)
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname)
     setIsOpen(false)
-  }, [pathname])
+  }
 
   const menuRef = useRef<HTMLDivElement>(null)
 

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
 interface ProjectItem {
@@ -19,7 +18,6 @@ interface ProjectListProps {
 }
 
 export function ProjectList({ initialProjects }: ProjectListProps) {
-  const router = useRouter()
   const [projects, setProjects] = useState(initialProjects)
   const [isReordering, setIsReordering] = useState(false)
   const [dragIndex, setDragIndex] = useState<number | null>(null)

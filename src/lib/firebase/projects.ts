@@ -1,5 +1,5 @@
 import 'server-only'
-import { adminDb } from './admin'
+import { adminDb, hasFirebaseCredentials } from './admin'
 import type { Project } from '@/lib/projects'
 
 function docToProject(doc: FirebaseFirestore.DocumentSnapshot): Project {
@@ -20,18 +20,21 @@ function docToProject(doc: FirebaseFirestore.DocumentSnapshot): Project {
 }
 
 export async function getProjects(): Promise<Project[]> {
+  if (!hasFirebaseCredentials) return []
   // Fetch without orderBy — Firestore silently excludes docs missing the order field
   const snapshot = await adminDb.collection('projects').get()
   return snapshot.docs.map(docToProject).sort((a, b) => a.order - b.order)
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
+  if (!hasFirebaseCredentials) return null
   const doc = await adminDb.collection('projects').doc(slug).get()
   if (!doc.exists) return null
   return docToProject(doc)
 }
 
 export async function getProjectSlugs(): Promise<string[]> {
+  if (!hasFirebaseCredentials) return []
   const snapshot = await adminDb.collection('projects').select().get()
   return snapshot.docs.map((doc) => doc.id)
 }

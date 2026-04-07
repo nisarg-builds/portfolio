@@ -1,5 +1,5 @@
 import 'server-only'
-import { adminDb } from './admin'
+import { adminDb, hasFirebaseCredentials } from './admin'
 
 export interface PortraitCrop {
   x: number
@@ -15,6 +15,9 @@ interface AboutSettings {
 }
 
 export async function getAboutSettings(): Promise<AboutSettings> {
+  if (!hasFirebaseCredentials) {
+    return { portraitUrl: '/images/brand/portrait.png', portraitGallery: [], portraitCrop: null }
+  }
   try {
     const doc = await adminDb.collection('site-settings').doc('about').get()
     if (!doc.exists) {
