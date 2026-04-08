@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-nt-bg: #FAFAF8;
+  --color-nt-card: #FFFFFF;
+  --color-nt-border: #ECECEC;
+  --color-nt-text: #1A1A1A;
+  --color-nt-text-soft: #8A8A8A;
+  --color-nt-accent: #2D6A4F;
+  --color-nt-accent-light: #D8F3DC;
+  --color-nt-protein: #2D6A4F;
+  --color-nt-carbs: #E9C46A;
+  --color-nt-fat: #E76F51;
+  --color-nt-danger: #DC3545;
+  --color-nt-danger-light: #FDE8EA;
+  --color-nt-chat-user: #E8F0E8;
+  --color-nt-chat-ai: #F5F5F3;
+}
