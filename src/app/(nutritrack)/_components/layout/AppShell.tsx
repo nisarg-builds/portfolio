@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNutriStore } from '@/lib/nutritrack/hooks/useNutriStore';
 import { BottomNav } from './BottomNav';
 import { TodayView } from '../today/TodayView';
+import { ChatView } from '../chat/ChatView';
 
 function PlaceholderView({ label }: { label: string }) {
   return (
@@ -17,6 +18,8 @@ function ActiveView({ view }: { view: string }) {
   switch (view) {
     case 'today':
       return <TodayView />;
+    case 'chat':
+      return <ChatView />;
     default:
       return <PlaceholderView label={view.charAt(0).toUpperCase() + view.slice(1)} />;
   }
