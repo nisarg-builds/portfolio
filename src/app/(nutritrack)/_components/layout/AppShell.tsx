@@ -1,0 +1,44 @@
+'use client';
+
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNutriStore } from '@/lib/nutritrack/hooks/useNutriStore';
+import { BottomNav } from './BottomNav';
+
+function PlaceholderView({ label }: { label: string }) {
+  return (
+    <div className="flex min-h-[60vh] items-center justify-center">
+      <p className="text-sm text-nt-text-soft">{label} view coming soon</p>
+    </div>
+  );
+}
+
+const viewLabels: Record<string, string> = {
+  today: 'Today',
+  chat: 'AI Chat',
+  week: 'Week',
+  insights: 'Insights',
+  profile: 'Profile',
+};
+
+export function AppShell() {
+  const activeView = useNutriStore((s) => s.activeView);
+
+  return (
+    <div className="mx-auto min-h-screen max-w-md bg-nt-bg">
+      <BottomNav />
+      <div className="px-4 pb-6">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeView}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+          >
+            <PlaceholderView label={viewLabels[activeView]} />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
