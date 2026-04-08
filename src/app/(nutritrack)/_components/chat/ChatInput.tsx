@@ -5,19 +5,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { ImagePreview } from './ImagePreview';
 
+const VALID_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
 interface ChatInputProps {
   onSend: (text: string, imageFile?: File) => void;
   disabled?: boolean;
+  offline?: boolean;
 }
 
-export function ChatInput({ onSend, disabled }: ChatInputProps) {
+export function ChatInput({ onSend, disabled, offline }: ChatInputProps) {
   const [text, setText] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const canSend = !disabled && (text.trim().length > 0 || imageFile !== null);
+  const canSend = !disabled && !offline && (text.trim().length > 0 || imageFile !== null);
 
   const resetTextarea = useCallback(() => {
     setText('');
@@ -53,6 +57,14 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate image type
+    if (!VALID_IMAGE_TYPES.includes(file.type)) {
+      setImageError('Please use a JPEG, PNG, or WebP image.');
+      e.target.value = '';
+      return;
+    }
+
+    setImageError(null);
     setImageFile(file);
     const url = URL.createObjectURL(file);
     setImagePreview(url);
@@ -69,6 +81,27 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
 
   return (
     <div className="border-t border-nt-border bg-nt-bg px-3 pb-3 pt-2">
+      {/* Offline banner */}
+      {offline && (
+        <p className="mb-2 text-center text-xs text-nt-danger">
+          You&apos;re offline. AI chat requires internet.
+        </p>
+      )}
+
+      {/* Image type error */}
+      <AnimatePresence>
+        {imageError && (
+          <motion.p
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mb-2 text-xs text-nt-danger"
+          >
+            {imageError}
+          </motion.p>
+        )}
+      </AnimatePresence>
+
       {/* Image preview strip */}
       <AnimatePresence>
         {imagePreview && (

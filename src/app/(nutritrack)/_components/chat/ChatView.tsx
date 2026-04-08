@@ -1,16 +1,34 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { useNutriStore } from '@/lib/nutritrack/hooks/useNutriStore';
 import { useChat } from '@/lib/nutritrack/hooks/useChat';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
+
+function subscribeOnline(callback: () => void) {
+  window.addEventListener('online', callback);
+  window.addEventListener('offline', callback);
+  return () => {
+    window.removeEventListener('online', callback);
+    window.removeEventListener('offline', callback);
+  };
+}
+
+function getOnlineSnapshot() {
+  return navigator.onLine;
+}
+
+function getServerSnapshot() {
+  return true;
+}
 
 export function ChatView() {
   const todayEntries = useNutriStore((s) => s.todayEntries);
   const targets = useNutriStore((s) => s.targets);
   const { messages, sendMessage, isLoading } = useChat();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isOnline = useSyncExternalStore(subscribeOnline, getOnlineSnapshot, getServerSnapshot);
 
   const consumed = todayEntries.reduce((sum, e) => sum + e.nutrition.calories, 0);
   const proteinG = Math.round(todayEntries.reduce((sum, e) => sum + e.nutrition.proteinG, 0));
@@ -57,7 +75,7 @@ export function ChatView() {
       </div>
 
       {/* Input */}
-      <ChatInput onSend={sendMessage} disabled={isLoading} />
+      <ChatInput onSend={sendMessage} disabled={isLoading} offline={!isOnline} />
     </div>
   );
 }
@@ -69,11 +87,11 @@ function WelcomeMessage() {
         NB
       </div>
       <p className="text-sm font-medium text-nt-text">
-        Hi! I&apos;m NutriBot
+        Hey! I&apos;m NutriBot
       </p>
-      <p className="max-w-[250px] text-xs text-nt-text-soft">
-        Describe your meal or snap a photo and I&apos;ll estimate the calories
-        and macros for you.
+      <p className="max-w-[280px] text-xs text-nt-text-soft">
+        Tell me what you ate or snap a photo of your meal — I&apos;ll break
+        down the calories, macros, and micronutrients for you.
       </p>
     </div>
   );
