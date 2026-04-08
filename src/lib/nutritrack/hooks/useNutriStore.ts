@@ -12,7 +12,7 @@ import {
   orderBy,
   type QueryDocumentSnapshot,
 } from 'firebase/firestore';
-import { db, getUserProfileRef, getFoodLogCollection } from '../services/firebase-client';
+import { getFirebaseDb, getUserProfileRef, getFoodLogCollection } from '../services/firebase-client';
 import type { UserProfile, ComputedTargets, FoodEntry, QuickFood, ChatMessage } from '../models';
 import { computeAllTargets } from '../utils/calculations';
 import { getActivityLevel } from '../constants/activityLevels';
@@ -135,6 +135,7 @@ export const useNutriStore = create<NutriState>((set, get) => ({
 
     try {
       // Strip `id` — Firestore auto-generates the document ID
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id: _, ...firestoreData } = fullEntry;
       const docRef = await addDoc(getFoodLogCollection(entry.userId), firestoreData);
 
@@ -164,7 +165,7 @@ export const useNutriStore = create<NutriState>((set, get) => ({
     }));
 
     try {
-      await deleteDoc(doc(db, 'users', user.uid, 'foodLog', entryId));
+      await deleteDoc(doc(getFirebaseDb(), 'users', user.uid, 'foodLog', entryId));
     } catch (error) {
       console.error('Failed to remove food entry:', error);
       // Roll back — restore the removed entry

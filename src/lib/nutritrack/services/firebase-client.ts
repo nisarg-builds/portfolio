@@ -1,12 +1,13 @@
 'use client';
 
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider, type Auth } from 'firebase/auth';
 import {
   getFirestore,
   initializeFirestore,
   persistentLocalCache,
   persistentMultipleTabManager,
+  type Firestore,
   doc,
   collection,
 } from 'firebase/firestore';
@@ -20,39 +21,54 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
 };
 
-// Initialize only once (handles HMR and multiple imports)
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+// Lazy singletons — Firebase only initializes when first accessed at runtime,
+// avoiding errors during Next.js static prerendering where env vars may be absent.
+let _app: FirebaseApp | null = null;
+let _auth: Auth | null = null;
+let _db: Firestore | null = null;
 
-// Auth
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-
-// Firestore with offline persistence
-// initializeFirestore can only be called once; after that use getFirestore
-let db: ReturnType<typeof getFirestore>;
-try {
-  db = initializeFirestore(app, {
-    localCache: persistentLocalCache({
-      tabManager: persistentMultipleTabManager(),
-    }),
-  });
-} catch {
-  // Already initialized (HMR), just get the instance
-  db = getFirestore(app);
+function getFirebaseApp(): FirebaseApp {
+  if (!_app) {
+    _app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+  }
+  return _app;
 }
 
-export { db };
+export function getFirebaseAuth(): Auth {
+  if (!_auth) {
+    _auth = getAuth(getFirebaseApp());
+  }
+  return _auth;
+}
+
+export const googleProvider = new GoogleAuthProvider();
+
+export function getFirebaseDb(): Firestore {
+  if (!_db) {
+    const app = getFirebaseApp();
+    try {
+      _db = initializeFirestore(app, {
+        localCache: persistentLocalCache({
+          tabManager: persistentMultipleTabManager(),
+        }),
+      });
+    } catch {
+      _db = getFirestore(app);
+    }
+  }
+  return _db;
+}
 
 // ─── Collection helpers ───
 
 export function getUserProfileRef(uid: string) {
-  return doc(db, 'users', uid, 'profile', 'main');
+  return doc(getFirebaseDb(), 'users', uid, 'profile', 'main');
 }
 
 export function getFoodLogCollection(uid: string) {
-  return collection(db, 'users', uid, 'foodLog');
+  return collection(getFirebaseDb(), 'users', uid, 'foodLog');
 }
 
 export function getQuickFoodsCollection(uid: string) {
-  return collection(db, 'users', uid, 'quickFoods');
+  return collection(getFirebaseDb(), 'users', uid, 'quickFoods');
 }

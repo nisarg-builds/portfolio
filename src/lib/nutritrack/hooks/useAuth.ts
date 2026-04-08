@@ -7,7 +7,7 @@ import {
   signInWithRedirect,
   signOut as firebaseSignOut,
 } from 'firebase/auth';
-import { auth, googleProvider } from '../services/firebase-client';
+import { getFirebaseAuth, googleProvider } from '../services/firebase-client';
 
 export interface AuthUser {
   uid: string;
@@ -27,7 +27,7 @@ export function useAuth(): UseAuthReturn {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(getFirebaseAuth(), (firebaseUser) => {
       if (firebaseUser) {
         setUser({
           uid: firebaseUser.uid,
@@ -45,11 +45,11 @@ export function useAuth(): UseAuthReturn {
 
   const signInWithGoogle = useCallback(async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      await signInWithPopup(getFirebaseAuth(), googleProvider);
     } catch (error: unknown) {
       const code = (error as { code?: string }).code;
       if (code === 'auth/popup-blocked') {
-        await signInWithRedirect(auth, googleProvider);
+        await signInWithRedirect(getFirebaseAuth(), googleProvider);
         return;
       }
       throw error;
@@ -57,7 +57,7 @@ export function useAuth(): UseAuthReturn {
   }, []);
 
   const signOut = useCallback(async () => {
-    await firebaseSignOut(auth);
+    await firebaseSignOut(getFirebaseAuth());
   }, []);
 
   return { user, loading, signInWithGoogle, signOut };
