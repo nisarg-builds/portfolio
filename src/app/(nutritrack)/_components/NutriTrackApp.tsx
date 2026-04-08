@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/nutritrack/hooks/useAuth';
 import { useProfile } from '@/lib/nutritrack/hooks/useProfile';
 import { useFoodLog } from '@/lib/nutritrack/hooks/useFoodLog';
+import { AppShell } from './layout/AppShell';
 
 // ─── Loading Spinner ───
 
@@ -56,7 +57,7 @@ function SignInScreen({ onSignIn }: { onSignIn: () => Promise<void> }) {
 // ─── Authenticated App Shell ───
 
 function AuthenticatedApp() {
-  const { profile, isLoading: profileLoading } = useProfile();
+  const { isLoading: profileLoading } = useProfile();
   useFoodLog();
 
   if (profileLoading) {
@@ -65,14 +66,11 @@ function AuthenticatedApp() {
 
   return (
     <motion.div
-      className="flex min-h-screen flex-col items-center justify-center bg-nt-bg px-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <p className="text-xl font-semibold text-nt-text">
-        Welcome, {profile?.displayName || 'there'}
-      </p>
+      <AppShell />
     </motion.div>
   );
 }
