@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAuth } from 'firebase-admin/auth';
 import { FieldValue } from 'firebase-admin/firestore';
 import Anthropic from '@anthropic-ai/sdk';
-import { getAdminDb } from '@/lib/firebase/admin';
+import { getAdminAuth, getAdminDb } from '@/lib/firebase/admin';
 import type { AnalyzeFoodRequest, AIFoodResponse } from '@/lib/nutritrack/models/chat';
 import { FOOD_ANALYSIS_SYSTEM_PROMPT } from '@/lib/nutritrack/constants/prompts';
 
@@ -26,7 +25,7 @@ async function verifyAuth(request: NextRequest): Promise<string> {
 
   const idToken = authHeader.split('Bearer ')[1];
   try {
-    const decoded = await getAuth().verifyIdToken(idToken);
+    const decoded = await getAdminAuth().verifyIdToken(idToken);
     return decoded.uid;
   } catch {
     throw new Error('UNAUTHENTICATED');

@@ -1,5 +1,6 @@
 import 'server-only'
 import { initializeApp, getApps, cert, type App } from 'firebase-admin/app'
+import { getAuth } from 'firebase-admin/auth'
 import { getFirestore } from 'firebase-admin/firestore'
 import { getStorage } from 'firebase-admin/storage'
 
@@ -26,6 +27,10 @@ function getApp(): App {
     }),
     storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   })
+}
+
+export function getAdminAuth() {
+  return getAuth(getApp())
 }
 
 export function getAdminDb() {
