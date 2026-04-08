@@ -17,6 +17,7 @@ import type { UserProfile, ComputedTargets, FoodEntry, QuickFood, ChatMessage } 
 import { computeAllTargets } from '../utils/calculations';
 import { getActivityLevel } from '../constants/activityLevels';
 import { getDateKey, getLastNDays } from '../utils/dates';
+import { analyzeFood as analyzeFoodService } from '../services/ai';
 
 // ─── Types ───
 
@@ -229,7 +230,67 @@ export const useNutriStore = create<NutriState>((set, get) => ({
     set((state) => ({ chatMessages: [...state.chatMessages, message] }));
   },
 
-  analyzeFood: async () => {
-    console.log('AI not connected yet');
+  analyzeFood: async (text, imageBase64, mediaType) => {
+    const assistantId = `msg-${Date.now()}-assistant`;
+
+    // Add loading assistant message
+    set((state) => ({
+      isChatLoading: true,
+      chatMessages: [
+        ...state.chatMessages,
+        {
+          id: assistantId,
+          role: 'assistant' as const,
+          text: 'Analyzing your food...',
+          timestamp: new Date(),
+          isLoading: true,
+        },
+      ],
+    }));
+
+    try {
+      const response = await analyzeFoodService(
+        text,
+        imageBase64,
+        mediaType as 'image/jpeg' | 'image/png' | 'image/webp' | undefined,
+      );
+
+      if (!response.success || !response.data) {
+        throw new Error(response.error || 'Analysis failed');
+      }
+
+      // Replace loading message with real response
+      set((state) => ({
+        isChatLoading: false,
+        chatMessages: state.chatMessages.map((msg) =>
+          msg.id === assistantId
+            ? {
+                ...msg,
+                text: response.data!.message,
+                foods: response.data!.foods,
+                isLoading: false,
+              }
+            : msg,
+        ),
+      }));
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+
+      // Replace loading message with error
+      set((state) => ({
+        isChatLoading: false,
+        chatMessages: state.chatMessages.map((msg) =>
+          msg.id === assistantId
+            ? {
+                ...msg,
+                text: errorMessage,
+                isLoading: false,
+                isError: true,
+              }
+            : msg,
+        ),
+      }));
+    }
   },
 }));
