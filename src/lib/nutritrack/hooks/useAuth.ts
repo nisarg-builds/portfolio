@@ -8,6 +8,7 @@ import {
   signOut as firebaseSignOut,
 } from 'firebase/auth';
 import { getFirebaseAuth, googleProvider } from '../services/firebase-client';
+import { useNutriStore } from './useNutriStore';
 
 export interface AuthUser {
   uid: string;
@@ -29,13 +30,20 @@ export function useAuth(): UseAuthReturn {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getFirebaseAuth(), (firebaseUser) => {
       if (firebaseUser) {
-        setUser({
+        const authUser: AuthUser = {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
           displayName: firebaseUser.displayName,
+        };
+        setUser(authUser);
+        useNutriStore.getState().setUser({
+          uid: firebaseUser.uid,
+          email: firebaseUser.email ?? '',
+          displayName: firebaseUser.displayName ?? '',
         });
       } else {
         setUser(null);
+        useNutriStore.getState().setUser(null);
       }
       setLoading(false);
     });
