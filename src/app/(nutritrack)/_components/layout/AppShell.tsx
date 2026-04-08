@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNutriStore } from '@/lib/nutritrack/hooks/useNutriStore';
 import { BottomNav } from './BottomNav';
+import { TodayView } from '../today/TodayView';
 
 function PlaceholderView({ label }: { label: string }) {
   return (
@@ -12,13 +13,14 @@ function PlaceholderView({ label }: { label: string }) {
   );
 }
 
-const viewLabels: Record<string, string> = {
-  today: 'Today',
-  chat: 'AI Chat',
-  week: 'Week',
-  insights: 'Insights',
-  profile: 'Profile',
-};
+function ActiveView({ view }: { view: string }) {
+  switch (view) {
+    case 'today':
+      return <TodayView />;
+    default:
+      return <PlaceholderView label={view.charAt(0).toUpperCase() + view.slice(1)} />;
+  }
+}
 
 export function AppShell() {
   const activeView = useNutriStore((s) => s.activeView);
@@ -35,7 +37,7 @@ export function AppShell() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
-            <PlaceholderView label={viewLabels[activeView]} />
+            <ActiveView view={activeView} />
           </motion.div>
         </AnimatePresence>
       </div>
