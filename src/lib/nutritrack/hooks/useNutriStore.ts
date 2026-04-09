@@ -55,6 +55,7 @@ interface NutriState {
   setActiveView: (view: NutriState['activeView']) => void;
   loadTodayEntries: () => Promise<void>;
   loadWeekEntries: () => Promise<void>;
+  resetAllData: () => Promise<void>;
 }
 
 // ─── Helpers ───
@@ -291,6 +292,61 @@ export const useNutriStore = create<NutriState>((set, get) => ({
             : msg,
         ),
       }));
+    }
+  },
+
+  resetAllData: async () => {
+    const { user } = get();
+    if (!user) return;
+
+    try {
+      // Delete all food log entries
+      const q = query(getFoodLogCollection(user.uid));
+      const snap = await getDocs(q);
+      const deletes = snap.docs.map((d) => deleteDoc(d.ref));
+      await Promise.all(deletes);
+
+      // Reset profile to defaults
+      const now = new Date();
+      const defaultProfile: UserProfile = {
+        userId: user.uid,
+        displayName: user.displayName,
+        email: user.email,
+        weightKg: 70,
+        heightCm: 170,
+        age: 25,
+        gender: 'male',
+        goal: 'maintenance',
+        activityLevelId: 'moderate',
+        goalRateKgPerWeek: 0.5,
+        preferredUnits: 'metric',
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      await setDoc(getUserProfileRef(user.uid), defaultProfile);
+
+      // Reset local state
+      const activity = getActivityLevel(defaultProfile.activityLevelId);
+      const targets = computeAllTargets({
+        weightKg: defaultProfile.weightKg,
+        heightCm: defaultProfile.heightCm,
+        age: defaultProfile.age,
+        gender: defaultProfile.gender,
+        activityMultiplier: activity.multiplier,
+        goal: defaultProfile.goal,
+        goalRateKgPerWeek: defaultProfile.goalRateKgPerWeek,
+      });
+
+      set({
+        profile: defaultProfile,
+        targets,
+        todayEntries: [],
+        weekEntries: {},
+        chatMessages: [],
+      });
+    } catch (error) {
+      console.error('Failed to reset all data:', error);
     }
   },
 }));
