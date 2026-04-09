@@ -7,6 +7,7 @@ import { TodayView } from '../today/TodayView';
 import { ChatView } from '../chat/ChatView';
 import { WeekView } from '../week/WeekView';
 import { InsightsView } from '../insights/InsightsView';
+import { ProfileView } from '../profile/ProfileView';
 
 function PlaceholderView({ label }: { label: string }) {
   return (
@@ -26,6 +27,8 @@ function ActiveView({ view }: { view: string }) {
       return <WeekView />;
     case 'insights':
       return <InsightsView />;
+    case 'profile':
+      return <ProfileView />;
     default:
       return <PlaceholderView label={view.charAt(0).toUpperCase() + view.slice(1)} />;
   }
