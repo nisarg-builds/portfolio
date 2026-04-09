@@ -1,14 +1,19 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNutriStore } from '@/lib/nutritrack/hooks/useNutriStore';
 import { CalorieSummaryCard } from './CalorieSummaryCard';
-import { MacroDonut } from './MacroDonut';
 import { FoodLogList } from './FoodLogList';
 import { AddFoodModal } from '../shared/AddFoodModal';
 import { Card } from '../shared/Card';
 import { Button } from '../shared/Button';
+
+const MacroDonut = dynamic(
+  () => import('./MacroDonut').then((m) => ({ default: m.MacroDonut })),
+  { ssr: false },
+);
 
 // ─── Skeleton ───
 

@@ -28,7 +28,7 @@ export function MacroDonut({ proteinG, carbsG, fatG }: MacroDonutProps) {
   const colorValues = [COLORS.protein, COLORS.carbs, COLORS.fat];
 
   return (
-    <Card className="flex items-center gap-4">
+    <Card className="flex items-center gap-4" aria-label={`Macro breakdown: ${Math.round(proteinG)}g protein, ${Math.round(carbsG)}g carbs, ${Math.round(fatG)}g fat`}>
       <div className="h-20 w-20 shrink-0" aria-hidden="true">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>

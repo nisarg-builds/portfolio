@@ -1,12 +1,17 @@
 'use client';
 
 import { useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { useNutriStore } from '@/lib/nutritrack/hooks/useNutriStore';
 import { computeWeeklyStats } from '@/lib/nutritrack/hooks/useInsights';
 import { formatDateKey } from '@/lib/nutritrack/utils/dates';
 import { Card } from '../shared/Card';
-import { WeeklyBarChart } from './WeeklyBarChart';
+
+const WeeklyBarChart = dynamic(
+  () => import('./WeeklyBarChart').then((m) => ({ default: m.WeeklyBarChart })),
+  { ssr: false },
+);
 
 // ─── Skeleton ───
 

@@ -19,13 +19,16 @@ export function BottomNav() {
   const setActiveView = useNutriStore((s) => s.setActiveView);
 
   return (
-    <nav className="sticky top-0 z-10 border-b border-nt-border bg-nt-bg">
-      <div className="flex">
+    <nav aria-label="NutriTrack navigation" className="sticky top-0 z-10 border-b border-nt-border bg-nt-bg">
+      <div className="flex" role="tablist">
         {tabs.map((tab) => {
           const isActive = activeView === tab.id;
           return (
             <button
               key={tab.id}
+              role="tab"
+              aria-selected={isActive}
+              aria-current={isActive ? 'page' : undefined}
               onClick={() => setActiveView(tab.id)}
               data-cursor="interactive"
               className={cn(

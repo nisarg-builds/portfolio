@@ -36,7 +36,7 @@ export function WeeklyBarChart({ data }: WeeklyBarChartProps) {
       <p className="mb-3 text-xs font-medium uppercase tracking-widest text-nt-text-soft">
         This Week
       </p>
-      <div className="h-48">
+      <div className="h-48" role="img" aria-label="Bar chart showing daily calorie intake for the past week">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={data}

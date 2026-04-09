@@ -82,7 +82,7 @@ export function ChatView() {
       </div>
 
       {/* Input */}
-      <ChatInput onSend={sendMessage} disabled={isLoading} offline={!isOnline} />
+      <ChatInput onSend={sendMessage} disabled={isLoading} offline={!isOnline} autoFocus />
     </div>
   );
 }
