@@ -183,6 +183,7 @@ export function AddFoodModal({ onClose }: AddFoodModalProps) {
             ref={searchRef}
             type="text"
             placeholder="Search quick foods..."
+            aria-label="Search quick foods"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="mb-3 w-full rounded-lg border border-nt-border bg-nt-bg px-3 py-2 text-sm text-nt-text placeholder:text-nt-text-soft focus:border-nt-accent focus:outline-none"
@@ -220,6 +221,7 @@ export function AddFoodModal({ onClose }: AddFoodModalProps) {
           <input
             type="text"
             placeholder="Food name"
+            aria-label="Food name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="mb-3 w-full rounded-lg border border-nt-border bg-nt-bg px-3 py-2 text-sm text-nt-text placeholder:text-nt-text-soft focus:border-nt-accent focus:outline-none"
@@ -257,10 +259,12 @@ function NumberInput({
   value: string;
   onChange: (v: string) => void;
 }) {
+  const id = `nt-input-${label.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
   return (
     <div>
-      <label className="mb-1 block text-xs text-nt-text-soft">{label}</label>
+      <label htmlFor={id} className="mb-1 block text-xs text-nt-text-soft">{label}</label>
       <input
+        id={id}
         type="number"
         inputMode="decimal"
         min="0"

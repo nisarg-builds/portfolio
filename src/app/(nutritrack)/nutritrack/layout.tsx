@@ -14,8 +14,17 @@ const dmSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'NutriTrack',
-  description: 'AI-powered calorie and nutrition tracker',
+  title: 'NutriTrack — AI Calorie & Nutrition Tracker',
+  description:
+    'Track your calories, macros, and micronutrients with AI-powered food analysis. Snap a photo or describe your meal.',
+  openGraph: {
+    title: 'NutriTrack — AI Calorie & Nutrition Tracker',
+    description:
+      'Track your calories, macros, and micronutrients with AI-powered food analysis.',
+    type: 'website',
+    siteName: 'NutriTrack',
+  },
+  robots: { index: false, follow: false },
 };
 
 export default function NutriTrackLayout({

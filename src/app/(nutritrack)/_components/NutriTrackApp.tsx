@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { useAuth } from '@/lib/nutritrack/hooks/useAuth';
 import { useProfile } from '@/lib/nutritrack/hooks/useProfile';
 import { useFoodLog } from '@/lib/nutritrack/hooks/useFoodLog';
@@ -81,14 +81,16 @@ export function NutriTrackApp() {
   const { user, loading, signInWithGoogle } = useAuth();
 
   return (
-    <AnimatePresence mode="wait">
-      {loading ? (
-        <LoadingScreen key="loading" />
-      ) : !user ? (
-        <SignInScreen key="signin" onSignIn={signInWithGoogle} />
-      ) : (
-        <AuthenticatedApp key="app" />
-      )}
-    </AnimatePresence>
+    <MotionConfig reducedMotion="user">
+      <AnimatePresence mode="wait">
+        {loading ? (
+          <LoadingScreen key="loading" />
+        ) : !user ? (
+          <SignInScreen key="signin" onSignIn={signInWithGoogle} />
+        ) : (
+          <AuthenticatedApp key="app" />
+        )}
+      </AnimatePresence>
+    </MotionConfig>
   );
 }

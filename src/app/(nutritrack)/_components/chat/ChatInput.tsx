@@ -11,9 +11,10 @@ interface ChatInputProps {
   onSend: (text: string, imageFile?: File) => void;
   disabled?: boolean;
   offline?: boolean;
+  autoFocus?: boolean;
 }
 
-export function ChatInput({ onSend, disabled, offline }: ChatInputProps) {
+export function ChatInput({ onSend, disabled, offline, autoFocus }: ChatInputProps) {
   const [text, setText] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -141,6 +142,7 @@ export function ChatInput({ onSend, disabled, offline }: ChatInputProps) {
           onKeyDown={handleKeyDown}
           placeholder="Describe your food..."
           disabled={disabled}
+          autoFocus={autoFocus}
           rows={1}
           className="max-h-24 min-h-[40px] flex-1 resize-none rounded-lg border border-nt-border bg-nt-card px-3 py-2 text-sm text-nt-text placeholder:text-nt-text-soft focus:border-nt-accent focus:outline-none disabled:opacity-50"
         />
