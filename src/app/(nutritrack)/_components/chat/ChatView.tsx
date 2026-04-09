@@ -65,6 +65,13 @@ export function ChatView() {
         </div>
       </div>
 
+      {/* Offline banner */}
+      {!isOnline && (
+        <div className="bg-nt-danger-light px-3 py-2 text-center text-xs font-medium text-nt-danger">
+          You&apos;re offline — AI features unavailable
+        </div>
+      )}
+
       {/* Message area */}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-1 py-4">
         {messages.length === 0 ? (

@@ -3,6 +3,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNutriStore } from '@/lib/nutritrack/hooks/useNutriStore';
 import { BottomNav } from './BottomNav';
+import { AsyncLoadingBar } from '../shared/AsyncLoadingBar';
+import { ErrorBoundary } from '../shared/ErrorBoundary';
 import { TodayView } from '../today/TodayView';
 import { ChatView } from '../chat/ChatView';
 import { WeekView } from '../week/WeekView';
@@ -40,18 +42,21 @@ export function AppShell() {
   return (
     <div className="mx-auto min-h-screen max-w-md bg-nt-bg">
       <BottomNav />
+      <AsyncLoadingBar />
       <div className="px-4 pb-6">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeView}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-          >
-            <ActiveView view={activeView} />
-          </motion.div>
-        </AnimatePresence>
+        <ErrorBoundary>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeView}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+            >
+              <ActiveView view={activeView} />
+            </motion.div>
+          </AnimatePresence>
+        </ErrorBoundary>
       </div>
     </div>
   );

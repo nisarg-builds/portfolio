@@ -8,9 +8,40 @@ import { formatDateKey } from '@/lib/nutritrack/utils/dates';
 import { Card } from '../shared/Card';
 import { WeeklyBarChart } from './WeeklyBarChart';
 
+// ─── Skeleton ───
+
+function WeekViewSkeleton() {
+  return (
+    <div className="flex flex-col gap-4 pt-4">
+      {/* Chart skeleton */}
+      <Card>
+        <div className="animate-pulse">
+          <div className="mb-3 h-3 w-20 rounded bg-nt-border" />
+          <div className="h-48 w-full rounded bg-nt-border" />
+        </div>
+      </Card>
+
+      {/* Stat cards skeleton */}
+      <div className="grid grid-cols-2 gap-3">
+        {[1, 2].map((i) => (
+          <Card key={i}>
+            <div className="animate-pulse">
+              <div className="h-9 w-20 rounded bg-nt-border" />
+              <div className="mt-2 h-3 w-24 rounded bg-nt-border" />
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Main View ───
+
 export function WeekView() {
   const weekEntries = useNutriStore((s) => s.weekEntries);
   const targets = useNutriStore((s) => s.targets);
+  const isLoadingEntries = useNutriStore((s) => s.isLoadingEntries);
 
   const dailyTarget = targets?.dailyCalorieTarget ?? 2000;
   const tdee = targets?.tdee ?? 2000;
@@ -28,6 +59,10 @@ export function WeekView() {
       })),
     [stats.days],
   );
+
+  if (isLoadingEntries && Object.keys(weekEntries).length === 0) {
+    return <WeekViewSkeleton />;
+  }
 
   return (
     <motion.div
