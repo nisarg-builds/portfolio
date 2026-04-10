@@ -1,22 +1,67 @@
 'use client'
 
+import { type ReactNode } from 'react'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { DynamicHeading } from '@/components/ui/dynamic-heading'
 import { scrollFadeUp, staggerContainer } from '@/lib/easings'
 
-const experiments = [
+function FitGlassLogo() {
+  return (
+    <svg
+      width="36"
+      height="36"
+      viewBox="0 0 36 36"
+      fill="none"
+      aria-hidden="true"
+      className="text-accent"
+    >
+      <path
+        d="M13 5C19 12 19 24 13 31"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M23 5C17 12 17 24 23 31"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+interface Experiment {
+  title: string
+  description: string
+  emoji?: string
+  icon?: ReactNode
+  status: 'coming-soon' | 'live'
+  link?: string
+}
+
+const experiments: Experiment[] = [
+  {
+    title: 'Fit Glass',
+    description:
+      'AI-powered nutrition tracking — snap a photo of your meal and get instant calorie & macro breakdowns.',
+    icon: <FitGlassLogo />,
+    status: 'live',
+    link: '/fitglass',
+  },
   {
     title: 'Generative Art',
     description: 'Procedural patterns and creative coding with p5.js',
     emoji: '\u{1F3A8}',
-    status: 'coming-soon' as const,
+    status: 'coming-soon',
   },
   {
     title: 'Pathfinding Visualizer',
     description:
       'Interactive visualization of A*, BFS, and Dijkstra algorithms',
     emoji: '\u{1F50D}',
-    status: 'coming-soon' as const,
+    status: 'coming-soon',
     link: 'https://github.com/nisarg-11-here/Pathfinding_Visualizer',
   },
 ]
@@ -89,7 +134,9 @@ export function PlaygroundPageContent() {
               variants={cardVariant}
               className="rounded-lg border border-border bg-bg-surface p-6 transition-[border-color,box-shadow] duration-300 hover:border-border-hover hover:shadow-[0_0_20px_rgba(206,121,107,0.06)]"
             >
-              <span className="text-3xl" aria-hidden="true">{exp.emoji}</span>
+              {exp.icon ?? (
+                <span className="text-3xl" aria-hidden="true">{exp.emoji}</span>
+              )}
               <h3 className="mt-3 font-(family-name:--font-display) text-xl font-medium text-text-primary">
                 {exp.title}
               </h3>
@@ -97,7 +144,30 @@ export function PlaygroundPageContent() {
                 {exp.description}
               </p>
               <div className="mt-4">
-                {exp.link ? (
+                {exp.link && exp.link.startsWith('/') ? (
+                  <Link
+                    href={exp.link}
+                    className="inline-flex items-center gap-1.5 rounded-md border border-accent px-3 py-1.5 text-sm text-accent transition-all duration-200 hover:bg-accent hover:text-bg"
+                    data-cursor="interactive"
+                  >
+                    Launch App
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 14 14"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M3 7H11M11 7L7.5 3.5M11 7L7.5 10.5"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </Link>
+                ) : exp.link ? (
                   <a
                     href={exp.link}
                     target="_blank"
