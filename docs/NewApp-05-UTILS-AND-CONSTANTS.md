@@ -1,7 +1,7 @@
-# NutriTrack — Utilities, Calculations & Constants
+# FitGlass — Utilities, Calculations & Constants
 
 > All business logic, formulas, preset data, and helper functions.
-> Files live in `lib/nutritrack/utils/` and `lib/nutritrack/constants/`.
+> Files live in `lib/fitglass/utils/` and `lib/fitglass/constants/`.
 > These are pure functions with no framework dependencies — usable from both client and server.
 
 ---
@@ -11,7 +11,7 @@
 ### 1.1 BMR — Mifflin-St Jeor Equation
 
 ```typescript
-// lib/nutritrack/utils/calculations.ts
+// lib/fitglass/utils/calculations.ts
 
 /**
  * Calculate Basal Metabolic Rate using Mifflin-St Jeor equation.
@@ -123,7 +123,7 @@ export function computeAllTargets(profile: {
 ### 1.2 Unit Tests
 
 ```typescript
-// lib/nutritrack/utils/__tests__/calculations.test.ts
+// lib/fitglass/utils/__tests__/calculations.test.ts
 
 import { calculateBMR, calculateTDEE, calculateDailyTarget } from '../calculations';
 
@@ -165,7 +165,7 @@ describe('calculateDailyTarget', () => {
 ## 2. Date Utilities
 
 ```typescript
-// lib/nutritrack/utils/dates.ts
+// lib/fitglass/utils/dates.ts
 
 /** Get a date key string in YYYY-MM-DD format (local timezone). */
 export function getDateKey(date: Date = new Date()): string {
@@ -207,7 +207,7 @@ export function isToday(dateKey: string): boolean {
 ## 3. Input Validators
 
 ```typescript
-// lib/nutritrack/utils/validators.ts
+// lib/fitglass/utils/validators.ts
 
 export interface ValidationResult {
   valid: boolean;
@@ -264,7 +264,7 @@ export function validateFoodEntry(entry: {
 ### 4.1 Activity Levels
 
 ```typescript
-// lib/nutritrack/constants/activityLevels.ts
+// lib/fitglass/constants/activityLevels.ts
 
 import type { ActivityLevel } from '../models/user';
 
@@ -283,7 +283,7 @@ export function getActivityLevel(id: string): ActivityLevel {
 ### 4.2 Preset Quick Foods
 
 ```typescript
-// lib/nutritrack/constants/quickFoods.ts
+// lib/fitglass/constants/quickFoods.ts
 
 import type { QuickFood } from '../models/food';
 
@@ -309,11 +309,11 @@ export const PRESET_QUICK_FOODS: Omit<QuickFood, 'id' | 'createdAt' | 'lastUsedA
 ### 4.3 AI System Prompt
 
 ```typescript
-// lib/nutritrack/constants/prompts.ts
+// lib/fitglass/constants/prompts.ts
 
 /**
  * System prompt for Claude food analysis.
- * The actual prompt used at runtime is in the API route (app/api/nutritrack/analyze/route.ts).
+ * The actual prompt used at runtime is in the API route (app/api/fitglass/analyze/route.ts).
  * This copy is for reference and local testing.
  */
 export const FOOD_ANALYSIS_SYSTEM_PROMPT = `You are a nutrition analysis assistant. Your job is to identify foods and estimate their nutritional content accurately.
@@ -362,7 +362,7 @@ Field rules:
 ## 5. Insight Generation Logic
 
 ```typescript
-// lib/nutritrack/hooks/useInsights.ts (logic portion)
+// lib/fitglass/hooks/useInsights.ts (logic portion)
 
 import type { Insight, WeeklyStats, DaySummary } from '../models/insights';
 import type { ComputedTargets } from '../models/user';

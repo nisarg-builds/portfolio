@@ -1,7 +1,7 @@
-# NutriTrack — Data Models & Firebase Schema
+# FitGlass — Data Models & Firebase Schema
 
 > All TypeScript types, Firestore document structures, and validation rules.
-> Types live in `lib/nutritrack/models/`. Used by both client components and server API routes.
+> Types live in `lib/fitglass/models/`. Used by both client components and server API routes.
 
 ---
 
@@ -10,7 +10,7 @@
 ### 1.1 User Profile
 
 ```typescript
-// lib/nutritrack/models/user.ts
+// lib/fitglass/models/user.ts
 
 /**
  * Supported fitness goals.
@@ -83,7 +83,7 @@ export interface ComputedTargets {
 ### 1.2 Food Entry
 
 ```typescript
-// lib/nutritrack/models/food.ts
+// lib/fitglass/models/food.ts
 
 /**
  * Macronutrient data. All values in grams except calories (kcal).
@@ -177,7 +177,7 @@ export interface QuickFood {
 ### 1.3 Chat
 
 ```typescript
-// lib/nutritrack/models/chat.ts
+// lib/fitglass/models/chat.ts
 
 /**
  * A single food item returned by the AI analysis.
@@ -224,7 +224,7 @@ export interface ChatMessage {
 }
 
 /**
- * Request body sent to POST /api/nutritrack/analyze.
+ * Request body sent to POST /api/fitglass/analyze.
  */
 export interface AnalyzeFoodRequest {
   text?: string;
@@ -233,7 +233,7 @@ export interface AnalyzeFoodRequest {
 }
 
 /**
- * Response body from POST /api/nutritrack/analyze.
+ * Response body from POST /api/fitglass/analyze.
  */
 export interface AnalyzeFoodResponse {
   success: boolean;
@@ -246,7 +246,7 @@ export interface AnalyzeFoodResponse {
 ### 1.4 Insights
 
 ```typescript
-// lib/nutritrack/models/insights.ts
+// lib/fitglass/models/insights.ts
 
 export type InsightType = 'good' | 'warning' | 'info';
 
@@ -285,7 +285,7 @@ export interface DaySummary {
 ### 1.5 Zustand Store Shape
 
 ```typescript
-// lib/nutritrack/hooks/useNutriStore.ts
+// lib/fitglass/hooks/useFitGlassStore.ts
 
 import type { UserProfile, FoodEntry, QuickFood, ChatMessage, ComputedTargets } from '../models';
 
@@ -332,7 +332,7 @@ export interface NutriState {
 
 ### 2.1 Collection Structure
 
-The portfolio already uses Firebase Admin for Firestore. NutriTrack adds these collections:
+The portfolio already uses Firebase Admin for Firestore. FitGlass adds these collections:
 
 ```
 firestore/
@@ -422,7 +422,7 @@ service cloud.firestore {
           && data.source in ['manual', 'quick_add', 'ai_text', 'ai_image', 'ai_text_image'];
     }
 
-    // ─── NutriTrack: User profile ───
+    // ─── FitGlass: User profile ───
     match /users/{userId}/profile/{docId} {
       allow read: if isOwner(userId);
       allow create: if isOwner(userId) && isValidProfile(request.resource.data);
@@ -430,7 +430,7 @@ service cloud.firestore {
       allow delete: if isOwner(userId);
     }
 
-    // ─── NutriTrack: Food log ───
+    // ─── FitGlass: Food log ───
     match /users/{userId}/foodLog/{entryId} {
       allow read: if isOwner(userId);
       allow create: if isOwner(userId)
@@ -440,13 +440,13 @@ service cloud.firestore {
       allow delete: if isOwner(userId);
     }
 
-    // ─── NutriTrack: Quick foods ───
+    // ─── FitGlass: Quick foods ───
     match /users/{userId}/quickFoods/{foodId} {
       allow read: if isOwner(userId);
       allow write: if isOwner(userId);
     }
 
-    // ─── NutriTrack: Rate limits (server-only, no client access) ───
+    // ─── FitGlass: Rate limits (server-only, no client access) ───
     match /rateLimits/{uid} {
       allow read, write: if false;  // Only admin SDK can access
     }
@@ -465,7 +465,7 @@ service cloud.firestore {
 1. User types "chicken tikka masala with naan" in ChatInput
 2. ChatView creates a ChatMessage { role: 'user', text: '...' }
 3. useChat.analyzeFood() is called:
-   a. Client sends POST to /api/nutritrack/analyze with { text: '...' }
+   a. Client sends POST to /api/fitglass/analyze with { text: '...' }
       — includes Firebase ID token in Authorization header
    b. API route verifies ID token using firebase-admin auth().verifyIdToken()
    c. API route checks rate limit (Firestore counter via admin SDK)
@@ -505,7 +505,7 @@ service cloud.firestore {
 ## 5. Converter Functions
 
 ```typescript
-// lib/nutritrack/utils/converters.ts
+// lib/fitglass/utils/converters.ts
 
 import type { AIFoodItem, FoodEntry, NutritionData, MealType } from '../models';
 import { getDateKey } from './dates';
