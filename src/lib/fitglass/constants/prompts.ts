@@ -1,3 +1,5 @@
+import type { UserContext } from '../models/chat';
+
 /**
  * System prompt for Claude food analysis.
  * The actual prompt used at runtime is in the API route (app/api/fitglass/analyze/route.ts).
@@ -42,3 +44,94 @@ Field rules:
 - If you cannot identify a food, return { "message": "explanation", "foods": [] }
 - If multiple items visible, list each separately
 - ONLY output the JSON object. Nothing else.`;
+
+/**
+ * Build the full system prompt, optionally augmented with the user's
+ * nutritional profile and today's progress so Lens can give personalised advice.
+ *
+ * No PII (userId, email, displayName) is ever included.
+ */
+export function buildAugmentedPrompt(userContext?: UserContext): string {
+  if (!userContext) return FOOD_ANALYSIS_SYSTEM_PROMPT;
+
+  const lines: string[] = ['USER CONTEXT:'];
+
+  // Goal
+  if (userContext.goal) {
+    lines.push(`- Goal: ${userContext.goal}`);
+  }
+
+  // Body stats
+  if (userContext.weightKg) lines.push(`- Weight: ${userContext.weightKg} kg`);
+  if (userContext.heightCm) lines.push(`- Height: ${userContext.heightCm} cm`);
+  if (userContext.age) lines.push(`- Age: ${userContext.age}`);
+  if (userContext.gender) lines.push(`- Gender: ${userContext.gender}`);
+
+  // Daily targets
+  const hasTargets =
+    userContext.dailyCalorieTarget ||
+    userContext.proteinTargetG ||
+    userContext.fatMinG ||
+    userContext.carbsRemainingG;
+
+  if (hasTargets) {
+    lines.push('- Daily targets:');
+    if (userContext.dailyCalorieTarget != null)
+      lines.push(`    Calories: ${userContext.dailyCalorieTarget} kcal`);
+    if (userContext.proteinTargetG != null)
+      lines.push(`    Protein: ${userContext.proteinTargetG} g`);
+    if (userContext.fatMinG != null)
+      lines.push(`    Fat (min): ${userContext.fatMinG} g`);
+    if (userContext.carbsRemainingG != null)
+      lines.push(`    Carbs budget remaining: ${userContext.carbsRemainingG} g`);
+  }
+
+  // Consumed today
+  const hasConsumed =
+    userContext.consumedCalories ||
+    userContext.consumedProteinG ||
+    userContext.consumedCarbsG ||
+    userContext.consumedFatG;
+
+  if (hasConsumed) {
+    lines.push('- Consumed today:');
+    if (userContext.consumedCalories != null)
+      lines.push(`    Calories: ${userContext.consumedCalories} kcal`);
+    if (userContext.consumedProteinG != null)
+      lines.push(`    Protein: ${userContext.consumedProteinG} g`);
+    if (userContext.consumedCarbsG != null)
+      lines.push(`    Carbs: ${userContext.consumedCarbsG} g`);
+    if (userContext.consumedFatG != null)
+      lines.push(`    Fat: ${userContext.consumedFatG} g`);
+  }
+
+  // Remaining budget
+  if (
+    userContext.dailyCalorieTarget != null &&
+    userContext.consumedCalories != null
+  ) {
+    const remainingCal =
+      userContext.dailyCalorieTarget - userContext.consumedCalories;
+    const remainingProtein =
+      userContext.proteinTargetG != null && userContext.consumedProteinG != null
+        ? userContext.proteinTargetG - userContext.consumedProteinG
+        : null;
+    const remainingFat =
+      userContext.fatMinG != null && userContext.consumedFatG != null
+        ? userContext.fatMinG - userContext.consumedFatG
+        : null;
+
+    lines.push('- Remaining budget:');
+    lines.push(`    Calories: ${remainingCal} kcal`);
+    if (remainingProtein != null) lines.push(`    Protein: ${remainingProtein} g`);
+    if (remainingFat != null) lines.push(`    Fat: ${remainingFat} g`);
+  }
+
+  lines.push(
+    '',
+    'Reference the user\'s targets and progress in your response when relevant. Be specific with numbers.',
+  );
+
+  const userContextSection = lines.join('\n');
+  return FOOD_ANALYSIS_SYSTEM_PROMPT + '\n\n' + userContextSection;
+}

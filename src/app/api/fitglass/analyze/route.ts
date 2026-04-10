@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { FieldValue } from 'firebase-admin/firestore';
 import Anthropic from '@anthropic-ai/sdk';
 import { getAdminAuth, getAdminDb } from '@/lib/firebase/admin';
-import type { AnalyzeFoodRequest, AIFoodResponse } from '@/lib/fitglass/models/chat';
-import { FOOD_ANALYSIS_SYSTEM_PROMPT } from '@/lib/fitglass/constants/prompts';
+import type {
+  AnalyzeFoodRequest,
+  AIFoodResponse,
+  UserContext,
+} from '@/lib/fitglass/models/chat';
+import { buildAugmentedPrompt } from '@/lib/fitglass/constants/prompts';
 
 // ─── Vercel serverless config ───
 export const maxDuration = 30;
@@ -66,6 +70,69 @@ async function checkRateLimit(
   });
 }
 
+// ─── User Context Validation ───
+
+/** Clamp a numeric value to [min, max]. Returns undefined if value is not a number. */
+function clampNum(
+  value: unknown,
+  min: number,
+  max: number,
+): number | undefined {
+  if (typeof value !== 'number' || Number.isNaN(value)) return undefined;
+  return Math.min(max, Math.max(min, value));
+}
+
+function validateUserContext(raw: unknown): UserContext | undefined {
+  if (!raw || typeof raw !== 'object') return undefined;
+
+  const ctx = raw as Record<string, unknown>;
+
+  const result: Partial<UserContext> = {};
+
+  // Body stats — clamped to safe ranges
+  const weight = clampNum(ctx.weightKg, 30, 300);
+  if (weight != null) result.weightKg = weight;
+
+  const height = clampNum(ctx.heightCm, 100, 250);
+  if (height != null) result.heightCm = height;
+
+  const age = clampNum(ctx.age, 13, 120);
+  if (age != null) result.age = age;
+
+  if (typeof ctx.gender === 'string') result.gender = ctx.gender;
+  if (typeof ctx.goal === 'string') result.goal = ctx.goal;
+
+  // Calorie / macro targets and consumed — clamped
+  const calorieFields = [
+    'dailyCalorieTarget',
+    'consumedCalories',
+  ] as const;
+
+  for (const field of calorieFields) {
+    const v = clampNum(ctx[field], 0, 10_000);
+    if (v != null) (result as Record<string, unknown>)[field] = v;
+  }
+
+  const macroFields = [
+    'proteinTargetG',
+    'fatMinG',
+    'carbsRemainingG',
+    'consumedProteinG',
+    'consumedCarbsG',
+    'consumedFatG',
+  ] as const;
+
+  for (const field of macroFields) {
+    const v = clampNum(ctx[field], 0, 2000);
+    if (v != null) (result as Record<string, unknown>)[field] = v;
+  }
+
+  // Only return if at least one field was valid
+  if (Object.keys(result).length === 0) return undefined;
+
+  return result as UserContext;
+}
+
 // ─── Input Validation ───
 
 function validateRequest(body: unknown): AnalyzeFoodRequest {
@@ -109,6 +176,7 @@ function validateRequest(body: unknown): AnalyzeFoodRequest {
     text: req.text as string | undefined,
     imageBase64: req.imageBase64 as string | undefined,
     imageMediaType: req.imageMediaType as AnalyzeFoodRequest['imageMediaType'],
+    userContext: validateUserContext(req.userContext),
   };
 }
 
@@ -190,6 +258,7 @@ export async function POST(request: NextRequest) {
 
     // 4. Build Claude request
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
+    const systemPrompt = buildAugmentedPrompt(input.userContext);
 
     const content: Anthropic.MessageCreateParams['messages'][0]['content'] = [];
 
@@ -217,7 +286,7 @@ export async function POST(request: NextRequest) {
       const response = await client.messages.create({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1024,
-        system: FOOD_ANALYSIS_SYSTEM_PROMPT,
+        system: systemPrompt,
         messages: [{ role: 'user', content }],
       });
 
@@ -244,7 +313,7 @@ export async function POST(request: NextRequest) {
           model: 'claude-sonnet-4-20250514',
           max_tokens: 1024,
           system:
-            FOOD_ANALYSIS_SYSTEM_PROMPT +
+            systemPrompt +
             '\n\nCRITICAL: Your previous response was not valid JSON. Return ONLY a JSON object, nothing else.',
           messages: [{ role: 'user', content }],
         });
