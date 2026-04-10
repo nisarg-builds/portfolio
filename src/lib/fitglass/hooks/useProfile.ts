@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { getDoc, setDoc } from 'firebase/firestore';
+import { getDoc } from 'firebase/firestore';
 import { getUserProfileRef } from '../services/firebase-client';
 import { useFitGlassStore } from './useFitGlassStore';
 import { useAuth } from './useAuth';
@@ -25,8 +25,9 @@ export function useProfile() {
   const targets = useFitGlassStore((s) => s.targets);
   const setProfile = useFitGlassStore((s) => s.setProfile);
   const [isLoading, setIsLoading] = useState(true);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
 
-  // Load or create profile on mount when user is authenticated
+  // Load profile on mount when user is authenticated
   useEffect(() => {
     if (!user) {
       setIsLoading(false);
@@ -51,19 +52,10 @@ export function useProfile() {
             updatedAt: data.updatedAt?.toDate?.() ?? new Date(data.updatedAt),
           } as UserProfile;
           setProfile(loaded);
+          setNeedsOnboarding(false);
         } else {
-          // Create default profile
-          const now = new Date();
-          const newProfile: UserProfile = {
-            ...DEFAULT_PROFILE,
-            userId: user!.uid,
-            displayName: user!.displayName ?? '',
-            email: user!.email ?? '',
-            createdAt: now,
-            updatedAt: now,
-          };
-          await setDoc(ref, newProfile);
-          setProfile(newProfile);
+          // No profile exists — user needs onboarding
+          setNeedsOnboarding(true);
         }
       } catch (error) {
         console.error('Failed to load profile:', error);
@@ -92,5 +84,9 @@ export function useProfile() {
     [profile, setProfile],
   );
 
-  return { profile, targets, updateProfile, isLoading };
+  const completeOnboarding = useCallback(() => {
+    setNeedsOnboarding(false);
+  }, []);
+
+  return { profile, targets, updateProfile, isLoading, needsOnboarding, completeOnboarding };
 }

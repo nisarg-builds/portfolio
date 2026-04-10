@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/fitglass/hooks/useAuth';
 import { useProfile } from '@/lib/fitglass/hooks/useProfile';
 import { useFoodLog } from '@/lib/fitglass/hooks/useFoodLog';
 import { AppShell } from './layout/AppShell';
+import { OnboardingFlow } from './onboarding/OnboardingFlow';
 
 // ─── Loading Spinner ───
 
@@ -57,11 +58,15 @@ function SignInScreen({ onSignIn }: { onSignIn: () => Promise<void> }) {
 // ─── Authenticated App Shell ───
 
 function AuthenticatedApp() {
-  const { isLoading: profileLoading } = useProfile();
+  const { isLoading: profileLoading, needsOnboarding, completeOnboarding } = useProfile();
   useFoodLog();
 
   if (profileLoading) {
     return <LoadingScreen />;
+  }
+
+  if (needsOnboarding) {
+    return <OnboardingFlow onComplete={completeOnboarding} />;
   }
 
   return (
