@@ -34,7 +34,7 @@ describe('computeWeeklyStats', () => {
       weekEntries[day] = [
         makeFoodEntry({
           dateKey: day,
-          nutrition: { calories: 2000, proteinG: 100, carbsG: 200, fatG: 80, fiberG: 0 },
+          nutrition: { calories: 2000, proteinG: 100, carbsG: 200, fatG: 80 },
         }),
       ];
     }
@@ -51,13 +51,13 @@ describe('computeWeeklyStats', () => {
       '2026-04-08': [
         makeFoodEntry({
           dateKey: '2026-04-08',
-          nutrition: { calories: 1800, proteinG: 90, carbsG: 180, fatG: 70, fiberG: 0 },
+          nutrition: { calories: 1800, proteinG: 90, carbsG: 180, fatG: 70 },
         }),
       ],
       '2026-04-09': [
         makeFoodEntry({
           dateKey: '2026-04-09',
-          nutrition: { calories: 2200, proteinG: 110, carbsG: 220, fatG: 90, fiberG: 0 },
+          nutrition: { calories: 2200, proteinG: 110, carbsG: 220, fatG: 90 },
         }),
       ],
     };
@@ -83,13 +83,13 @@ describe('computeWeeklyStats', () => {
       '2026-04-08': [
         makeFoodEntry({
           dateKey: '2026-04-08',
-          nutrition: { calories: 2050, proteinG: 100, carbsG: 200, fatG: 80, fiberG: 0 },
+          nutrition: { calories: 2050, proteinG: 100, carbsG: 200, fatG: 80 },
         }),
       ],
       '2026-04-09': [
         makeFoodEntry({
           dateKey: '2026-04-09',
-          nutrition: { calories: 2500, proteinG: 100, carbsG: 200, fatG: 80, fiberG: 0 },
+          nutrition: { calories: 2500, proteinG: 100, carbsG: 200, fatG: 80 },
         }),
       ],
     };
@@ -106,7 +106,7 @@ describe('computeWeeklyStats', () => {
       weekEntries[day] = [
         makeFoodEntry({
           dateKey: day,
-          nutrition: { calories: 2000, proteinG: 100, carbsG: 200, fatG: 80, fiberG: 0 },
+          nutrition: { calories: 2000, proteinG: 100, carbsG: 200, fatG: 80 },
         }),
       ];
     }
