@@ -99,8 +99,13 @@ function validateUserContext(raw: unknown): UserContext | undefined {
   const age = clampNum(ctx.age, 13, 120);
   if (age != null) result.age = age;
 
-  if (typeof ctx.gender === 'string') result.gender = ctx.gender;
-  if (typeof ctx.goal === 'string') result.goal = ctx.goal;
+  const validGenders = ['male', 'female'];
+  if (typeof ctx.gender === 'string' && validGenders.includes(ctx.gender))
+    result.gender = ctx.gender;
+
+  const validGoals = ['fat_loss', 'muscle_gain', 'maintenance'];
+  if (typeof ctx.goal === 'string' && validGoals.includes(ctx.goal))
+    result.goal = ctx.goal;
 
   // Calorie / macro targets and consumed — clamped
   const calorieFields = [

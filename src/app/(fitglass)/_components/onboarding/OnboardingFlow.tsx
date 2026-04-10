@@ -286,6 +286,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       // but the debounced write in setProfile is harmless since doc already exists)
       setStoreProfile(profile);
 
+      setIsSaving(false);
       onComplete();
     } catch (error) {
       console.error('Failed to save onboarding profile:', error);

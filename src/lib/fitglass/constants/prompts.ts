@@ -62,17 +62,17 @@ export function buildAugmentedPrompt(userContext?: UserContext): string {
   }
 
   // Body stats
-  if (userContext.weightKg) lines.push(`- Weight: ${userContext.weightKg} kg`);
-  if (userContext.heightCm) lines.push(`- Height: ${userContext.heightCm} cm`);
-  if (userContext.age) lines.push(`- Age: ${userContext.age}`);
+  if (userContext.weightKg != null) lines.push(`- Weight: ${userContext.weightKg} kg`);
+  if (userContext.heightCm != null) lines.push(`- Height: ${userContext.heightCm} cm`);
+  if (userContext.age != null) lines.push(`- Age: ${userContext.age}`);
   if (userContext.gender) lines.push(`- Gender: ${userContext.gender}`);
 
   // Daily targets
   const hasTargets =
-    userContext.dailyCalorieTarget ||
-    userContext.proteinTargetG ||
-    userContext.fatMinG ||
-    userContext.carbsRemainingG;
+    userContext.dailyCalorieTarget != null ||
+    userContext.proteinTargetG != null ||
+    userContext.fatMinG != null ||
+    userContext.carbsRemainingG != null;
 
   if (hasTargets) {
     lines.push('- Daily targets:');
@@ -83,15 +83,15 @@ export function buildAugmentedPrompt(userContext?: UserContext): string {
     if (userContext.fatMinG != null)
       lines.push(`    Fat (min): ${userContext.fatMinG} g`);
     if (userContext.carbsRemainingG != null)
-      lines.push(`    Carbs budget remaining: ${userContext.carbsRemainingG} g`);
+      lines.push(`    Carbs: ${userContext.carbsRemainingG} g`);
   }
 
   // Consumed today
   const hasConsumed =
-    userContext.consumedCalories ||
-    userContext.consumedProteinG ||
-    userContext.consumedCarbsG ||
-    userContext.consumedFatG;
+    userContext.consumedCalories != null ||
+    userContext.consumedProteinG != null ||
+    userContext.consumedCarbsG != null ||
+    userContext.consumedFatG != null;
 
   if (hasConsumed) {
     lines.push('- Consumed today:');

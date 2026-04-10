@@ -71,19 +71,19 @@ export interface ChatMessage {
  * Contains only nutritional data — no PII (userId, email, displayName).
  */
 export interface UserContext {
-  dailyCalorieTarget: number;
-  proteinTargetG: number;
-  fatMinG: number;
-  carbsRemainingG: number;
-  consumedCalories: number;
-  consumedProteinG: number;
-  consumedCarbsG: number;
-  consumedFatG: number;
-  goal: string;
-  weightKg: number;
-  heightCm: number;
-  age: number;
-  gender: string;
+  dailyCalorieTarget?: number;
+  proteinTargetG?: number;
+  fatMinG?: number;
+  carbsRemainingG?: number;
+  consumedCalories?: number;
+  consumedProteinG?: number;
+  consumedCarbsG?: number;
+  consumedFatG?: number;
+  goal?: string;
+  weightKg?: number;
+  heightCm?: number;
+  age?: number;
+  gender?: string;
 }
 
 /**
