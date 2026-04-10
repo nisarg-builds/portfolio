@@ -59,6 +59,15 @@ interface NumberFieldProps {
 }
 
 function NumberField({ label, value, onChange, min, max, step = 1, unit }: NumberFieldProps) {
+  const [draft, setDraft] = useState(String(value));
+
+  // Sync draft when value changes externally
+  const [prevValue, setPrevValue] = useState(value);
+  if (value !== prevValue) {
+    setPrevValue(value);
+    setDraft(String(value));
+  }
+
   return (
     <div>
       <label className="mb-1 block text-xs font-medium uppercase tracking-widest text-fg-text-soft">
@@ -67,10 +76,17 @@ function NumberField({ label, value, onChange, min, max, step = 1, unit }: Numbe
       <div className="flex items-center gap-2">
         <input
           type="number"
-          value={value}
-          onChange={(e) => {
-            const n = parseFloat(e.target.value);
-            if (!isNaN(n) && n >= min && n <= max) onChange(n);
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={() => {
+            const n = parseFloat(draft);
+            if (!isNaN(n)) {
+              const clamped = Math.min(max, Math.max(min, n));
+              onChange(clamped);
+              setDraft(String(clamped));
+            } else {
+              setDraft(String(value));
+            }
           }}
           min={min}
           max={max}
