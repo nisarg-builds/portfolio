@@ -11,7 +11,7 @@ interface CardProps {
 export function Card({ children, className, 'aria-label': ariaLabel }: CardProps) {
   return (
     <div
-      className={cn('rounded-xl border border-nt-border bg-nt-card p-5', className)}
+      className={cn('rounded-xl border border-nt-border bg-nt-card backdrop-blur-sm p-5', className)}
       aria-label={ariaLabel}
     >
       {children}

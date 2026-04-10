@@ -1,65 +1,47 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNutriStore } from '@/lib/nutritrack/hooks/useNutriStore';
-import { CalorieSummaryCard } from './CalorieSummaryCard';
+import { useTodayMacros } from '@/lib/nutritrack/hooks/useTodayMacros';
+import { CalorieRing } from './CalorieRing';
+import { MacroProgressBars } from './MacroProgressBars';
 import { FoodLogList } from './FoodLogList';
+import { FloatingActionButton } from '../shared/FloatingActionButton';
 import { AddFoodModal } from '../shared/AddFoodModal';
 import { Card } from '../shared/Card';
 import { Button } from '../shared/Button';
-
-const MacroDonut = dynamic(
-  () => import('./MacroDonut').then((m) => ({ default: m.MacroDonut })),
-  { ssr: false },
-);
 
 // ─── Skeleton ───
 
 function TodayViewSkeleton() {
   return (
     <div className="flex flex-col gap-4 pt-4">
-      {/* CalorieSummaryCard skeleton */}
-      <Card>
-        <div className="animate-pulse">
-          <div className="mb-3 flex items-baseline gap-2">
-            <div className="h-8 w-24 rounded bg-nt-border" />
-            <div className="h-4 w-20 rounded bg-nt-border" />
-          </div>
-          <div className="mb-3 h-3 w-full rounded-full bg-nt-border" />
-          <div className="flex items-center justify-between">
-            <div className="h-3 w-32 rounded bg-nt-border" />
-            <div className="h-3 w-16 rounded bg-nt-border" />
-          </div>
-        </div>
-      </Card>
+      {/* CalorieRing skeleton */}
+      <div className="flex flex-col items-center gap-1 py-4">
+        <div className="h-[180px] w-[180px] animate-pulse rounded-full bg-nt-border" />
+      </div>
 
-      {/* MacroDonut skeleton */}
-      <Card className="flex items-center gap-4">
-        <div className="animate-pulse flex items-center gap-4 w-full">
-          <div className="h-20 w-20 shrink-0 rounded-full bg-nt-border" />
-          <div className="flex flex-1 gap-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex flex-col items-center gap-1">
-                <div className="h-2 w-2 rounded-full bg-nt-border" />
-                <div className="h-4 w-8 rounded bg-nt-border" />
-                <div className="h-3 w-10 rounded bg-nt-border" />
+      {/* MacroProgressBars skeleton */}
+      <div className="rounded-xl border border-nt-border bg-nt-card p-4 backdrop-blur-sm">
+        <div className="animate-pulse space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <div className="h-3 w-14 rounded bg-nt-border" />
+                <div className="h-3 w-20 rounded bg-nt-border" />
               </div>
-            ))}
-          </div>
+              <div className="h-2 w-full rounded-full bg-nt-border" />
+            </div>
+          ))}
         </div>
-      </Card>
+      </div>
 
       {/* FoodLogList skeleton */}
       <Card className="p-0">
         <div className="animate-pulse">
           <div className="flex items-center justify-between border-b border-nt-border px-5 py-3">
             <div className="h-3 w-16 rounded bg-nt-border" />
-            <div className="flex gap-2">
-              <div className="h-7 w-16 rounded-lg bg-nt-border" />
-              <div className="h-7 w-14 rounded-lg bg-nt-border" />
-            </div>
           </div>
           <div className="space-y-4 px-5 py-4">
             {[1, 2, 3].map((i) => (
@@ -80,13 +62,7 @@ function TodayViewSkeleton() {
 
 // ─── Empty State ───
 
-function TodayEmptyState({
-  onOpenChat,
-  onOpenAddModal,
-}: {
-  onOpenChat: () => void;
-  onOpenAddModal: () => void;
-}) {
+function TodayEmptyState({ onOpenAddModal }: { onOpenAddModal: () => void }) {
   return (
     <motion.div
       className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center"
@@ -106,7 +82,6 @@ function TodayEmptyState({
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          <path d="M3 3h18v18H3z" opacity="0" />
           <path d="M12 5v14M5 12h14" />
         </svg>
       </div>
@@ -116,14 +91,9 @@ function TodayEmptyState({
           Track your first meal to see your daily progress
         </p>
       </div>
-      <div className="flex gap-2">
-        <Button variant="ghost" size="sm" onClick={onOpenChat}>
-          AI Chat
-        </Button>
-        <Button size="sm" onClick={onOpenAddModal}>
-          Quick Add
-        </Button>
-      </div>
+      <Button size="sm" onClick={onOpenAddModal}>
+        Quick Add
+      </Button>
     </motion.div>
   );
 }
@@ -133,26 +103,24 @@ function TodayEmptyState({
 export function TodayView() {
   const todayEntries = useNutriStore((s) => s.todayEntries);
   const targets = useNutriStore((s) => s.targets);
-  const isLoadingEntries = useNutriStore((s) => s.isLoadingEntries);
+  const isLoadingToday = useNutriStore((s) => s.isLoadingToday);
   const removeFoodEntry = useNutriStore((s) => s.removeFoodEntry);
-  const setActiveView = useNutriStore((s) => s.setActiveView);
+  const { consumed, proteinG, carbsG, fatG } = useTodayMacros();
   const [addModalOpen, setAddModalOpen] = useState(false);
 
   const closeModal = useCallback(() => setAddModalOpen(false), []);
 
   // Loading skeleton
-  if (isLoadingEntries && todayEntries.length === 0) {
+  if (isLoadingToday && todayEntries.length === 0) {
     return <TodayViewSkeleton />;
   }
 
   // Empty state
-  if (!isLoadingEntries && todayEntries.length === 0) {
+  if (!isLoadingToday && todayEntries.length === 0) {
     return (
       <>
-        <TodayEmptyState
-          onOpenChat={() => setActiveView('chat')}
-          onOpenAddModal={() => setAddModalOpen(true)}
-        />
+        <TodayEmptyState onOpenAddModal={() => setAddModalOpen(true)} />
+        <FloatingActionButton onClick={() => setAddModalOpen(true)} />
         <AnimatePresence>
           {addModalOpen && <AddFoodModal onClose={closeModal} />}
         </AnimatePresence>
@@ -160,32 +128,36 @@ export function TodayView() {
     );
   }
 
-  // Normal content
-  const consumed = todayEntries.reduce((sum, e) => sum + e.nutrition.calories, 0);
-  const proteinG = todayEntries.reduce((sum, e) => sum + e.nutrition.proteinG, 0);
-  const carbsG = todayEntries.reduce((sum, e) => sum + e.nutrition.carbsG, 0);
-  const fatG = todayEntries.reduce((sum, e) => sum + e.nutrition.fatG, 0);
-
   const target = targets?.dailyCalorieTarget ?? 2000;
-  const tdee = targets?.tdee ?? 2000;
 
   return (
-    <div className="flex flex-col gap-4 pt-4">
-      <CalorieSummaryCard consumed={consumed} target={target} tdee={tdee} />
+    <>
+      <div className="flex flex-col gap-4 pt-4">
+        <CalorieRing consumed={consumed} target={target} />
 
-      {todayEntries.length > 0 && (
-        <MacroDonut proteinG={proteinG} carbsG={carbsG} fatG={fatG} />
-      )}
+        {/* carbsRemainingG = daily carb allocation (remaining kcal after protein+fat, /4);
+            fatMinG = minimum daily fat intake. Both used as progress bar targets. */}
+        <MacroProgressBars
+          proteinG={proteinG}
+          carbsG={carbsG}
+          fatG={fatG}
+          proteinTarget={targets?.proteinTargetG}
+          carbsTarget={targets?.carbsRemainingG}
+          fatTarget={targets?.fatMinG}
+        />
 
-      <FoodLogList
-        entries={todayEntries}
-        onDelete={removeFoodEntry}
-        onOpenAddModal={() => setAddModalOpen(true)}
-      />
+        <FoodLogList
+          entries={todayEntries}
+          onDelete={removeFoodEntry}
+          onAddFood={() => setAddModalOpen(true)}
+        />
+      </div>
+
+      <FloatingActionButton onClick={() => setAddModalOpen(true)} />
 
       <AnimatePresence>
         {addModalOpen && <AddFoodModal onClose={closeModal} />}
       </AnimatePresence>
-    </div>
+    </>
   );
 }

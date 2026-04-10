@@ -14,7 +14,7 @@ export function MicroBadge({ label, value, unit, color }: MicroBadgeProps) {
     <span
       className={cn(
         'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium',
-        color ?? 'bg-gray-100 text-nt-text',
+        color ?? 'bg-nt-surface text-nt-text',
       )}
     >
       {label} {value}

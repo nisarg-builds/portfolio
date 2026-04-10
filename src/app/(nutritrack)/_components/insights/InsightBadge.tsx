@@ -12,7 +12,7 @@ interface InsightBadgeProps {
 const typeStyles: Record<Insight['type'], string> = {
   good: 'bg-nt-accent-light text-nt-accent',
   warning: 'bg-nt-danger-light text-nt-danger',
-  info: 'bg-gray-100 text-nt-text',
+  info: 'bg-nt-surface text-nt-text',
 };
 
 export function InsightBadge({ insight, index }: InsightBadgeProps) {

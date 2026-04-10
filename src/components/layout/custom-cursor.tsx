@@ -8,11 +8,7 @@ type CursorState = 'default' | 'interactive' | 'text'
 export function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false)
   const [cursorState, setCursorState] = useState<CursorState>('default')
-  const [isTouch] = useState(() =>
-    typeof window !== 'undefined'
-      ? window.matchMedia('(pointer: coarse)').matches
-      : true,
-  )
+  const [isTouch, setIsTouch] = useState(true)
 
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
@@ -55,6 +51,7 @@ export function CustomCursor() {
 
   useEffect(() => {
     const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
+    setIsTouch(isTouchDevice)
 
     if (isTouchDevice) return
 

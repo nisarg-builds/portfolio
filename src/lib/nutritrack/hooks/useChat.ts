@@ -3,10 +3,10 @@
 import { useCallback } from 'react';
 import { useNutriStore } from './useNutriStore';
 import { fileToBase64 } from '../services/ai';
+import { VALID_IMAGE_TYPES } from '../constants/imageTypes';
 import type { ChatMessage } from '../models/chat';
 
 const MAX_TEXT_LENGTH = 1000;
-const VALID_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 /**
  * Hook for managing the NutriTrack chat interface.

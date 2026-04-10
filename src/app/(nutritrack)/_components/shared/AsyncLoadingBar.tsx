@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNutriStore } from '@/lib/nutritrack/hooks/useNutriStore';
 
 export function AsyncLoadingBar() {
-  const isLoadingEntries = useNutriStore((s) => s.isLoadingEntries);
+  const isLoadingToday = useNutriStore((s) => s.isLoadingToday);
+  const isLoadingWeek = useNutriStore((s) => s.isLoadingWeek);
   const isChatLoading = useNutriStore((s) => s.isChatLoading);
-  const isLoading = isLoadingEntries || isChatLoading;
+  const isLoading = isLoadingToday || isLoadingWeek || isChatLoading;
 
   return (
     <AnimatePresence>

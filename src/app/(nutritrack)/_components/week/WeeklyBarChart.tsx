@@ -14,17 +14,16 @@ interface WeeklyBarChartProps {
   data: { label: string; calories: number }[];
 }
 
-function CustomTooltip({
-  active,
-  payload,
-}: {
+interface CustomTooltipProps {
   active?: boolean;
   payload?: { value: number }[];
-}) {
+}
+
+function CustomTooltip({ active, payload }: CustomTooltipProps) {
   if (!active || !payload?.length) return null;
 
   return (
-    <div className="rounded-lg border border-nt-border bg-nt-card px-3 py-1.5 text-sm font-medium text-nt-text shadow-sm">
+    <div className="rounded-lg border border-nt-border bg-nt-card px-3 py-1.5 text-sm font-medium text-nt-text shadow-sm backdrop-blur-sm">
       {payload[0].value.toLocaleString()} kcal
     </div>
   );
@@ -33,10 +32,7 @@ function CustomTooltip({
 export function WeeklyBarChart({ data }: WeeklyBarChartProps) {
   return (
     <Card>
-      <p className="mb-3 text-xs font-medium uppercase tracking-widest text-nt-text-soft">
-        This Week
-      </p>
-      <div className="h-48" role="img" aria-label="Bar chart showing daily calorie intake for the past week">
+      <div className="h-48" role="img" aria-label="Bar chart showing daily calorie intake for the week">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={data}

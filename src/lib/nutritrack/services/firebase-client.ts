@@ -68,7 +68,3 @@ export function getUserProfileRef(uid: string) {
 export function getFoodLogCollection(uid: string) {
   return collection(getFirebaseDb(), 'users', uid, 'foodLog');
 }
-
-export function getQuickFoodsCollection(uid: string) {
-  return collection(getFirebaseDb(), 'users', uid, 'quickFoods');
-}
