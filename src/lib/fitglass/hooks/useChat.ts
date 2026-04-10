@@ -85,18 +85,6 @@ export function useChat() {
 
       // Call store action (adds loading → response/error messages)
       await analyzeFood(trimmedText || undefined, imageBase64, imageMediaType);
-
-      // After successful analysis, hint about profile if not set up
-      const { chatMessages, profile: currentProfile } = useFitGlassStore.getState();
-      const lastMsg = chatMessages[chatMessages.length - 1];
-      if (lastMsg && !lastMsg.isError && !lastMsg.isLoading && !currentProfile) {
-        addChatMessage({
-          id: `msg-${Date.now()}-profile-hint`,
-          role: 'assistant',
-          text: 'Set up your profile to get personalized calorie targets.',
-          timestamp: new Date(),
-        });
-      }
     },
     [addChatMessage, analyzeFood],
   );

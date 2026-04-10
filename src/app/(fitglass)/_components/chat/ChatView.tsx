@@ -90,14 +90,14 @@ function WelcomeMessage() {
   return (
     <div className="flex flex-col items-center justify-center gap-2 pt-12 text-center">
       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-fg-accent text-sm font-bold text-white">
-        NB
+        L
       </div>
       <p className="text-sm font-medium text-fg-text">
         Hey! I&apos;m Lens
       </p>
       <p className="max-w-[280px] text-xs text-fg-text-soft">
-        Tell me what you ate or snap a photo of your meal — I&apos;ll break
-        down the calories, macros, and micronutrients for you.
+        Your personal nutrition assistant. I know your targets, so tell me
+        what you&apos;re eating and I&apos;ll show you how it fits your plan.
       </p>
     </div>
   );
