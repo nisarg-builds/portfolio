@@ -66,6 +66,27 @@ export interface ChatMessage {
 }
 
 /**
+ * User's profile, targets, and today's consumed totals.
+ * Sent with food analysis requests so the AI can give contextual advice.
+ * Contains only nutritional data — no PII (userId, email, displayName).
+ */
+export interface UserContext {
+  dailyCalorieTarget: number;
+  proteinTargetG: number;
+  fatMinG: number;
+  carbsRemainingG: number;
+  consumedCalories: number;
+  consumedProteinG: number;
+  consumedCarbsG: number;
+  consumedFatG: number;
+  goal: string;
+  weightKg: number;
+  heightCm: number;
+  age: number;
+  gender: string;
+}
+
+/**
  * Request body sent to POST /api/fitglass/analyze.
  */
 export interface AnalyzeFoodRequest {
@@ -75,6 +96,8 @@ export interface AnalyzeFoodRequest {
   imageBase64?: string;
   /** MIME type of the image. */
   imageMediaType?: 'image/jpeg' | 'image/png' | 'image/webp';
+  /** User's profile context for personalized AI responses. */
+  userContext?: UserContext;
 }
 
 /**

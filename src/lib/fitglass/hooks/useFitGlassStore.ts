@@ -18,6 +18,8 @@ import { computeAllTargets } from '../utils/calculations';
 import { getActivityLevel } from '../constants/activityLevels';
 import { getDateKey, getLastNDays } from '../utils/dates';
 import { analyzeFood as analyzeFoodService } from '../services/ai';
+import { computeMacroTotals } from './useTodayMacros';
+import type { UserContext } from '../models/chat';
 
 // ─── Types ───
 
@@ -291,10 +293,33 @@ export const useFitGlassStore = create<NutriState>((set, get) => ({
     }));
 
     try {
+      // Build userContext from current store state (profile + targets + today's totals)
+      let userContext: UserContext | undefined;
+      const { profile, targets, todayEntries } = get();
+      if (profile && targets) {
+        const totals = computeMacroTotals(todayEntries);
+        userContext = {
+          dailyCalorieTarget: targets.dailyCalorieTarget,
+          proteinTargetG: targets.proteinTargetG,
+          fatMinG: targets.fatMinG,
+          carbsRemainingG: targets.carbsRemainingG,
+          consumedCalories: totals.consumed,
+          consumedProteinG: totals.proteinG,
+          consumedCarbsG: totals.carbsG,
+          consumedFatG: totals.fatG,
+          goal: profile.goal,
+          weightKg: profile.weightKg,
+          heightCm: profile.heightCm,
+          age: profile.age,
+          gender: profile.gender,
+        };
+      }
+
       const response = await analyzeFoodService(
         text,
         imageBase64,
         mediaType as 'image/jpeg' | 'image/png' | 'image/webp' | undefined,
+        userContext,
       );
 
       if (!response.success || !response.data) {

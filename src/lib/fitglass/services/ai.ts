@@ -1,7 +1,7 @@
 'use client';
 
 import { getFirebaseAuth } from './firebase-client';
-import type { AnalyzeFoodResponse } from '../models/chat';
+import type { AnalyzeFoodResponse, UserContext } from '../models/chat';
 
 /**
  * Call the FitGlass API route to analyze food.
@@ -11,6 +11,7 @@ export async function analyzeFood(
   text?: string,
   imageBase64?: string,
   imageMediaType?: 'image/jpeg' | 'image/png' | 'image/webp',
+  userContext?: UserContext,
 ): Promise<AnalyzeFoodResponse> {
   const auth = getFirebaseAuth();
   const user = auth.currentUser;
@@ -26,7 +27,7 @@ export async function analyzeFood(
       'Content-Type': 'application/json',
       Authorization: `Bearer ${idToken}`,
     },
-    body: JSON.stringify({ text, imageBase64, imageMediaType }),
+    body: JSON.stringify({ text, imageBase64, imageMediaType, userContext }),
   });
 
   const data: AnalyzeFoodResponse = await response.json();
