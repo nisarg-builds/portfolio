@@ -8,10 +8,8 @@ type CursorState = 'default' | 'interactive' | 'text'
 export function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false)
   const [cursorState, setCursorState] = useState<CursorState>('default')
-  const [isTouch] = useState(() =>
-    typeof window !== 'undefined'
-      ? window.matchMedia('(pointer: coarse)').matches
-      : true,
+  const [isTouch] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches,
   )
 
   const mouseX = useMotionValue(0)
@@ -54,9 +52,7 @@ export function CustomCursor() {
   }, [])
 
   useEffect(() => {
-    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
-
-    if (isTouchDevice) return
+    if (isTouch) return
 
     const prefersReduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
@@ -74,7 +70,7 @@ export function CustomCursor() {
       window.removeEventListener('mouseover', handleMouseOver)
       document.removeEventListener('mouseleave', handleMouseLeave)
     }
-  }, [handleMouseMove, handleMouseOver, handleMouseLeave])
+  }, [isTouch, handleMouseMove, handleMouseOver, handleMouseLeave])
 
   if (isTouch) return null
 

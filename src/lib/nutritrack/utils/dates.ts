@@ -17,11 +17,11 @@ export function formatDateKey(dateKey: string): string {
 }
 
 /** Get date keys for the last N days (including today). Oldest first. */
-export function getLastNDays(n: number): string[] {
+export function getLastNDays(n: number, offset = 0): string[] {
   const days: string[] = [];
   for (let i = n - 1; i >= 0; i--) {
     const d = new Date();
-    d.setDate(d.getDate() - i);
+    d.setDate(d.getDate() - i + offset * 7);
     days.push(getDateKey(d));
   }
   return days;

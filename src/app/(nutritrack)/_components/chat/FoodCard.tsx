@@ -66,7 +66,7 @@ export function FoodCard({ food }: FoodCardProps) {
           label="Cal"
           value={food.cal}
           unit=""
-          color="bg-gray-100 text-nt-text"
+          color="bg-nt-surface text-nt-text"
         />
         <MicroBadge
           label="P"
@@ -78,13 +78,13 @@ export function FoodCard({ food }: FoodCardProps) {
           label="C"
           value={food.carbs}
           unit="g"
-          color="bg-amber-50 text-nt-carbs"
+          color="bg-nt-carbs/10 text-nt-carbs"
         />
         <MicroBadge
           label="F"
           value={food.fat}
           unit="g"
-          color="bg-orange-50 text-nt-fat"
+          color="bg-nt-fat/10 text-nt-fat"
         />
       </div>
 

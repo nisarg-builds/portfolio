@@ -13,7 +13,7 @@ export function useFoodLog() {
   const { user } = useAuth();
   const todayEntries = useNutriStore((s) => s.todayEntries);
   const weekEntries = useNutriStore((s) => s.weekEntries);
-  const isLoading = useNutriStore((s) => s.isLoadingEntries);
+  const isLoading = useNutriStore((s) => s.isLoadingToday);
   const addFoodEntry = useNutriStore((s) => s.addFoodEntry);
   const removeFoodEntry = useNutriStore((s) => s.removeFoodEntry);
   const loadTodayEntries = useNutriStore((s) => s.loadTodayEntries);

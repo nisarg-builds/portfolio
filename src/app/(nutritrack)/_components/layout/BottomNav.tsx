@@ -1,17 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useNutriStore } from '@/lib/nutritrack/hooks/useNutriStore';
+import { useNutriStore, type ActiveView } from '@/lib/nutritrack/hooks/useNutriStore';
 import { cn } from '@/lib/utils';
+import { CalendarIcon, ChatBubbleIcon, ChartIcon, UserIcon } from './nav-icons';
 
-type ViewId = 'today' | 'chat' | 'week' | 'insights' | 'profile';
-
-const tabs: { id: ViewId; label: string }[] = [
-  { id: 'today', label: 'Today' },
-  { id: 'chat', label: 'AI Chat' },
-  { id: 'week', label: 'Week' },
-  { id: 'insights', label: 'Insights' },
-  { id: 'profile', label: 'Profile' },
+const tabs: { id: ActiveView; label: string; icon: React.ReactNode }[] = [
+  { id: 'today', label: 'Today', icon: <CalendarIcon /> },
+  { id: 'chat', label: 'Chat', icon: <ChatBubbleIcon /> },
+  { id: 'week', label: 'Week', icon: <ChartIcon /> },
+  { id: 'profile', label: 'Profile', icon: <UserIcon /> },
 ];
 
 export function BottomNav() {
@@ -19,8 +17,11 @@ export function BottomNav() {
   const setActiveView = useNutriStore((s) => s.setActiveView);
 
   return (
-    <nav aria-label="NutriTrack navigation" className="sticky top-0 z-10 border-b border-nt-border bg-nt-bg">
-      <div className="flex" role="tablist">
+    <nav
+      aria-label="NutriTrack navigation"
+      className="fixed inset-x-0 bottom-0 z-20 border-t border-nt-border bg-nt-bg/80 backdrop-blur-md lg:hidden"
+    >
+      <div className="mx-auto flex max-w-md" role="tablist">
         {tabs.map((tab) => {
           const isActive = activeView === tab.id;
           return (
@@ -28,20 +29,21 @@ export function BottomNav() {
               key={tab.id}
               role="tab"
               aria-selected={isActive}
-              aria-current={isActive ? 'page' : undefined}
+              aria-label={tab.label}
               onClick={() => setActiveView(tab.id)}
               data-cursor="interactive"
               className={cn(
-                'relative flex-1 py-3 text-xs transition-colors',
-                isActive ? 'font-semibold text-nt-text' : 'font-normal text-nt-text-soft',
+                'relative flex flex-1 flex-col items-center gap-0.5 py-3 transition-colors',
+                isActive ? 'text-nt-accent' : 'text-nt-text-soft',
               )}
             >
-              {tab.label}
+              {tab.icon}
               {isActive && (
                 <motion.div
                   layoutId="nt-active-tab"
-                  className="absolute inset-x-0 bottom-0 h-0.5 bg-nt-accent"
+                  className="absolute bottom-1 h-1 w-1 rounded-full bg-nt-accent"
                   transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  aria-hidden="true"
                 />
               )}
             </button>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { useNutriStore } from '@/lib/nutritrack/hooks/useNutriStore';
+import { useTodayMacros } from '@/lib/nutritrack/hooks/useTodayMacros';
 import { useChat } from '@/lib/nutritrack/hooks/useChat';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
@@ -24,16 +25,12 @@ function getServerSnapshot() {
 }
 
 export function ChatView() {
-  const todayEntries = useNutriStore((s) => s.todayEntries);
   const targets = useNutriStore((s) => s.targets);
+  const { consumed, proteinG, carbsG, fatG } = useTodayMacros();
   const { messages, sendMessage, isLoading } = useChat();
   const scrollRef = useRef<HTMLDivElement>(null);
   const isOnline = useSyncExternalStore(subscribeOnline, getOnlineSnapshot, getServerSnapshot);
 
-  const consumed = todayEntries.reduce((sum, e) => sum + e.nutrition.calories, 0);
-  const proteinG = Math.round(todayEntries.reduce((sum, e) => sum + e.nutrition.proteinG, 0));
-  const carbsG = Math.round(todayEntries.reduce((sum, e) => sum + e.nutrition.carbsG, 0));
-  const fatG = Math.round(todayEntries.reduce((sum, e) => sum + e.nutrition.fatG, 0));
   const target = targets?.dailyCalorieTarget ?? 2000;
 
   // Auto-scroll on new messages
@@ -45,9 +42,9 @@ export function ChatView() {
   }, [messages.length]);
 
   return (
-    <div className="flex h-[calc(100vh-120px)] flex-col">
+    <div className="flex h-full flex-col">
       {/* Compact summary bar */}
-      <div className="flex items-center justify-between border-b border-nt-border px-1 py-2.5">
+      <div className="flex shrink-0 items-center justify-between px-3 py-2">
         <p className="text-sm font-medium text-nt-text">
           {consumed}{' '}
           <span className="text-nt-text-soft">/ {target} kcal</span>
@@ -67,21 +64,23 @@ export function ChatView() {
 
       {/* Offline banner */}
       {!isOnline && (
-        <div className="bg-nt-danger-light px-3 py-2 text-center text-xs font-medium text-nt-danger">
+        <div className="shrink-0 bg-nt-danger-light px-3 py-2 text-center text-xs font-medium text-nt-danger">
           You&apos;re offline — AI features unavailable
         </div>
       )}
 
       {/* Message area */}
-      <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-1 py-4">
-        {messages.length === 0 ? (
-          <WelcomeMessage />
-        ) : (
-          messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)
-        )}
+      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
+        <div className="space-y-4">
+          {messages.length === 0 ? (
+            <WelcomeMessage />
+          ) : (
+            messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)
+          )}
+        </div>
       </div>
 
-      {/* Input */}
+      {/* Input — flush to bottom */}
       <ChatInput onSend={sendMessage} disabled={isLoading} offline={!isOnline} autoFocus />
     </div>
   );

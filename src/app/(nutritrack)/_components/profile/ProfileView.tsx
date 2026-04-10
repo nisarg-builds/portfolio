@@ -72,7 +72,7 @@ function NumberField({ label, value, onChange, min, max, step = 1, unit }: Numbe
           min={min}
           max={max}
           step={step}
-          className="w-full rounded-lg border border-nt-border bg-nt-bg px-3 py-2 text-sm text-nt-text outline-none focus:border-nt-accent"
+          className="w-full rounded-lg border border-nt-border bg-nt-surface px-3 py-2 text-sm text-nt-text outline-none focus:border-nt-accent"
         />
         <span className="shrink-0 text-xs text-nt-text-soft">{unit}</span>
       </div>

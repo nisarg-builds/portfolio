@@ -13,7 +13,7 @@ import {
   type QueryDocumentSnapshot,
 } from 'firebase/firestore';
 import { getFirebaseDb, getUserProfileRef, getFoodLogCollection } from '../services/firebase-client';
-import type { UserProfile, ComputedTargets, FoodEntry, QuickFood, ChatMessage } from '../models';
+import type { UserProfile, ComputedTargets, FoodEntry, ChatMessage } from '../models';
 import { computeAllTargets } from '../utils/calculations';
 import { getActivityLevel } from '../constants/activityLevels';
 import { getDateKey, getLastNDays } from '../utils/dates';
@@ -33,17 +33,15 @@ interface NutriState {
   // Food Log
   todayEntries: FoodEntry[];
   weekEntries: Record<string, FoodEntry[]>;
-  isLoadingEntries: boolean;
-
-  // Quick Foods
-  quickFoods: QuickFood[];
+  isLoadingToday: boolean;
+  isLoadingWeek: boolean;
 
   // Chat
   chatMessages: ChatMessage[];
   isChatLoading: boolean;
 
   // Active View
-  activeView: 'today' | 'chat' | 'week' | 'insights' | 'profile';
+  activeView: 'today' | 'chat' | 'week' | 'profile';
 
   // Actions
   setUser: (user: NutriState['user']) => void;
@@ -54,13 +52,16 @@ interface NutriState {
   analyzeFood: (text?: string, imageBase64?: string, mediaType?: string) => Promise<void>;
   setActiveView: (view: NutriState['activeView']) => void;
   loadTodayEntries: () => Promise<void>;
-  loadWeekEntries: () => Promise<void>;
+  loadWeekEntries: (offset?: number) => Promise<void>;
   resetAllData: () => Promise<void>;
 }
+
+export type ActiveView = NutriState['activeView'];
 
 // ─── Helpers ───
 
 let profileDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+let _weekRequestId = 0;
 
 function docToFoodEntry(snapshot: QueryDocumentSnapshot): FoodEntry {
   const data = snapshot.data();
@@ -83,8 +84,8 @@ export const useNutriStore = create<NutriState>((set, get) => ({
   targets: null,
   todayEntries: [],
   weekEntries: {},
-  isLoadingEntries: false,
-  quickFoods: [],
+  isLoadingToday: false,
+  isLoadingWeek: false,
   chatMessages: [],
   isChatLoading: false,
   activeView: 'today',
@@ -130,9 +131,14 @@ export const useNutriStore = create<NutriState>((set, get) => ({
     const fullEntry: FoodEntry = { ...entry, id: tempId, createdAt: now, updatedAt: now };
     const today = getDateKey();
 
-    // Optimistic add
+    // Optimistic add to todayEntries and weekEntries
     if (entry.dateKey === today) {
-      set((state) => ({ todayEntries: [fullEntry, ...state.todayEntries] }));
+      set((state) => ({
+        todayEntries: [fullEntry, ...state.todayEntries],
+        weekEntries: state.weekEntries[today]
+          ? { ...state.weekEntries, [today]: [fullEntry, ...state.weekEntries[today]] }
+          : state.weekEntries,
+      }));
     }
 
     try {
@@ -141,17 +147,31 @@ export const useNutriStore = create<NutriState>((set, get) => ({
       const { id: _, ...firestoreData } = fullEntry;
       const docRef = await addDoc(getFoodLogCollection(entry.userId), firestoreData);
 
-      // Replace temp ID with real Firestore ID
+      // Replace temp ID with real Firestore ID in both slices
       set((state) => ({
         todayEntries: state.todayEntries.map((e) =>
           e.id === tempId ? { ...e, id: docRef.id } : e,
         ),
+        weekEntries: state.weekEntries[today]
+          ? {
+              ...state.weekEntries,
+              [today]: state.weekEntries[today].map((e) =>
+                e.id === tempId ? { ...e, id: docRef.id } : e,
+              ),
+            }
+          : state.weekEntries,
       }));
     } catch (error) {
       console.error('Failed to add food entry:', error);
-      // Roll back optimistic update
+      // Roll back optimistic update from both slices
       set((state) => ({
         todayEntries: state.todayEntries.filter((e) => e.id !== tempId),
+        weekEntries: state.weekEntries[today]
+          ? {
+              ...state.weekEntries,
+              [today]: state.weekEntries[today].filter((e) => e.id !== tempId),
+            }
+          : state.weekEntries,
       }));
     }
   },
@@ -161,20 +181,36 @@ export const useNutriStore = create<NutriState>((set, get) => ({
     const removed = todayEntries.find((e) => e.id === entryId);
     if (!removed || !user) return;
 
-    // Optimistic remove
+    const today = getDateKey();
+
+    // Optimistic remove from todayEntries and weekEntries
     set((state) => ({
       todayEntries: state.todayEntries.filter((e) => e.id !== entryId),
+      weekEntries: state.weekEntries[today]
+        ? {
+            ...state.weekEntries,
+            [today]: state.weekEntries[today].filter((e) => e.id !== entryId),
+          }
+        : state.weekEntries,
     }));
 
     try {
       await deleteDoc(doc(getFirebaseDb(), 'users', user.uid, 'foodLog', entryId));
     } catch (error) {
       console.error('Failed to remove food entry:', error);
-      // Roll back — restore the removed entry
+      // Roll back — restore the removed entry in both slices
       set((state) => ({
         todayEntries: [...state.todayEntries, removed].sort(
           (a, b) => b.loggedAt.getTime() - a.loggedAt.getTime(),
         ),
+        weekEntries: state.weekEntries[today]
+          ? {
+              ...state.weekEntries,
+              [today]: [...(state.weekEntries[today] || []), removed].sort(
+                (a, b) => b.loggedAt.getTime() - a.loggedAt.getTime(),
+              ),
+            }
+          : state.weekEntries,
       }));
     }
   },
@@ -183,7 +219,7 @@ export const useNutriStore = create<NutriState>((set, get) => ({
     const uid = get().user?.uid;
     if (!uid) return;
 
-    set({ isLoadingEntries: true });
+    set({ isLoadingToday: true });
     try {
       const q = query(
         getFoodLogCollection(uid),
@@ -192,22 +228,26 @@ export const useNutriStore = create<NutriState>((set, get) => ({
       );
       const snap = await getDocs(q);
       const entries = snap.docs.map(docToFoodEntry);
-      set({ todayEntries: entries, isLoadingEntries: false });
+      set({ todayEntries: entries, isLoadingToday: false });
     } catch (error) {
       console.error('Failed to load today entries:', error);
-      set({ isLoadingEntries: false });
+      set({ isLoadingToday: false });
     }
   },
 
-  loadWeekEntries: async () => {
+  loadWeekEntries: async (offset = 0) => {
     const uid = get().user?.uid;
     if (!uid) return;
 
-    set({ isLoadingEntries: true });
+    const requestId = ++_weekRequestId;
+    set({ isLoadingWeek: true });
     try {
-      const days = getLastNDays(7);
+      const days = getLastNDays(7, offset);
       const q = query(getFoodLogCollection(uid), where('dateKey', 'in', days));
       const snap = await getDocs(q);
+
+      // Drop stale responses from earlier requests
+      if (requestId !== _weekRequestId) return;
 
       const grouped: Record<string, FoodEntry[]> = {};
       for (const d of snap.docs) {
@@ -216,10 +256,11 @@ export const useNutriStore = create<NutriState>((set, get) => ({
         grouped[entry.dateKey].push(entry);
       }
 
-      set({ weekEntries: grouped, isLoadingEntries: false });
+      set({ weekEntries: grouped, isLoadingWeek: false });
     } catch (error) {
+      if (requestId !== _weekRequestId) return;
       console.error('Failed to load week entries:', error);
-      set({ isLoadingEntries: false });
+      set({ isLoadingWeek: false });
     }
   },
 

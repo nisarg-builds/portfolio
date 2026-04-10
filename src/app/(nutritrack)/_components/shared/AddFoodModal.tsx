@@ -147,7 +147,7 @@ export function AddFoodModal({ onClose }: AddFoodModalProps) {
         role="dialog"
         aria-modal="true"
         aria-label="Add food"
-        className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-md rounded-t-2xl bg-nt-card"
+        className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-md rounded-t-2xl border-t border-nt-border bg-nt-card backdrop-blur-md"
         initial={{ y: '100%' }}
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
@@ -186,7 +186,7 @@ export function AddFoodModal({ onClose }: AddFoodModalProps) {
             aria-label="Search quick foods"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="mb-3 w-full rounded-lg border border-nt-border bg-nt-bg px-3 py-2 text-sm text-nt-text placeholder:text-nt-text-soft focus:border-nt-accent focus:outline-none"
+            className="mb-3 w-full rounded-lg border border-nt-border bg-nt-surface px-3 py-2 text-sm text-nt-text placeholder:text-nt-text-soft focus:border-nt-accent focus:outline-none"
           />
 
           {/* Quick foods list */}
@@ -198,7 +198,7 @@ export function AddFoodModal({ onClose }: AddFoodModalProps) {
                 <button
                   key={food.name}
                   onClick={() => logQuickFood(food.nutrition, food.name)}
-                  className="flex w-full items-center justify-between rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-nt-bg"
+                  className="flex w-full items-center justify-between rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-nt-surface"
                   data-cursor="interactive"
                 >
                   <span className="text-sm text-nt-text">{food.name}</span>
@@ -224,7 +224,7 @@ export function AddFoodModal({ onClose }: AddFoodModalProps) {
             aria-label="Food name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="mb-3 w-full rounded-lg border border-nt-border bg-nt-bg px-3 py-2 text-sm text-nt-text placeholder:text-nt-text-soft focus:border-nt-accent focus:outline-none"
+            className="mb-3 w-full rounded-lg border border-nt-border bg-nt-surface px-3 py-2 text-sm text-nt-text placeholder:text-nt-text-soft focus:border-nt-accent focus:outline-none"
           />
 
           <div className="mb-3 grid grid-cols-2 gap-2">
@@ -271,7 +271,7 @@ function NumberInput({
         placeholder="0"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-nt-border bg-nt-bg px-3 py-2 text-sm text-nt-text placeholder:text-nt-text-soft focus:border-nt-accent focus:outline-none"
+        className="w-full rounded-lg border border-nt-border bg-nt-surface px-3 py-2 text-sm text-nt-text placeholder:text-nt-text-soft focus:border-nt-accent focus:outline-none"
       />
     </div>
   );

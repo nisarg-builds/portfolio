@@ -15,8 +15,9 @@ export function computeWeeklyStats(
   weekEntries: Record<string, FoodEntry[]>,
   dailyTarget: number,
   tdee: number,
+  offset = 0,
 ): WeeklyStats {
-  const dateKeys = getLastNDays(7);
+  const dateKeys = getLastNDays(7, offset);
 
   const days: DaySummary[] = dateKeys.map((dateKey) => {
     const entries = weekEntries[dateKey] || [];
@@ -39,8 +40,9 @@ export function computeWeeklyStats(
 
   const daysLogged = days.filter((d) => d.entryCount > 0).length;
   const daysOnTarget = days.filter((d) => d.isOnTarget).length;
+  const divisor = Math.max(daysLogged, 1);
   const avgCalories = Math.round(
-    days.reduce((s, d) => s + d.totalCalories, 0) / 7,
+    days.reduce((s, d) => s + d.totalCalories, 0) / divisor,
   );
   const weeklyDeficit = days.reduce((s, d) => s + (tdee - d.totalCalories), 0);
 
@@ -48,10 +50,10 @@ export function computeWeeklyStats(
     days,
     avgCalories,
     avgProteinG: Math.round(
-      days.reduce((s, d) => s + d.totalProteinG, 0) / 7,
+      days.reduce((s, d) => s + d.totalProteinG, 0) / divisor,
     ),
-    avgCarbsG: Math.round(days.reduce((s, d) => s + d.totalCarbsG, 0) / 7),
-    avgFatG: Math.round(days.reduce((s, d) => s + d.totalFatG, 0) / 7),
+    avgCarbsG: Math.round(days.reduce((s, d) => s + d.totalCarbsG, 0) / divisor),
+    avgFatG: Math.round(days.reduce((s, d) => s + d.totalFatG, 0) / divisor),
     daysOnTarget,
     daysLogged,
     weeklyDeficit,
