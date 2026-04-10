@@ -93,7 +93,7 @@ function WelcomeMessage() {
         NB
       </div>
       <p className="text-sm font-medium text-fg-text">
-        Hey! I&apos;m NutriBot
+        Hey! I&apos;m Lens
       </p>
       <p className="max-w-[280px] text-xs text-fg-text-soft">
         Tell me what you ate or snap a photo of your meal — I&apos;ll break

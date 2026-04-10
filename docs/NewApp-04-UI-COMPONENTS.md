@@ -177,7 +177,7 @@ const modalSheet = {
 - Animate in with `motion.div` fade+slideUp
 
 **ChatMessage (assistant):**
-- Left-aligned, small accent avatar circle, "NutriBot" label
+- Left-aligned, small accent avatar circle, "Lens" label
 - `bg-fg-chat-ai` text bubble
 - `FoodCard` components below bubble (if foods present)
 - Animate in with `motion.div` fade+slideUp
@@ -301,7 +301,7 @@ The app is mobile-first at 480px max-width, centered. On desktop it renders as a
 | View | Loading State | Empty State |
 |------|--------------|-------------|
 | TodayView | Skeleton cards (pulsing `animate-pulse` rectangles) | "No food logged yet" + AI Chat & Quick Add buttons |
-| ChatView | Three animated dots in AI bubble | Welcome message from NutriBot |
+| ChatView | Three animated dots in AI bubble | Welcome message from Lens |
 | WeekView | Skeleton chart area | Chart with zero-height bars, stats show 0 |
 | InsightsView | None (instant compute) | Single info badge: "Start logging meals..." |
 | ProfileView | Skeleton form fields | Pre-filled with defaults |
