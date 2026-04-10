@@ -1,4 +1,4 @@
-# NutriTrack — UI Components & Behavior Spec
+# FitGlass — UI Components & Behavior Spec
 
 > Exact behavior, props, states, and edge cases for every component.
 > All components are client components (`'use client'`) since they use hooks, state, and browser APIs.
@@ -10,38 +10,38 @@
 
 ### 1.1 Tailwind v4 Tokens
 
-Defined in `lib/nutritrack/styles/nutritrack.css` using `@theme`:
+Defined in `lib/fitglass/styles/fitglass.css` using `@theme`:
 
 ```css
 @theme {
-  --color-nt-bg: #FAFAF8;
-  --color-nt-card: #FFFFFF;
-  --color-nt-border: #ECECEC;
-  --color-nt-text: #1A1A1A;
-  --color-nt-text-soft: #8A8A8A;
-  --color-nt-accent: #2D6A4F;
-  --color-nt-accent-light: #D8F3DC;
-  --color-nt-protein: #2D6A4F;
-  --color-nt-carbs: #E9C46A;
-  --color-nt-fat: #E76F51;
-  --color-nt-danger: #DC3545;
-  --color-nt-danger-light: #FDE8EA;
-  --color-nt-chat-user: #E8F0E8;
-  --color-nt-chat-ai: #F5F5F3;
+  --color-fg-bg: #FAFAF8;
+  --color-fg-card: #FFFFFF;
+  --color-fg-border: #ECECEC;
+  --color-fg-text: #1A1A1A;
+  --color-fg-text-soft: #8A8A8A;
+  --color-fg-accent: #2D6A4F;
+  --color-fg-accent-light: #D8F3DC;
+  --color-fg-protein: #2D6A4F;
+  --color-fg-carbs: #E9C46A;
+  --color-fg-fat: #E76F51;
+  --color-fg-danger: #DC3545;
+  --color-fg-danger-light: #FDE8EA;
+  --color-fg-chat-user: #E8F0E8;
+  --color-fg-chat-ai: #F5F5F3;
 }
 ```
 
-Usage: `className="bg-nt-card text-nt-text border-nt-border"`.
+Usage: `className="bg-fg-card text-fg-text border-fg-border"`.
 
 ### 1.2 Typography
 
 ```
-Font: DM Sans (load via next/font/google in NutriTrack layout.tsx)
+Font: DM Sans (load via next/font/google in FitGlass layout.tsx)
 Weights: 400, 500, 600, 700
 
 Sizes (use Tailwind classes):
   - Big number:    text-4xl font-bold tracking-tight
-  - Section label: text-xs font-medium uppercase tracking-widest text-nt-text-soft
+  - Section label: text-xs font-medium uppercase tracking-widest text-fg-text-soft
   - Body:          text-sm font-normal
   - Small:         text-xs font-normal/medium
 ```
@@ -49,7 +49,7 @@ Sizes (use Tailwind classes):
 ### 1.3 Font Loading (Next.js way)
 
 ```typescript
-// app/(nutritrack)/nutritrack/layout.tsx
+// app/(fitglass)/fitglass/layout.tsx
 import { DM_Sans } from 'next/font/google';
 
 const dmSans = DM_Sans({
@@ -58,7 +58,7 @@ const dmSans = DM_Sans({
   variable: '--font-dm-sans',
 });
 
-export default function NutriTrackLayout({ children }: { children: React.ReactNode }) {
+export default function FitGlassLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className={`${dmSans.variable} font-[family-name:var(--font-dm-sans)]`}>
       {children}
@@ -116,25 +116,25 @@ const modalSheet = {
 
 ### 2.1 AppShell / BottomNav
 
-**File:** `app/(nutritrack)/_components/layout/AppShell.tsx` (client component)
+**File:** `app/(fitglass)/_components/layout/AppShell.tsx` (client component)
 
 **Behavior:**
-- Max-width 480px, centered, min-height screen, `bg-nt-bg` background
+- Max-width 480px, centered, min-height screen, `bg-fg-bg` background
 - Renders `BottomNav` at top (sticky)
 - Renders active view below, wrapped in `AnimatePresence` for transitions
 - Active view switches via Zustand `activeView` state
 
 **BottomNav:**
 - 5 tab buttons: Today, AI Chat, Week, Insights, Profile
-- Active tab: `font-semibold text-nt-text` + 2px accent bottom border
-- Inactive tab: `font-normal text-nt-text-soft` + transparent border
+- Active tab: `font-semibold text-fg-text` + 2px accent bottom border
+- Inactive tab: `font-normal text-fg-text-soft` + transparent border
 - `motion.div` layoutId on the active indicator for smooth sliding animation
 
 ---
 
 ### 2.2 TodayView
 
-**File:** `app/(nutritrack)/_components/today/TodayView.tsx`
+**File:** `app/(fitglass)/_components/today/TodayView.tsx`
 
 **Layout (top to bottom):**
 1. `CalorieSummaryCard` — big number, progress bar, remaining/over
@@ -142,8 +142,8 @@ const modalSheet = {
 3. `FoodLogList` — header buttons + entries list
 
 **CalorieSummaryCard:**
-- `consumed / target kcal` — consumed is `text-4xl font-bold`, target is `text-sm text-nt-text-soft`
-- `ProgressBar` fills green (`bg-nt-accent`) when under target, red (`bg-nt-danger`) when over
+- `consumed / target kcal` — consumed is `text-4xl font-bold`, target is `text-sm text-fg-text-soft`
+- `ProgressBar` fills green (`bg-fg-accent`) when under target, red (`bg-fg-danger`) when over
 - Animate the progress bar width with Framer Motion `motion.div` + `animate={{ width: ... }}`
 - Below: left = remaining/over text, right = TDEE value
 
@@ -163,7 +163,7 @@ const modalSheet = {
 
 ### 2.3 ChatView
 
-**File:** `app/(nutritrack)/_components/chat/ChatView.tsx`
+**File:** `app/(fitglass)/_components/chat/ChatView.tsx`
 
 **Layout:**
 - Compact summary bar (sticky, shows consumed/target + P/C/F)
@@ -172,21 +172,21 @@ const modalSheet = {
 - Input bar (bottom, above keyboard on mobile)
 
 **ChatMessage (user):**
-- Right-aligned, `bg-nt-chat-user`, rounded bubble (14px radius, bottom-right 4px)
+- Right-aligned, `bg-fg-chat-user`, rounded bubble (14px radius, bottom-right 4px)
 - Optional image thumbnail above text
 - Animate in with `motion.div` fade+slideUp
 
 **ChatMessage (assistant):**
 - Left-aligned, small accent avatar circle, "NutriBot" label
-- `bg-nt-chat-ai` text bubble
+- `bg-fg-chat-ai` text bubble
 - `FoodCard` components below bubble (if foods present)
 - Animate in with `motion.div` fade+slideUp
 
 **ChatInput:**
 - `[📷 button] [textarea] [send button]`
-- Image button: 40×40, `border-nt-border`, opens `<input type="file" accept="image/*" />`
+- Image button: 40×40, `border-fg-border`, opens `<input type="file" accept="image/*" />`
 - Textarea: auto-expanding (1 row → max 4 rows), Enter sends, Shift+Enter newline
-- Send button: 40×40, `bg-nt-accent` when enabled, `bg-nt-border` when disabled
+- Send button: 40×40, `bg-fg-accent` when enabled, `bg-fg-border` when disabled
 - Disabled when: loading OR (no text AND no image queued)
 
 **FoodCard:**
@@ -203,7 +203,7 @@ const modalSheet = {
 
 ### 2.4 AddFoodModal
 
-**File:** `app/(nutritrack)/_components/shared/AddFoodModal.tsx`
+**File:** `app/(fitglass)/_components/shared/AddFoodModal.tsx`
 
 **Trigger:** "+ Add" button on TodayView
 
@@ -229,7 +229,7 @@ const modalSheet = {
 
 ### 2.5 WeekView
 
-**File:** `app/(nutritrack)/_components/week/WeekView.tsx`
+**File:** `app/(fitglass)/_components/week/WeekView.tsx`
 
 **Layout:**
 1. Bar chart card — Recharts BarChart, 7 days, accent green bars
@@ -250,7 +250,7 @@ const modalSheet = {
 
 ### 2.6 InsightsView
 
-**File:** `app/(nutritrack)/_components/insights/InsightsView.tsx`
+**File:** `app/(fitglass)/_components/insights/InsightsView.tsx`
 
 **Layout:**
 1. Insights card — dynamic `InsightBadge` components
@@ -258,16 +258,16 @@ const modalSheet = {
 3. Quick tips card — 4 tips with left border accent
 
 **InsightBadge:**
-- `bg-nt-accent-light text-nt-accent` for "good"
-- `bg-nt-danger-light text-nt-danger` for "warning"
-- `bg-gray-100 text-nt-text` for "info"
+- `bg-fg-accent-light text-fg-accent` for "good"
+- `bg-fg-danger-light text-fg-danger` for "warning"
+- `bg-gray-100 text-fg-text` for "info"
 - Animate in with staggered `motion.div` delays
 
 ---
 
 ### 2.7 ProfileView
 
-**File:** `app/(nutritrack)/_components/profile/ProfileView.tsx`
+**File:** `app/(fitglass)/_components/profile/ProfileView.tsx`
 
 **Layout:**
 1. Profile form card — inputs + toggles
@@ -277,7 +277,7 @@ const modalSheet = {
 **Form behavior:**
 - All changes save immediately (debounced 500ms to Firestore)
 - Toggle buttons for gender, activity, goal rate — use `motion.button` with `whileTap={{ scale: 0.97 }}`
-- Active toggle: `bg-nt-accent text-white`, inactive: `border-nt-border bg-transparent`
+- Active toggle: `bg-fg-accent text-white`, inactive: `border-fg-border bg-transparent`
 
 **Reset button:**
 - `window.confirm()` → reset profile to defaults + delete all foodLog entries

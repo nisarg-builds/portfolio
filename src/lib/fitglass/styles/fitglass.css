@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --color-fg-bg: #0A0A0B;
+  --color-fg-card: rgba(255,255,255,0.05);
+  --color-fg-border: rgba(255,255,255,0.08);
+  --color-fg-text: #E5E5E5;
+  --color-fg-text-soft: #6B6B6B;
+  --color-fg-accent: #34D399;
+  --color-fg-accent-light: rgba(52,211,153,0.12);
+  --color-fg-protein: #34D399;
+  --color-fg-carbs: #FBBF24;
+  --color-fg-fat: #FB923C;
+  --color-fg-danger: #EF4444;
+  --color-fg-danger-light: rgba(239,68,68,0.15);
+  --color-fg-chat-user: rgba(52,211,153,0.10);
+  --color-fg-chat-ai: rgba(255,255,255,0.04);
+  --color-fg-surface: rgba(255,255,255,0.07);
+  --color-fg-glow: rgba(52,211,153,0.20);
+}

@@ -1,11 +1,11 @@
-# NutriTrack — API Route & AI Service
+# FitGlass — API Route & AI Service
 
 > Next.js API Route handler that proxies Claude API requests. Replaces Firebase Cloud Functions.
 > Uses the portfolio's existing `firebase-admin` package for auth verification and rate limiting.
 
 ---
 
-## 1. API Route: `POST /api/nutritrack/analyze`
+## 1. API Route: `POST /api/fitglass/analyze`
 
 ### 1.1 Overview
 
@@ -20,7 +20,7 @@ A Next.js App Router API route that:
 ### 1.2 Route Configuration
 
 ```typescript
-// app/api/nutritrack/analyze/route.ts
+// app/api/fitglass/analyze/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from 'firebase-admin/auth';
@@ -355,7 +355,7 @@ export async function POST(request: NextRequest) {
       rateLimitRemaining: rateLimit.remaining,
     });
   } catch (err) {
-    console.error('Unhandled error in /api/nutritrack/analyze:', err);
+    console.error('Unhandled error in /api/fitglass/analyze:', err);
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
       { status: 500 },
@@ -377,13 +377,13 @@ This is the only new server-side dependency. `firebase-admin` is already install
 ## 2. Client-Side AI Service
 
 ```typescript
-// lib/nutritrack/services/ai.ts
+// lib/fitglass/services/ai.ts
 
 import { getAuth } from 'firebase/auth';
 import type { AnalyzeFoodResponse } from '../models/chat';
 
 /**
- * Call the NutriTrack API route to analyze food.
+ * Call the FitGlass API route to analyze food.
  * Sends the Firebase ID token for authentication.
  */
 export async function analyzeFood(
@@ -400,7 +400,7 @@ export async function analyzeFood(
 
   const idToken = await user.getIdToken();
 
-  const response = await fetch('/api/nutritrack/analyze', {
+  const response = await fetch('/api/fitglass/analyze', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -503,10 +503,10 @@ async function resizeImage(file: File): Promise<File> {
 
 ## 3. Firebase Client SDK Setup
 
-The portfolio uses `firebase-admin` server-side. NutriTrack needs the `firebase` client SDK for Auth and Firestore realtime listeners in the browser.
+The portfolio uses `firebase-admin` server-side. FitGlass needs the `firebase` client SDK for Auth and Firestore realtime listeners in the browser.
 
 ```typescript
-// lib/nutritrack/services/firebase-client.ts
+// lib/fitglass/services/firebase-client.ts
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';

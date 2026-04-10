@@ -1,4 +1,4 @@
-# NutriTrack — Architecture & Implementation Spec
+# FitGlass — Architecture & Implementation Spec
 
 > A production-ready AI-powered calorie and nutrition tracker, built as a route module inside an existing Next.js 16 portfolio website.
 
@@ -6,7 +6,7 @@
 
 ## 1. Product Overview
 
-NutriTrack is a calorie and nutrition tracking app that lets users log food via text, image upload, or manual entry. An AI chat interface (powered by Claude) analyzes food descriptions and photos to estimate calories, macronutrients, and micronutrients. The app calculates TDEE, sets calorie targets based on user goals (fat loss / muscle gain / maintenance), and provides weekly insights and trend visualization.
+FitGlass is a calorie and nutrition tracking app that lets users log food via text, image upload, or manual entry. An AI chat interface (powered by Claude) analyzes food descriptions and photos to estimate calories, macronutrients, and micronutrients. The app calculates TDEE, sets calorie targets based on user goals (fat loss / muscle gain / maintenance), and provides weekly insights and trend visualization.
 
 ### Core User Flows
 
@@ -31,16 +31,16 @@ This app lives **inside** the existing portfolio repo. No new framework, no sepa
 
 | Layer | Technology | Notes |
 |-------|-----------|-------|
-| Framework | Next.js 16.2.1 (App Router) | Already in portfolio. NutriTrack is a route group. |
+| Framework | Next.js 16.2.1 (App Router) | Already in portfolio. FitGlass is a route group. |
 | UI | React 19.2.4 | Already in portfolio. |
-| Styling | Tailwind CSS v4 (with Typography plugin) | Already in portfolio. Use `@layer` and `@theme` for NutriTrack tokens. No `tailwind.config.js` — Tailwind v4 uses CSS-based config. |
+| Styling | Tailwind CSS v4 (with Typography plugin) | Already in portfolio. Use `@layer` and `@theme` for FitGlass tokens. No `tailwind.config.js` — Tailwind v4 uses CSS-based config. |
 | Animations | Framer Motion 12.38 | Already in portfolio. Use for page transitions, modal enter/exit, micro-interactions. |
-| State | Zustand | **New dependency.** Lightweight client state for the NutriTrack module. |
+| State | Zustand | **New dependency.** Lightweight client state for the FitGlass module. |
 | Backend (existing) | Firebase Admin 13.7 | Already in portfolio for Firestore + Cloud Storage. Reuse the same Firebase project. |
-| Backend (client) | Firebase Client SDK (new) | **New dependency.** Needed for client-side Auth and Firestore realtime listeners. The portfolio uses Admin SDK server-side — NutriTrack needs the client SDK too. |
+| Backend (client) | Firebase Client SDK (new) | **New dependency.** Needed for client-side Auth and Firestore realtime listeners. The portfolio uses Admin SDK server-side — FitGlass needs the client SDK too. |
 | AI | Anthropic Claude API | Called via Next.js API Route (server-side). API key in environment variable. |
 | Charts | Recharts | **New dependency.** React-native charting. |
-| Deployment | Vercel | Already configured. NutriTrack deploys with the portfolio. |
+| Deployment | Vercel | Already configured. FitGlass deploys with the portfolio. |
 
 ### New dependencies to install
 
@@ -52,25 +52,25 @@ npm install zustand recharts firebase
 ### Why NOT separate packages
 
 - The portfolio already has Next.js, React, Tailwind, Framer Motion, Firebase Admin, and Vercel configured.
-- Adding NutriTrack as a route group (`app/(nutritrack)/`) means zero new build config.
+- Adding FitGlass as a route group (`app/(fitglass)/`) means zero new build config.
 - The API route for Claude lives alongside existing API routes.
-- Tailwind v4's `@layer` system lets us scope NutriTrack tokens without prefixing.
+- Tailwind v4's `@layer` system lets us scope FitGlass tokens without prefixing.
 
 ---
 
 ## 3. Project Structure
 
-NutriTrack files live inside the existing portfolio repo. Nothing outside these paths is modified.
+FitGlass files live inside the existing portfolio repo. Nothing outside these paths is modified.
 
 ```
 app/
-├── (nutritrack)/                      # Route group (no URL prefix from the parens)
-│   ├── nutritrack/                    # URL: /nutritrack
-│   │   ├── page.tsx                   # Main entry — renders <NutriTrackApp />
-│   │   └── layout.tsx                 # NutriTrack-specific layout (metadata, fonts)
+├── (fitglass)/                      # Route group (no URL prefix from the parens)
+│   ├── fitglass/                    # URL: /fitglass
+│   │   ├── page.tsx                   # Main entry — renders <FitGlassApp />
+│   │   └── layout.tsx                 # FitGlass-specific layout (metadata, fonts)
 │   │
-│   └── _components/                   # NutriTrack-only components (not routed)
-│       ├── NutriTrackApp.tsx          # Root client component, auth gate, view router
+│   └── _components/                   # FitGlass-only components (not routed)
+│       ├── FitGlassApp.tsx          # Root client component, auth gate, view router
 │       │
 │       ├── layout/
 │       │   ├── AppShell.tsx           # Nav bar, view switching, layout wrapper
@@ -110,12 +110,12 @@ app/
 │           └── ProgressBar.tsx
 │
 ├── api/
-│   └── nutritrack/
+│   └── fitglass/
 │       └── analyze/
 │           └── route.ts               # POST handler — Claude API proxy
 │
 lib/
-├── nutritrack/
+├── fitglass/
 │   ├── models/
 │   │   ├── index.ts                   # Re-exports all types
 │   │   ├── user.ts
@@ -125,7 +125,7 @@ lib/
 │   │
 │   ├── hooks/
 │   │   ├── useAuth.ts
-│   │   ├── useNutriStore.ts           # Zustand store
+│   │   ├── useFitGlassStore.ts           # Zustand store
 │   │   ├── useFoodLog.ts
 │   │   ├── useProfile.ts
 │   │   ├── useInsights.ts
@@ -133,7 +133,7 @@ lib/
 │   │
 │   ├── services/
 │   │   ├── firebase-client.ts         # Firebase CLIENT SDK init (separate from portfolio's admin SDK)
-│   │   ├── ai.ts                      # Client-side fetch to /api/nutritrack/analyze
+│   │   ├── ai.ts                      # Client-side fetch to /api/fitglass/analyze
 │   │   └── nutrition.ts               # TDEE calc, target calc
 │   │
 │   ├── utils/
@@ -148,20 +148,20 @@ lib/
 │   │   └── prompts.ts
 │   │
 │   └── styles/
-│       └── nutritrack.css             # @theme tokens + component styles
+│       └── fitglass.css             # @theme tokens + component styles
 ```
 
 ### Key architectural decisions
 
-**Route group `(nutritrack)`**: The parentheses mean Next.js doesn't add "nutritrack" twice to the URL. The actual URL is just `/nutritrack`.
+**Route group `(fitglass)`**: The parentheses mean Next.js doesn't add "fitglass" twice to the URL. The actual URL is just `/fitglass`.
 
 **`_components` directory**: The underscore prefix tells Next.js App Router this is NOT a route segment. It's a private folder for components.
 
-**`lib/nutritrack/`**: Shared logic (types, hooks, utils) lives in `lib/` following Next.js conventions. This keeps it importable from both server components (layout) and client components.
+**`lib/fitglass/`**: Shared logic (types, hooks, utils) lives in `lib/` following Next.js conventions. This keeps it importable from both server components (layout) and client components.
 
-**Two Firebase instances**: The portfolio already uses `firebase-admin` server-side. NutriTrack needs the `firebase` client SDK for Auth (sign-in popup) and Firestore realtime listeners. These are different packages — `firebase-client.ts` initializes the client SDK separately.
+**Two Firebase instances**: The portfolio already uses `firebase-admin` server-side. FitGlass needs the `firebase` client SDK for Auth (sign-in popup) and Firestore realtime listeners. These are different packages — `firebase-client.ts` initializes the client SDK separately.
 
-**API Route instead of Cloud Function**: Since the portfolio is on Vercel, we use a Next.js API Route (`app/api/nutritrack/analyze/route.ts`) instead of Firebase Cloud Functions. Same logic — auth verification, rate limiting, Claude API call — but deployed as a Vercel serverless function automatically. No separate `functions/` directory needed.
+**API Route instead of Cloud Function**: Since the portfolio is on Vercel, we use a Next.js API Route (`app/api/fitglass/analyze/route.ts`) instead of Firebase Cloud Functions. Same logic — auth verification, rate limiting, Claude API call — but deployed as a Vercel serverless function automatically. No separate `functions/` directory needed.
 
 ---
 
@@ -169,39 +169,39 @@ lib/
 
 Tailwind v4 uses CSS-based configuration. No `tailwind.config.js` needed.
 
-NutriTrack adds its design tokens via a CSS file that's imported in the NutriTrack layout:
+FitGlass adds its design tokens via a CSS file that's imported in the FitGlass layout:
 
 ```css
-/* lib/nutritrack/styles/nutritrack.css */
+/* lib/fitglass/styles/fitglass.css */
 
 @theme {
-  --color-nt-bg: #FAFAF8;
-  --color-nt-card: #FFFFFF;
-  --color-nt-border: #ECECEC;
-  --color-nt-text: #1A1A1A;
-  --color-nt-text-soft: #8A8A8A;
-  --color-nt-accent: #2D6A4F;
-  --color-nt-accent-light: #D8F3DC;
-  --color-nt-protein: #2D6A4F;
-  --color-nt-carbs: #E9C46A;
-  --color-nt-fat: #E76F51;
-  --color-nt-danger: #DC3545;
-  --color-nt-danger-light: #FDE8EA;
-  --color-nt-chat-user: #E8F0E8;
-  --color-nt-chat-ai: #F5F5F3;
+  --color-fg-bg: #FAFAF8;
+  --color-fg-card: #FFFFFF;
+  --color-fg-border: #ECECEC;
+  --color-fg-text: #1A1A1A;
+  --color-fg-text-soft: #8A8A8A;
+  --color-fg-accent: #2D6A4F;
+  --color-fg-accent-light: #D8F3DC;
+  --color-fg-protein: #2D6A4F;
+  --color-fg-carbs: #E9C46A;
+  --color-fg-fat: #E76F51;
+  --color-fg-danger: #DC3545;
+  --color-fg-danger-light: #FDE8EA;
+  --color-fg-chat-user: #E8F0E8;
+  --color-fg-chat-ai: #F5F5F3;
 }
 ```
 
-Then use in components: `className="bg-nt-card text-nt-text border-nt-border"`.
+Then use in components: `className="bg-fg-card text-fg-text border-fg-border"`.
 
-This approach uses Tailwind v4's `@theme` directive to register custom colors. No prefix collision with the portfolio's existing Tailwind classes because all NutriTrack tokens start with `nt-`.
+This approach uses Tailwind v4's `@theme` directive to register custom colors. No prefix collision with the portfolio's existing Tailwind classes because all FitGlass tokens start with `nt-`.
 
 ---
 
 ## 5. API Route Architecture (replaces Cloud Functions)
 
 ```
-┌─────────────┐     POST /api/nutritrack/analyze     ┌──────────────────┐     HTTPS POST     ┌───────────────┐
+┌─────────────┐     POST /api/fitglass/analyze     ┌──────────────────┐     HTTPS POST     ┌───────────────┐
 │   Browser    │ ──────────────────────────────────► │  Next.js API     │ ─────────────────► │  Claude API   │
 │  (ChatView)  │                                     │  Route Handler   │                    │  (Sonnet 4)   │
 │              │ ◄────────────────────────────────── │                  │ ◄───────────────── │               │
@@ -227,18 +227,18 @@ This approach uses Tailwind v4's `@theme` directive to register custom colors. N
 
 ### Phase 1 — Foundation (Day 1-2)
 1. Install new dependencies (zustand, recharts, firebase client SDK)
-2. Create all TypeScript models/types in `lib/nutritrack/models/`
-3. Create `lib/nutritrack/services/firebase-client.ts` (client SDK init, separate from portfolio's admin SDK)
+2. Create all TypeScript models/types in `lib/fitglass/models/`
+3. Create `lib/fitglass/services/firebase-client.ts` (client SDK init, separate from portfolio's admin SDK)
 4. Create utility functions (calculations, dates, validators)
 5. Create constants (quick foods, activity levels, prompts)
-6. Set up Tailwind v4 theme tokens in `nutritrack.css`
-7. Create the NutriTrack route (`app/(nutritrack)/nutritrack/page.tsx` + `layout.tsx`)
+6. Set up Tailwind v4 theme tokens in `fitglass.css`
+7. Create the FitGlass route (`app/(fitglass)/fitglass/page.tsx` + `layout.tsx`)
 
 ### Phase 2 — State & Auth (Day 3-4)
-1. Create Zustand store (`lib/nutritrack/hooks/useNutriStore.ts`)
+1. Create Zustand store (`lib/fitglass/hooks/useFitGlassStore.ts`)
 2. Create Firebase Auth hook (Google sign-in via client SDK)
 3. Wire Firestore reads/writes for profile and food log
-4. Build auth gate in `NutriTrackApp.tsx` (sign-in screen → app)
+4. Build auth gate in `FitGlassApp.tsx` (sign-in screen → app)
 
 ### Phase 3 — Core UI (Day 5-6)
 1. Build AppShell + BottomNav with Framer Motion tab transitions
@@ -246,8 +246,8 @@ This approach uses Tailwind v4's `@theme` directive to register custom colors. N
 3. Build AddFoodModal with Framer Motion enter/exit animation
 
 ### Phase 4 — AI Chat (Day 7-9)
-1. Create API Route (`app/api/nutritrack/analyze/route.ts`)
-2. Build client AI service (`lib/nutritrack/services/ai.ts`)
+1. Create API Route (`app/api/fitglass/analyze/route.ts`)
+2. Build client AI service (`lib/fitglass/services/ai.ts`)
 3. Build ChatView with all sub-components
 4. Wire "Log" button to food log
 
@@ -273,7 +273,7 @@ Add these to `.env.local` (and Vercel project settings):
 # ─── Existing (portfolio already has these) ───
 # FIREBASE_ADMIN_* variables for firebase-admin (server-side)
 
-# ─── New: Firebase Client SDK (for NutriTrack client-side auth + Firestore) ───
+# ─── New: Firebase Client SDK (for FitGlass client-side auth + Firestore) ───
 NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
