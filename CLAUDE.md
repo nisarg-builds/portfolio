@@ -4,37 +4,40 @@
 
 A design-masterpiece portfolio website for Nisarg Chaudhary — CS Honours student (Software Engineering) with a Studio Arts minor at the University of Saskatchewan. Currently on an internship (May 2025 – Aug 2026).
 
-This is NOT a generic developer portfolio. It's a **warm, handcrafted digital experience** that reflects Nisarg's dual identity as an engineer and artist. Think: dark gallery space, terracotta accents, hand-drawn SVG illustrations, grain textures, and playful micro-interactions.
+This is NOT a generic developer portfolio. It's a **bold, flat, geometric "Toybox"** that reflects Nisarg's dual identity as an engineer and artist. Think: pale honeydew canvas, ink-black type, eight saturated toy hues, a geometric SVG shape kit (arch, bloom, pinwheel, loops, arrow), die-cut sticker components with hard offset shadows, and springy micro-interactions. The full design language lives in **[`docs/07-REDESIGN-TOYBOX.md`](docs/07-REDESIGN-TOYBOX.md)**.
 
 **Live site goal:** A site that makes recruiters pause, designers respect, and developers curious about the implementation.
 
 ## Architecture
 
-- **Hybrid routing:** Single-page scroll home (Hero → About → Projects → Contact) with separate routes for project details, blog, and playground
+- **Hybrid routing:** Single-page scroll home (Hero → About → Projects → Contact) with separate routes for experience, project details, blog, and playground
 - **Mobile-first:** Every layout designed for phone first, enhanced for desktop
-- **Dark-only:** No light mode
+- **Light-only:** One honeydew canvas theme; the Contact/Footer ink band is the single dark moment
 
 ## Documentation (Read in Order)
 
-1. **[`docs/01-TECH-STACK.md`](docs/01-TECH-STACK.md)** — Stack decisions, project structure, configs
-2. **[`docs/02-DESIGN-SYSTEM.md`](docs/02-DESIGN-SYSTEM.md)** — Color tokens, typography, spacing, shadows, grain, cursor
-3. **[`docs/03-COMPONENT-ARCHITECTURE.md`](docs/03-COMPONENT-ARCHITECTURE.md)** — Every component with TypeScript interfaces, variants, responsive specs
-4. **[`docs/04-PAGE-SPECS.md`](docs/04-PAGE-SPECS.md)** — Mobile-first wireframes for all pages
-5. **[`docs/05-ANIMATION-BIBLE.md`](docs/05-ANIMATION-BIBLE.md)** — Every animation with exact timing, easing, and code snippets
-6. **[`docs/06-CONTENT-MAP.md`](docs/06-CONTENT-MAP.md)** — All text, images, links, and assets
+1. **[`docs/07-REDESIGN-TOYBOX.md`](docs/07-REDESIGN-TOYBOX.md)** — **The current design language** (tokens, shape system, component recipes, motion, contrast law). Where it conflicts with docs 02–05, this doc wins.
+2. **[`docs/01-TECH-STACK.md`](docs/01-TECH-STACK.md)** — Stack decisions, project structure, configs
+3. **[`docs/02-DESIGN-SYSTEM.md`](docs/02-DESIGN-SYSTEM.md)** — Original (superseded) token reference
+4. **[`docs/03-COMPONENT-ARCHITECTURE.md`](docs/03-COMPONENT-ARCHITECTURE.md)** — Component inventory with TypeScript interfaces (visual specs superseded by 07)
+5. **[`docs/04-PAGE-SPECS.md`](docs/04-PAGE-SPECS.md)** — Mobile-first wireframes (visual specs superseded by 07)
+6. **[`docs/05-ANIMATION-BIBLE.md`](docs/05-ANIMATION-BIBLE.md)** — Original animation reference (superseded by 07 §9)
+7. **[`docs/06-CONTENT-MAP.md`](docs/06-CONTENT-MAP.md)** — All text, images, links, and assets
 
 ## Tech Stack
 
-- **Next.js 15** (App Router, TypeScript)
+- **Next.js 16** (App Router, TypeScript) — read `node_modules/next/dist/docs/` before route-level work (see AGENTS.md)
 - **Tailwind CSS v4** (CSS-first `@theme` config)
-- **Framer Motion** (component animations, page transitions)
-- **GSAP + ScrollTrigger** (scroll-driven effects only)
-- **MDX** via `next-mdx-remote` (blog posts)
+- **Framer Motion** (all portfolio animation — GSAP remains a dependency only for FitGlass)
+- **MDX** via `next-mdx-remote` (blog posts, unbuilt)
+- **Firebase** (Firestore projects/about data + admin CMS)
 - **Vercel** (deployment)
 
 ## Build Sequence
 
-Follow this order. Each step should result in a working (if incomplete) site.
+> **Historical:** this was the original bootstrap plan and is kept for reference.
+> The site is built; visual work now follows the migration plan in
+> `docs/07-REDESIGN-TOYBOX.md` §12.
 
 ### Phase 1: Foundation
 1. **Initialize project** — `npx create-next-app@latest` with TypeScript, Tailwind, App Router, `src/` directory

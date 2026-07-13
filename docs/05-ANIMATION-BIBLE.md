@@ -1,5 +1,10 @@
 # 05 — Animation Bible
 
+> **⚠️ SUPERSEDED — 2026-07-13:** The "warm gallery" visual language documented here was
+> replaced by the **Toybox** design language. See [`07-REDESIGN-TOYBOX.md`](07-REDESIGN-TOYBOX.md)
+> for current tokens, components, and motion. This file is kept as a historical reference;
+> where the two conflict, 07 wins.
+
 > Every animation, transition, and micro-interaction in the system. Includes exact timing, easing curves, and copy-paste Framer Motion / GSAP code snippets.
 
 **Golden Rules:**
