@@ -232,9 +232,3 @@ body.custom-cursor,
 body.custom-cursor * {
   cursor: none !important;
 }
-
-/* Treemap card hover — uses CSS custom properties set via inline style */
-.treemap-card:hover {
-  border-color: var(--hover-border) !important;
-  box-shadow: var(--hover-shadow);
-}

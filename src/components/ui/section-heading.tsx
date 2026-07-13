@@ -2,28 +2,35 @@
 
 import { cn } from '@/lib/utils'
 import { DynamicHeading } from '@/components/ui/dynamic-heading'
-import { WavyDivider } from '@/components/ui/wavy-divider'
+import { ZigzagDivider } from '@/components/ui/zigzag-divider'
 
 interface SectionHeadingProps {
   title: string
   subtitle?: string
-  wavyDivider?: boolean
+  divider?: boolean
   className?: string
 }
 
 export function SectionHeading({
   title,
   subtitle,
-  wavyDivider = true,
+  divider = true,
   className,
 }: SectionHeadingProps) {
   return (
     <div className={cn('mb-8', className)}>
-      <DynamicHeading text={title} as="h2" triggerOnScroll />
-      {wavyDivider && <WavyDivider className="mt-3 max-w-[200px]" />}
-      {subtitle && (
-        <p className="text-text-secondary text-lg mt-2">{subtitle}</p>
+      <DynamicHeading
+        text={title}
+        as="h2"
+        triggerOnScroll
+        className="font-display text-4xl font-bold text-ink"
+      />
+      {divider && (
+        <div className="mt-3">
+          <ZigzagDivider width={180} className="text-grass" />
+        </div>
       )}
+      {subtitle && <p className="mt-3 text-lg text-ink-soft">{subtitle}</p>}
     </div>
   )
 }

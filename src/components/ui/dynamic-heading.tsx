@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { easings } from '@/lib/easings'
 
 interface DynamicHeadingProps {
   text: string
@@ -20,6 +21,9 @@ const tagMap = {
   span: 'span',
 } as const
 
+/* Hovered characters flash through the toy hues by index */
+const HOVER_HUES = ['#4b48e8', '#2fbe5b', '#f421be', '#ff7a1f']
+
 export function DynamicHeading({
   text,
   as = 'h2',
@@ -31,20 +35,20 @@ export function DynamicHeading({
   const Tag = tagMap[as]
   const characters = text.split('')
 
+  /* Toybox pop-in: characters drop in like toys, with spring overshoot */
   const getVariants = {
     hidden: {
       opacity: 0,
-      y: 20,
-      rotateX: -90,
+      y: 14,
+      scale: 0.4,
     },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      rotateX: 0,
+      scale: 1,
       transition: {
         delay: i * (staggerDelay / 1000),
-        duration: 0.4,
-        ease: [0.16, 1, 0.3, 1] as const,
+        ...easings.springPop,
       },
     }),
   }
@@ -75,15 +79,10 @@ export function DynamicHeading({
             {...scrollProps}
             whileHover={{
               scale: 1.15,
-              color: 'var(--color-accent)',
-              transition: {
-                type: 'spring',
-                stiffness: 400,
-                damping: 17,
-              },
+              color: HOVER_HUES[i % HOVER_HUES.length],
+              transition: easings.springPop,
             }}
             className="inline-block cursor-default"
-            style={{ perspective: '600px' }}
           >
             {char}
           </motion.span>
