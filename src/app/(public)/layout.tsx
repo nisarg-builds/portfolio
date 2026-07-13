@@ -1,4 +1,3 @@
-import { GrainOverlay } from '@/components/layout/grain-overlay'
 import { Navigation } from '@/components/layout/navigation'
 import { Footer } from '@/components/layout/footer'
 import { CustomCursor } from '@/components/layout/custom-cursor'
@@ -14,11 +13,10 @@ export default function PublicLayout({
     <>
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[9999] focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-bg focus:outline-none"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[9999] focus:rounded-full focus:border-2 focus:border-ink focus:bg-lime focus:px-4 focus:py-2 focus:font-display focus:font-bold focus:text-ink"
       >
         Skip to content
       </a>
-      <GrainOverlay />
       <CustomCursor />
       <ScrollProgress />
       <Navigation />

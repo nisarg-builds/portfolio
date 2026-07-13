@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils'
 interface SocialIconProps {
   platform: 'github' | 'linkedin' | 'instagram' | 'email'
   href: string
+  /** Icon size in px (the sticker circle stays 44px for touch targets) */
   size?: number
   className?: string
 }
@@ -72,29 +73,39 @@ const icons: Record<SocialIconProps['platform'], (size: number) => React.ReactNo
 }
 
 const ariaLabels: Record<SocialIconProps['platform'], string> = {
-  github: 'Visit GitHub profile',
-  linkedin: 'Visit LinkedIn profile',
-  instagram: 'Visit Instagram profile',
+  github: 'Visit GitHub profile (opens in new tab)',
+  linkedin: 'Visit LinkedIn profile (opens in new tab)',
+  instagram: 'Visit Instagram profile (opens in new tab)',
   email: 'Send an email',
+}
+
+/* Sticker circles: one hue per platform, ink icon, pop on hover */
+const hues: Record<SocialIconProps['platform'], string> = {
+  github: 'bg-lilac',
+  linkedin: 'bg-sky',
+  instagram: 'bg-punch',
+  email: 'bg-lime',
 }
 
 export function SocialIcon({
   platform,
   href,
-  size = 24,
+  size = 18,
   className,
 }: SocialIconProps) {
   const isEmail = platform === 'email'
 
   return (
     <a
-      href={isEmail ? href : href}
+      href={href}
       target={isEmail ? undefined : '_blank'}
       rel={isEmail ? undefined : 'noopener noreferrer'}
       aria-label={ariaLabels[platform]}
       data-cursor="interactive"
       className={cn(
-        'inline-flex items-center justify-center text-text-secondary transition-colors duration-250 hover:text-accent',
+        'inline-flex h-11 w-11 items-center justify-center rounded-full border-2 border-ink text-ink',
+        'transition-transform duration-200 hover:rotate-6 hover:scale-110',
+        hues[platform],
         className,
       )}
     >

@@ -3,7 +3,11 @@
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { usePrefersReducedMotion } from '@/lib/hooks'
+import { easings } from '@/lib/easings'
 
+/* Entrance-only by design: App Router swaps the tree on navigation, so exit
+   animations can't run without freezing router context (fragile internal
+   API). Keying on pathname re-triggers the entrance per route. */
 const pageVariants = {
   initial: { opacity: 0, y: 8 },
   enter: {
@@ -11,16 +15,8 @@ const pageVariants = {
     y: 0,
     transition: {
       duration: 0.3,
-      ease: [0.16, 1, 0.3, 1],
+      ease: easings.easeOut,
       delay: 0.1,
-    },
-  },
-  exit: {
-    opacity: 0,
-    y: 8,
-    transition: {
-      duration: 0.2,
-      ease: [0.4, 0, 1, 1],
     },
   },
 }
@@ -28,7 +24,6 @@ const pageVariants = {
 const instantVariants = {
   initial: { opacity: 1, y: 0 },
   enter: { opacity: 1, y: 0, transition: { duration: 0 } },
-  exit: { opacity: 1, y: 0, transition: { duration: 0 } },
 }
 
 interface PageTransitionProps {
@@ -45,7 +40,6 @@ export function PageTransition({ children }: PageTransitionProps) {
       variants={prefersReducedMotion ? instantVariants : pageVariants}
       initial="initial"
       animate="enter"
-      exit="exit"
     >
       {children}
     </motion.div>

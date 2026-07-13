@@ -1,6 +1,7 @@
 'use client'
 
 import { usePrefersReducedMotion } from '@/lib/hooks'
+import { ArrowBolt } from '@/components/shapes'
 
 export function BackToTopButton() {
   const prefersReducedMotion = usePrefersReducedMotion()
@@ -11,22 +12,10 @@ export function BackToTopButton() {
         window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' })
       }
       aria-label="Back to top"
-      className="glass flex h-10 w-10 items-center justify-center rounded-full text-text-tertiary transition-all duration-200 hover:text-accent hover:border-accent/30"
+      className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-ink bg-lime text-ink transition-transform duration-200 hover:-translate-y-1 hover:rotate-6"
       data-cursor="interactive"
     >
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M18 15l-6-6-6 6" />
-      </svg>
+      <ArrowBolt direction="up" className="h-4 w-4" />
     </button>
   )
 }
