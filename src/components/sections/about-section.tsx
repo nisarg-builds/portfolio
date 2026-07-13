@@ -1,12 +1,14 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { useRef, useState } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import Image from 'next/image'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { scrollFadeUp, staggerContainer } from '@/lib/easings'
-import { WavyDivider } from '@/components/ui/wavy-divider'
+import { usePrefersReducedMotion } from '@/lib/hooks'
+import { ZigzagDivider } from '@/components/ui/zigzag-divider'
+import { MarqueeBand } from '@/components/ui/marquee-band'
+import { StickerChip } from '@/components/ui/sticker-chip'
+import { Star4 } from '@/components/shapes'
 
 const skills = [
   'React',
@@ -33,38 +35,9 @@ const skills = [
   'UI/UX Design',
 ]
 
-function SkillsMarquee() {
-  const doubled = [...skills, ...skills]
-
-  return (
-    <div
-      className="relative overflow-hidden py-5"
-      aria-hidden="true"
-      style={{
-        maskImage:
-          'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
-        WebkitMaskImage:
-          'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
-      }}
-    >
-      <div
-        className="flex w-max gap-0 hover:[animation-play-state:paused]"
-        style={{ animation: 'marquee 25s linear infinite' }}
-      >
-        {doubled.map((skill, i) => (
-          <span
-            key={i}
-            className="whitespace-nowrap px-3 text-[15px] text-text-secondary"
-          >
-            {skill}
-            <span className="ml-3 text-accent/40">·</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  )
-}
-
+/* Arch-topped window (solid, no inner cutout — it frames a face) */
+const ARCH_MASK =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M6 100 V44 C6 18 26 2 50 2 C74 2 94 18 94 44 V100 Z' fill='black'/%3E%3C/svg%3E\")"
 
 interface AboutSectionProps {
   portraitUrl: string
@@ -73,33 +46,21 @@ interface AboutSectionProps {
 
 export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
   const sectionRef = useRef<HTMLElement>(null)
-  const portraitRef = useRef<HTMLDivElement>(null)
+  const prefersReducedMotion = usePrefersReducedMotion()
+  const [isDesktop] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches,
+  )
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || window.innerWidth < 1024) return
-
-    gsap.registerPlugin(ScrollTrigger)
-
-    const ctx = gsap.context(() => {
-      if (!portraitRef.current || !sectionRef.current) return
-
-      gsap.to(portraitRef.current, {
-        y: -30,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      })
-    })
-
-    return () => ctx.revert()
-  }, [])
+  // Portrait parallax — Framer Motion useScroll (GSAP retired from the portfolio)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  })
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [0, -30])
+  const portraitY = prefersReducedMotion || !isDesktop ? undefined : parallaxY
 
   return (
-    <section ref={sectionRef} id="about" className="px-5 py-20 sm:px-6 lg:px-8 lg:py-32">
+    <section ref={sectionRef} id="about" className="relative px-5 py-20 sm:px-6 lg:px-8 lg:py-32">
       <motion.div
         className="mx-auto max-w-[1120px]"
         variants={staggerContainer}
@@ -109,27 +70,22 @@ export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
       >
         {/* Heading */}
         <motion.div variants={scrollFadeUp} className="relative mb-12">
-<h2 className="font-(family-name:--font-display) text-3xl font-bold text-text-primary">
-            About Me
-          </h2>
-          <WavyDivider width={200} />
-          <div
-            className="mt-3 h-[2px] w-20"
-            style={{
-              background:
-                'linear-gradient(to right, var(--color-accent), transparent)',
-            }}
-            aria-hidden="true"
-          />
+          <h2 className="font-display text-4xl font-bold text-ink">About Me</h2>
+          <div className="mt-3">
+            <ZigzagDivider width={180} className="text-grass" />
+          </div>
         </motion.div>
 
         {/* Two-column layout */}
         <div className="grid gap-10 lg:grid-cols-5 lg:gap-14">
           {/* Bio — takes 3 cols on desktop */}
           <motion.div variants={scrollFadeUp} className="lg:col-span-3">
-            <div className="space-y-5 border-l-2 border-accent/30 pl-5 text-base text-text-secondary leading-relaxed" data-cursor="text">
+            <div
+              className="space-y-5 border-l-[3px] border-ink pl-5 text-base leading-relaxed text-ink-soft"
+              data-cursor="text"
+            >
               <p className="text-lg">
-                <strong className="text-accent">Hello!</strong> My name is
+                <strong className="text-blurple">Hello!</strong> My name is
                 Nisarg Chaudhary. I&apos;m a Computer Science Honours student at
                 the University of Saskatchewan with a minor in Studio Arts.
                 Originally from India, I moved to Canada to pursue my passion
@@ -137,7 +93,7 @@ export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
               </p>
               <p>
                 Currently a Developer I at{' '}
-                <strong className="text-text-primary">Vendasta</strong>, I&apos;m
+                <strong className="text-ink">Vendasta</strong>, I&apos;m
                 building AI-powered automation and listing data infrastructure
                 with Go, gRPC, and Temporal. I&apos;m passionate about crafting
                 beautiful, functional interfaces that bridge the gap between art
@@ -155,7 +111,7 @@ export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
                 href="/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glass inline-flex items-center gap-2.5 rounded-lg border border-accent/60 px-6 py-3 text-base font-medium text-accent transition-colors duration-200 hover:border-accent hover:bg-accent hover:text-bg"
+                className="inline-flex items-center gap-2.5 rounded-full border-2 border-ink px-6 py-3 font-display text-base font-bold text-ink transition-[transform,box-shadow,background-color] duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-lime hover:shadow-lift"
                 data-cursor="interactive"
                 whileHover="hover"
               >
@@ -183,15 +139,18 @@ export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
           </motion.div>
 
           {/* Portrait — takes 2 cols on desktop */}
-          <motion.div variants={scrollFadeUp} className="lg:col-span-2 lg:-ml-10 relative z-10">
-            <div ref={portraitRef}>
-              <div
-                className="overflow-hidden rounded-2xl border border-border border-l-[3px] border-l-accent bg-bg-surface"
-                style={{
-                  boxShadow: '0 0 60px rgba(206, 121, 107, 0.1)',
-                }}
-              >
-                <div className="relative aspect-[4/3] lg:aspect-square overflow-hidden">
+          <motion.div variants={scrollFadeUp} className="relative z-10 lg:col-span-2 lg:-ml-10">
+            <motion.div style={{ y: portraitY }}>
+              <div className="relative rounded-2xl border-2 border-ink bg-lilac p-5 sm:p-6">
+                <div
+                  className="relative aspect-[4/3] overflow-hidden lg:aspect-[4/5]"
+                  style={{
+                    maskImage: ARCH_MASK,
+                    WebkitMaskImage: ARCH_MASK,
+                    maskSize: '100% 100%',
+                    WebkitMaskSize: '100% 100%',
+                  }}
+                >
                   <Image
                     src={portraitUrl}
                     alt="Nisarg Chaudhary"
@@ -206,37 +165,35 @@ export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
                     priority={false}
                   />
                 </div>
+                <Star4
+                  className="absolute -right-4 -top-4 w-10 text-tangerine"
+                />
               </div>
-              <div className="mt-3 flex justify-center">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-bg-surface/80 px-3 py-1 text-xs text-text-tertiary">
-                  <span aria-hidden="true">📍</span> Saskatchewan, Canada
-                </span>
+              <div className="mt-4 flex justify-center">
+                <StickerChip hue="grass">Saskatchewan, Canada</StickerChip>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
 
-        {/* Skills Marquee — full width */}
-        <motion.div variants={scrollFadeUp} className="mt-14">
-          <span className="mb-2 block font-(family-name:--font-mono) text-xs tracking-widest text-text-tertiary uppercase">
-            Technologies & Tools
+        {/* Skills band eyebrow */}
+        <motion.div variants={scrollFadeUp} className="mt-16">
+          <span className="mb-4 flex items-center gap-2 font-mono text-xs font-semibold tracking-widest text-ink-soft uppercase">
+            <Star4 className="h-3 w-3 text-grass" />
+            Technologies &amp; Tools
           </span>
-          <div
-            className="rounded-lg border border-border"
-            style={{
-              background:
-                'linear-gradient(135deg, var(--color-bg-surface) 0%, var(--color-bg) 50%, var(--color-bg-surface) 100%)',
-            }}
-          >
-            <SkillsMarquee />
-          </div>
-          {/* Screen reader fallback — marquee is aria-hidden */}
-          <ul className="sr-only">
-            {skills.map((skill) => (
-              <li key={skill}>{skill}</li>
-            ))}
-          </ul>
         </motion.div>
+      </motion.div>
+
+      {/* Full-bleed skills marquee */}
+      <motion.div
+        className="-mx-5 sm:-mx-6 lg:-mx-8"
+        variants={scrollFadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        <MarqueeBand items={skills} label="Technologies and tools" />
       </motion.div>
     </section>
   )

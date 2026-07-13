@@ -32,16 +32,18 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
         viewport={{ once: true }}
         variants={scrollFadeUp}
       >
-        <span className="mb-3 block font-(family-name:--font-mono) text-xs tracking-[0.2em] text-accent/70 uppercase">
+        <span className="mb-4 inline-flex items-center gap-2 rounded-full border-2 border-ink bg-paper px-3.5 py-1.5 font-mono text-xs font-semibold tracking-[0.14em] text-ink uppercase">
+          <svg viewBox="0 0 100 100" className="h-3 w-3 text-tangerine" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M50 4 C54 28 62 40 96 50 C62 60 54 72 50 96 C46 72 38 60 4 50 C38 40 46 28 50 4 Z"
+            />
+          </svg>
           Selected Work
         </span>
-        <h2 className="font-(family-name:--font-display) text-4xl font-bold text-text-primary lg:text-5xl">
+        <h2 className="font-display text-4xl font-bold text-ink">
           Projects
         </h2>
-        <div
-          className="mt-4 h-px w-full bg-gradient-to-r from-accent/40 via-border to-transparent"
-          aria-hidden="true"
-        />
       </motion.div>
 
       {/* Desktop treemap (lg+) */}
@@ -51,7 +53,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
           gridTemplateColumns: 'repeat(6, 1fr)',
           gridTemplateRows: 'repeat(4, 1fr)',
           aspectRatio: '3 / 2',
-          gap: '4px',
+          gap: '10px',
         }}
         variants={staggerContainer}
         initial="hidden"
@@ -90,7 +92,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
         style={{
           gridTemplateColumns: 'repeat(3, 1fr)',
           gridTemplateRows: 'repeat(4, minmax(120px, 1fr))',
-          gap: '4px',
+          gap: '10px',
         }}
         variants={staggerContainer}
         initial="hidden"

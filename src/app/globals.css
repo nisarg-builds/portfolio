@@ -82,44 +82,46 @@
    Base Styles
    ======================================== */
 
-html {
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-ink-faint) var(--color-canvas);
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-ink-faint) var(--color-canvas);
+  }
 
-body {
-  font-family: var(--font-body);
-  font-weight: 400;
-  color: var(--color-ink-soft);
-  background-color: var(--color-canvas);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  body {
+    font-family: var(--font-body);
+    font-weight: 400;
+    color: var(--color-ink-soft);
+    background-color: var(--color-canvas);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  color: var(--color-ink);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-}
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-ink);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
 
-::selection {
-  background: var(--color-lime);
-  color: var(--color-ink);
-}
+  ::selection {
+    background: var(--color-lime);
+    color: var(--color-ink);
+  }
 
-*:focus-visible {
-  outline: 3px solid var(--color-ink);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
+  *:focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
 }
 
 /* Inverted focus ring for elements sitting on ink surfaces */
