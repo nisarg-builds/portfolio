@@ -3,9 +3,8 @@
 import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { scrollFadeUp, staggerContainer, fadeUpVariants } from '@/lib/easings'
-import { computeTreemapLayout, computeTabletLayout, getTreemapColors } from '@/lib/grid-layout'
+import { computeTreemapLayout, computeTabletLayout, TREEMAP_COLORS } from '@/lib/grid-layout'
 import { TreemapProjectCard, TreemapStub } from '@/components/ui/project-card'
-import { useTheme } from '@/components/theme-provider'
 import type { Project } from '@/lib/projects'
 
 interface ProjectsSectionProps {
@@ -13,18 +12,15 @@ interface ProjectsSectionProps {
 }
 
 export function ProjectsSection({ projects }: ProjectsSectionProps) {
-  const { resolvedTheme } = useTheme()
-  const mode = resolvedTheme === 'light' ? 'light' : 'dark'
-
   const desktopCells = useMemo(
-    () => computeTreemapLayout(projects.length, mode),
-    [projects.length, mode]
+    () => computeTreemapLayout(projects.length),
+    [projects.length]
   )
   const tabletCells = useMemo(
-    () => computeTabletLayout(projects.length, mode),
-    [projects.length, mode]
+    () => computeTabletLayout(projects.length),
+    [projects.length]
   )
-  const mobileColors = useMemo(() => getTreemapColors(mode), [mode])
+  const mobileColors = TREEMAP_COLORS
 
   return (
     <section id="projects" className="px-5 sm:px-6 lg:px-8">

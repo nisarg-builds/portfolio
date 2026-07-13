@@ -1,23 +1,43 @@
 @import "tailwindcss";
 
 /* ========================================
-   Design System Tokens
+   Toybox Design System Tokens
+   (see docs/07-REDESIGN-TOYBOX.md)
    ======================================== */
 
 @theme {
-  /* Colors */
-  --color-bg: #111110;
-  --color-bg-surface: #1a1917;
-  --color-bg-elevated: #232220;
-  --color-text-primary: #e5e1dd;
-  --color-text-secondary: #a8a49e;
-  --color-text-tertiary: #6b6862;
-  --color-accent: #ce796b;
-  --color-accent-hover: #d98e82;
-  --color-accent-secondary: #ea8589;
-  --color-accent-muted: rgba(206, 121, 107, 0.08);
-  --color-border: #2a2927;
-  --color-border-hover: #3d3b38;
+  /* Ground */
+  --color-canvas: #eef5e3;
+  --color-canvas-deep: #e2ecd2;
+  --color-paper: #fbfdf7;
+  --color-ink: #101010;
+  --color-ink-soft: #3d3d38;
+  --color-ink-faint: #6e6e64;
+
+  /* Toys */
+  --color-blurple: #4b48e8;
+  --color-grass: #2fbe5b;
+  --color-lime: #ddf163;
+  --color-lilac: #c8bcf4;
+  --color-grape: #8655ec;
+  --color-punch: #f421be;
+  --color-tangerine: #ff7a1f;
+  --color-sky: #29b5ef;
+
+  /* Semantic bridge — keeps admin CMS and legacy classes rendering
+     sensibly on the new palette (docs/07 §3.2) */
+  --color-bg: var(--color-canvas);
+  --color-bg-surface: var(--color-paper);
+  --color-bg-elevated: var(--color-canvas-deep);
+  --color-text-primary: var(--color-ink);
+  --color-text-secondary: var(--color-ink-soft);
+  --color-text-tertiary: var(--color-ink-faint);
+  --color-accent: var(--color-blurple);
+  --color-accent-hover: var(--color-grape);
+  --color-accent-secondary: var(--color-punch);
+  --color-accent-muted: rgba(75, 72, 232, 0.08);
+  --color-border: var(--color-ink);
+  --color-border-hover: var(--color-ink);
 
   /* Typography Scale (fluid) */
   --text-xs: clamp(0.75rem, 0.7rem + 0.15vw, 0.8125rem);
@@ -27,52 +47,35 @@
   --text-xl: clamp(1.25rem, 1.1rem + 0.4vw, 1.5rem);
   --text-2xl: clamp(1.5rem, 1.2rem + 0.8vw, 2.25rem);
   --text-3xl: clamp(2rem, 1.5rem + 1.2vw, 3rem);
-  --text-display: clamp(2.5rem, 1.5rem + 3vw, 5rem);
+  --text-4xl: clamp(2.5rem, 1.75rem + 2.5vw, 4rem);
+  --text-display: clamp(3rem, 1.75rem + 6.5vw, 7.5rem);
 
   /* Font Families */
   --font-display: "Space Grotesk", system-ui, -apple-system, sans-serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
 
-  /* Border Radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  /* Border Radius — everything chunkier */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
   --radius-full: 9999px;
 
-  /* Shadows */
-  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px rgba(206, 121, 107, 0.15);
-  --shadow-glow-lg: 0 0 40px rgba(206, 121, 107, 0.2);
-  --shadow-glow-xl: 0 0 80px rgba(206, 121, 107, 0.12);
-}
+  /* Shadows — hard offsets for interactive lifts; soft neutrals only
+     as a bridge for admin surfaces */
+  --shadow-lift: 4px 4px 0 0 var(--color-ink);
+  --shadow-lift-lg: 6px 6px 0 0 var(--color-ink);
+  --shadow-lift-blurple: 4px 4px 0 0 var(--color-blurple);
+  --shadow-lift-punch: 4px 4px 0 0 var(--color-punch);
+  --shadow-subtle: 0 1px 2px rgba(16, 16, 16, 0.06);
+  --shadow-card: 0 2px 8px rgba(16, 16, 16, 0.08);
+  --shadow-elevated: 0 8px 24px rgba(16, 16, 16, 0.1);
 
-/* ========================================
-   Light Mode Overrides
-   ======================================== */
-
-html.light {
-  --color-bg: #faf9f7;
-  --color-bg-surface: #f0efec;
-  --color-bg-elevated: #e8e6e3;
-  --color-text-primary: #1a1917;
-  --color-text-secondary: #4a4845;
-  --color-text-tertiary: #8a8784;
-  --color-accent: #b85a4c;
-  --color-accent-hover: #a34d40;
-  --color-accent-secondary: #c96468;
-  --color-accent-muted: rgba(184, 90, 76, 0.08);
-  --color-border: #dddbd8;
-  --color-border-hover: #c5c3c0;
-  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.1);
-  --shadow-glow: 0 0 20px rgba(184, 90, 76, 0.1);
-  --shadow-glow-lg: 0 0 40px rgba(184, 90, 76, 0.12);
-  --shadow-glow-xl: 0 0 80px rgba(184, 90, 76, 0.08);
+  /* Animations */
+  --animate-spin-slow: spin-slow 14s linear infinite;
+  --animate-marquee: marquee 26s linear infinite;
 }
 
 /* ========================================
@@ -82,14 +85,14 @@ html.light {
 html {
   scroll-behavior: smooth;
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border-hover) var(--color-bg);
+  scrollbar-color: var(--color-ink-faint) var(--color-canvas);
 }
 
 body {
   font-family: var(--font-body);
-  font-weight: 300;
-  color: var(--color-text-secondary);
-  background-color: var(--color-bg);
+  font-weight: 400;
+  color: var(--color-ink-soft);
+  background-color: var(--color-canvas);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -102,24 +105,27 @@ h4,
 h5,
 h6 {
   font-family: var(--font-display);
-  color: var(--color-text-primary);
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
 
 ::selection {
-  background: rgba(206, 121, 107, 0.3);
-  color: var(--color-text-primary);
-}
-
-html.light ::selection {
-  background: rgba(184, 90, 76, 0.2);
+  background: var(--color-lime);
+  color: var(--color-ink);
 }
 
 *:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 3px solid var(--color-ink);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
+}
+
+/* Inverted focus ring for elements sitting on ink surfaces */
+.on-ink :focus-visible,
+.on-ink:focus-visible {
+  outline-color: var(--color-lime);
 }
 
 /* ========================================
@@ -130,14 +136,14 @@ html.light ::selection {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-bg);
+  background: var(--color-canvas);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border-hover);
+  background: var(--color-ink-faint);
   border-radius: var(--radius-full);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-tertiary);
+  background: var(--color-ink-soft);
 }
 
 /* ========================================
@@ -156,7 +162,7 @@ html.light ::selection {
 }
 
 /* ========================================
-   Skills Marquee
+   Keyframes
    ======================================== */
 
 @keyframes marquee {
@@ -165,6 +171,22 @@ html.light ::selection {
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ambient-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
   }
 }
 
@@ -183,7 +205,7 @@ html.light ::selection {
   left: 0;
   width: 0;
   height: 2px;
-  background: var(--color-accent);
+  background: var(--color-blurple);
   transition: width 250ms ease;
 }
 
@@ -193,109 +215,6 @@ html.light ::selection {
 
 .nav-link-active::after {
   width: 0;
-}
-
-/* ========================================
-   Ambient Glow Effects
-   ======================================== */
-
-@keyframes ambient-pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.7; }
-}
-
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes float-gentle {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* ========================================
-   Glassmorphism Utility
-   ======================================== */
-
-.glass {
-  background: rgba(26, 25, 23, 0.6);
-  backdrop-filter: blur(20px) saturate(1.2);
-  -webkit-backdrop-filter: blur(20px) saturate(1.2);
-  border: 1px solid rgba(229, 225, 221, 0.06);
-}
-
-html.light .glass {
-  background: rgba(250, 249, 247, 0.7);
-  border-color: rgba(0, 0, 0, 0.06);
-}
-
-.glass-subtle {
-  background: rgba(26, 25, 23, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-html.light .glass-subtle {
-  background: rgba(250, 249, 247, 0.5);
-}
-
-/* ========================================
-   Gradient Text Utility
-   ======================================== */
-
-.text-gradient-accent {
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* ========================================
-   Card Shine Effect
-   ======================================== */
-
-.card-shine {
-  position: relative;
-  overflow: hidden;
-}
-
-.card-shine::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    rgba(206, 121, 107, 0.03) 45%,
-    rgba(206, 121, 107, 0.06) 50%,
-    rgba(206, 121, 107, 0.03) 55%,
-    transparent 60%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 8s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* ========================================
-   Section Divider Gradient
-   ======================================== */
-
-.section-fade-top {
-  mask-image: linear-gradient(to bottom, transparent, black 80px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, black 80px);
-}
-
-.section-fade-bottom {
-  mask-image: linear-gradient(to top, transparent, black 80px);
-  -webkit-mask-image: linear-gradient(to top, transparent, black 80px);
 }
 
 /* Reduced motion: disable marquee and other CSS animations */

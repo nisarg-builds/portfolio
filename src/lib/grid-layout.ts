@@ -12,49 +12,26 @@ export interface TreemapCell {
   size: 'lg' | 'md' | 'sm'
 }
 
-export type ThemeMode = 'dark' | 'light'
-
-const TREEMAP_COLORS_DARK: TreemapColor[] = [
-  { bg: '#2d1f1e', border: '#ce796b', text: '#ce796b' },
-  { bg: '#1e2a2d', border: '#6bcec4', text: '#6bcec4' },
-  { bg: '#2d2a1e', border: '#ceb86b', text: '#ceb86b' },
-  { bg: '#1e2d22', border: '#6bce8a', text: '#6bce8a' },
-  { bg: '#2a1e2d', border: '#b86bce', text: '#b86bce' },
-  { bg: '#1e222d', border: '#6b8ace', text: '#6b8ace' },
+/* Toybox hue assignments per project order (docs/07 §3.3).
+   `bg` is the cell surface, `border` is always ink, `text` is ink on light
+   hues and paper on blurple/grape. */
+export const TREEMAP_COLORS: TreemapColor[] = [
+  { bg: '#4b48e8', border: '#101010', text: '#fbfdf7' }, // blurple — featured
+  { bg: '#ddf163', border: '#101010', text: '#101010' }, // lime
+  { bg: '#29b5ef', border: '#101010', text: '#101010' }, // sky
+  { bg: '#ff7a1f', border: '#101010', text: '#101010' }, // tangerine
+  { bg: '#c8bcf4', border: '#101010', text: '#101010' }, // lilac
+  { bg: '#2fbe5b', border: '#101010', text: '#101010' }, // grass
 ]
 
-const TREEMAP_COLORS_LIGHT: TreemapColor[] = [
-  { bg: '#f5e5e3', border: '#b85a4c', text: '#8c3e32' },
-  { bg: '#e2f2f0', border: '#3da89c', text: '#2b7a70' },
-  { bg: '#f3f0e0', border: '#b8a04c', text: '#8a7635' },
-  { bg: '#e2f3e7', border: '#4aad66', text: '#357a49' },
-  { bg: '#f0e3f5', border: '#9e4cb8', text: '#763690' },
-  { bg: '#e3e8f5', border: '#4c6fb8', text: '#365090' },
+/* Stubs sit on a deeper canvas well; `text` doubles as the sticker-shape hue */
+export const STUB_COLORS: TreemapColor[] = [
+  { bg: '#e2ecd2', border: '#e2ecd2', text: '#8655ec' }, // grape shape
+  { bg: '#e2ecd2', border: '#e2ecd2', text: '#f421be' }, // punch shape
+  { bg: '#e2ecd2', border: '#e2ecd2', text: '#29b5ef' }, // sky shape
+  { bg: '#e2ecd2', border: '#e2ecd2', text: '#2fbe5b' }, // grass shape
+  { bg: '#e2ecd2', border: '#e2ecd2', text: '#ff7a1f' }, // tangerine shape
 ]
-
-const STUB_COLORS_DARK: TreemapColor[] = [
-  { bg: '#ce796b', border: '#ce796b', text: '#ce796b' },
-  { bg: '#ea8589', border: '#ea8589', text: '#ea8589' },
-  { bg: '#6bcec4', border: '#6bcec4', text: '#6bcec4' },
-  { bg: '#ceb86b', border: '#ceb86b', text: '#ceb86b' },
-  { bg: '#b86bce', border: '#b86bce', text: '#b86bce' },
-]
-
-const STUB_COLORS_LIGHT: TreemapColor[] = [
-  { bg: '#b85a4c', border: '#b85a4c', text: '#b85a4c' },
-  { bg: '#c96468', border: '#c96468', text: '#c96468' },
-  { bg: '#3da89c', border: '#3da89c', text: '#3da89c' },
-  { bg: '#b8a04c', border: '#b8a04c', text: '#b8a04c' },
-  { bg: '#9e4cb8', border: '#9e4cb8', text: '#9e4cb8' },
-]
-
-export function getTreemapColors(mode: ThemeMode): TreemapColor[] {
-  return mode === 'light' ? TREEMAP_COLORS_LIGHT : TREEMAP_COLORS_DARK
-}
-
-export function getStubColors(mode: ThemeMode): TreemapColor[] {
-  return mode === 'light' ? STUB_COLORS_LIGHT : STUB_COLORS_DARK
-}
 
 const GRID_ROWS = 4
 const GRID_COLS = 6
@@ -151,11 +128,11 @@ function fillStubs(occupied: boolean[][], stubColors: TreemapColor[]): TreemapCe
   return stubs
 }
 
-export function computeTreemapLayout(projectCount: number, mode: ThemeMode = 'dark'): TreemapCell[] {
+export function computeTreemapLayout(projectCount: number): TreemapCell[] {
   const clamped = Math.min(Math.max(projectCount, 0), 6)
   const templates = LAYOUTS[clamped] || LAYOUTS[4]
-  const colors = getTreemapColors(mode)
-  const stubColors = getStubColors(mode)
+  const colors = TREEMAP_COLORS
+  const stubColors = STUB_COLORS
 
   const occupied: boolean[][] = Array.from({ length: GRID_ROWS }, () =>
     Array(GRID_COLS).fill(false)
@@ -192,10 +169,10 @@ export function computeTreemapLayout(projectCount: number, mode: ThemeMode = 'da
 }
 
 // Tablet layout (3-col, 4-row simplified)
-export function computeTabletLayout(projectCount: number, mode: ThemeMode = 'dark'): TreemapCell[] {
+export function computeTabletLayout(projectCount: number): TreemapCell[] {
   const clamped = Math.min(Math.max(projectCount, 0), 6)
-  const colors = getTreemapColors(mode)
-  const stubColors = getStubColors(mode)
+  const colors = TREEMAP_COLORS
+  const stubColors = STUB_COLORS
   const cells: TreemapCell[] = []
 
   // All possible slots: featured (index 0) + up to 5 more

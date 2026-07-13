@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation'
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { NAV_LINKS, SOCIAL_LINKS } from '@/lib/constants'
-import { ThemeToggle } from '@/components/ui/theme-toggle'
 
 interface NavigationProps {
   className?: string
@@ -177,7 +176,6 @@ export function Navigation({ className }: NavigationProps) {
               >
                 Contact
               </Link>
-              <ThemeToggle />
             </div>
           </LayoutGroup>
         </div>
@@ -193,7 +191,6 @@ export function Navigation({ className }: NavigationProps) {
           </Link>
 
           <div className="flex items-center gap-1">
-            <ThemeToggle />
             <button
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
@@ -270,24 +267,13 @@ export function Navigation({ className }: NavigationProps) {
               ))}
             </div>
 
-            {/* Theme toggle */}
+            {/* Social icons */}
             <motion.div
               variants={linkVariants}
               initial="closed"
               animate="open"
               custom={allNavLinks.length}
-              className="mt-8"
-            >
-              <ThemeToggle className="h-11 w-11" />
-            </motion.div>
-
-            {/* Social icons in glass circles */}
-            <motion.div
-              variants={linkVariants}
-              initial="closed"
-              animate="open"
-              custom={allNavLinks.length + 1}
-              className="mt-6 flex items-center gap-4"
+              className="mt-10 flex items-center gap-4"
             >
               <a
                 href={SOCIAL_LINKS.github}

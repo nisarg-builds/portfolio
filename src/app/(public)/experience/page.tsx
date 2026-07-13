@@ -2,58 +2,57 @@
 
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { useTheme } from '@/components/theme-provider'
 import { scrollFadeUp, staggerContainer } from '@/lib/easings'
 
 const contributions = [
   {
-    color: '#ce796b',
+    color: '#4b48e8',
     title: 'AI-powered business profile automation',
     description:
       'Designed and shipped an end-to-end automation system where AI agents autonomously detect incomplete business profiles, generate optimized content, and push updates live. Authored the RFC, built the tool definitions, and wrote the technical guides adopted by the team.',
   },
   {
-    color: '#6bcec4',
+    color: '#2fbe5b',
     title: 'Listing data infrastructure & reliability',
     description:
       'Led migration from brittle web scraping to API-based data collection — eliminating recurring outages and improving data accuracy across thousands of business listings. Enhanced geolocation sync for Apple and Google, and automated real-time syndication.',
   },
   {
-    color: '#ceb86b',
+    color: '#f421be',
     title: 'AI capabilities & developer tooling',
     description:
       'Built MCP tools and prompt modules that give AI agents the ability to diagnose listing score changes and surface actionable insights. Enriched business embeddings with structured attribute data for richer AI context.',
   },
   {
-    color: '#6b8ace',
+    color: '#ff7a1f',
     title: 'Platform reliability & cross-service fixes',
     description:
       'Shipped targeted fixes across gRPC services and data pipelines — resolving address parsing bugs, clearing legacy activation conflicts, and broadening product tier coverage to reduce support escalations.',
   },
 ]
 
-type TechCategory = 'teal' | 'green' | 'terracotta' | 'blue' | 'gold'
+type TechCategory = 'sky' | 'grass' | 'tangerine' | 'blurple' | 'lime'
 
-const techPalette: Record<TechCategory, { dark: { color: string; bg: string }; light: { color: string; bg: string } }> = {
-  teal:       { dark: { color: '#6bcec4', bg: '#1e2a2d' }, light: { color: '#2b7a70', bg: '#e2f2f0' } },
-  green:      { dark: { color: '#6bce8a', bg: '#1e2d22' }, light: { color: '#357a49', bg: '#e2f3e7' } },
-  terracotta: { dark: { color: '#ce796b', bg: '#2d1f1e' }, light: { color: '#8c3e32', bg: '#f5e5e3' } },
-  blue:       { dark: { color: '#6b8ace', bg: '#1e222d' }, light: { color: '#365090', bg: '#e3e8f5' } },
-  gold:       { dark: { color: '#ceb86b', bg: '#2d2a1e' }, light: { color: '#8a7635', bg: '#f3f0e0' } },
+const techPalette: Record<TechCategory, { color: string; bg: string }> = {
+  sky:       { color: '#101010', bg: '#29b5ef' },
+  grass:     { color: '#101010', bg: '#2fbe5b' },
+  tangerine: { color: '#101010', bg: '#ff7a1f' },
+  blurple:   { color: '#fbfdf7', bg: '#4b48e8' },
+  lime:      { color: '#101010', bg: '#ddf163' },
 }
 
 const technologies: { name: string; category: TechCategory }[] = [
-  { name: 'Go', category: 'teal' },
-  { name: 'gRPC', category: 'teal' },
-  { name: 'Temporal', category: 'teal' },
-  { name: 'Python', category: 'green' },
-  { name: 'AI/ML', category: 'terracotta' },
-  { name: 'MCP Tools', category: 'terracotta' },
-  { name: 'Elasticsearch', category: 'blue' },
-  { name: 'Docker', category: 'blue' },
-  { name: 'GCP', category: 'blue' },
-  { name: 'Jira', category: 'gold' },
-  { name: 'Confluence', category: 'gold' },
+  { name: 'Go', category: 'sky' },
+  { name: 'gRPC', category: 'sky' },
+  { name: 'Temporal', category: 'sky' },
+  { name: 'Python', category: 'grass' },
+  { name: 'AI/ML', category: 'tangerine' },
+  { name: 'MCP Tools', category: 'tangerine' },
+  { name: 'Elasticsearch', category: 'blurple' },
+  { name: 'Docker', category: 'blurple' },
+  { name: 'GCP', category: 'blurple' },
+  { name: 'Jira', category: 'lime' },
+  { name: 'Confluence', category: 'lime' },
 ]
 
 const stats = [
@@ -64,9 +63,6 @@ const stats = [
 ]
 
 export default function ExperiencePage() {
-  const { resolvedTheme } = useTheme()
-  const mode = resolvedTheme === 'light' ? 'light' : 'dark'
-
   return (
     <main className="relative px-5 pb-20 pt-8 sm:px-6 lg:px-8 lg:pb-32 lg:pt-12">
       {/* Ambient glow */}
@@ -252,7 +248,7 @@ export default function ExperiencePage() {
               variants={staggerContainer}
             >
               {technologies.map((tech) => {
-                const palette = techPalette[tech.category][mode]
+                const palette = techPalette[tech.category]
                 return (
                   <motion.span
                     key={tech.name}

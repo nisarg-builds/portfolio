@@ -3,8 +3,6 @@ import localFont from 'next/font/local'
 import './globals.css'
 import { SITE_CONFIG } from '@/lib/constants'
 import { Analytics } from '@vercel/analytics/next'
-import Script from 'next/script'
-import { ThemeProvider } from '@/components/theme-provider'
 
 const spaceGrotesk = localFont({
   variable: '--font-display',
@@ -18,10 +16,7 @@ const spaceGrotesk = localFont({
 const inter = localFont({
   variable: '--font-body',
   display: 'swap',
-  src: [
-    { path: '../../public/fonts/Inter-Light.woff2', weight: '300' },
-    { path: '../../public/fonts/Inter-Regular.woff2', weight: '400' },
-  ],
+  src: [{ path: '../../public/fonts/Inter-Regular.woff2', weight: '400' }],
 })
 
 const jetbrainsMono = localFont({
@@ -104,19 +99,10 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <meta name="theme-color" content="#111110" />
-        <Script
-          id="theme-init"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');var r=t==='light'?'light':t==='dark'?'dark':window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark';document.documentElement.classList.add(r);document.documentElement.style.colorScheme=r}catch(e){document.documentElement.classList.add('dark')}})()`,
-          }}
-        />
+        <meta name="theme-color" content="#eef5e3" />
       </head>
       <body className="min-h-dvh antialiased">
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        {children}
         <Analytics />
       </body>
     </html>
