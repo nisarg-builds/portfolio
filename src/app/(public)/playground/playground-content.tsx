@@ -3,18 +3,21 @@
 import { type ReactNode } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { cn } from '@/lib/utils'
 import { DynamicHeading } from '@/components/ui/dynamic-heading'
-import { scrollFadeUp, staggerContainer } from '@/lib/easings'
+import { ZigzagDivider } from '@/components/ui/zigzag-divider'
+import { scrollFadeUp, staggerContainer, easings } from '@/lib/easings'
+import { ArrowBolt, Pinwheel, Star4 } from '@/components/shapes'
 
 function FitGlassLogo() {
   return (
     <svg
-      width="36"
-      height="36"
+      width="44"
+      height="44"
       viewBox="0 0 36 36"
       fill="none"
       aria-hidden="true"
-      className="text-accent"
+      className="text-blurple"
     >
       <path
         d="M13 5C19 12 19 24 13 31"
@@ -35,10 +38,11 @@ function FitGlassLogo() {
 interface Experiment {
   title: string
   description: string
-  emoji?: string
-  icon?: ReactNode
-  status: 'coming-soon' | 'live'
+  icon: ReactNode
+  status: 'coming-soon' | 'live' | 'external'
   link?: string
+  /** Tile surface — ink text must stay AA on it */
+  tileClassName: string
 }
 
 const experiments: Experiment[] = [
@@ -49,33 +53,33 @@ const experiments: Experiment[] = [
     icon: <FitGlassLogo />,
     status: 'live',
     link: '/fitglass',
-  },
-  {
-    title: 'Generative Art',
-    description: 'Procedural patterns and creative coding with p5.js',
-    emoji: '\u{1F3A8}',
-    status: 'coming-soon',
+    tileClassName: 'bg-paper',
   },
   {
     title: 'Pathfinding Visualizer',
     description:
       'Interactive visualization of A*, BFS, and Dijkstra algorithms',
-    emoji: '\u{1F50D}',
-    status: 'coming-soon',
+    icon: <ArrowBolt className="h-11 w-11 text-ink" />,
+    status: 'external',
     link: 'https://github.com/nisarg-11-here/Pathfinding_Visualizer',
+    tileClassName: 'bg-tangerine',
+  },
+  {
+    title: 'Generative Art',
+    description: 'Procedural patterns and creative coding with p5.js',
+    icon: <Pinwheel className="h-11 w-11 text-grape" />,
+    status: 'coming-soon',
+    tileClassName: 'bg-canvas-deep',
   },
 ]
 
 const cardVariant = {
-  hidden: { opacity: 0, y: 40, scale: 0.95 },
+  hidden: { opacity: 0, scale: 0.6, y: 20 },
   visible: {
     opacity: 1,
-    y: 0,
     scale: 1,
-    transition: {
-      duration: 0.5,
-      ease: [0.16, 1, 0.3, 1] as const,
-    },
+    y: 0,
+    transition: easings.springPop,
   },
 }
 
@@ -89,35 +93,25 @@ export function PlaygroundPageContent() {
         animate="visible"
       >
         <motion.div variants={scrollFadeUp}>
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full border-2 border-ink bg-paper px-3.5 py-1.5 font-mono text-xs font-semibold tracking-[0.14em] text-ink uppercase">
+            <Star4 className="h-3 w-3 text-sky" />
+            Experiments
+          </span>
           <DynamicHeading
             text="Playground"
             as="h1"
-            className="font-(family-name:--font-display) text-3xl font-bold text-text-primary"
+            className="font-display text-4xl font-bold text-ink"
           />
-          <svg
-            width="100%"
-            height="12"
-            viewBox="0 0 287 15"
-            fill="none"
-            preserveAspectRatio="none"
-            className="mt-2 max-w-[140px]"
-            aria-hidden="true"
-          >
-            <path
-              d="M2 6.5C2 6.5 4.6 13 11.8 13C19 13 25.5 2 33.3 2C41 2 46.9 13 55.9 13C65 13 67.6 2 76.8 2C86 2 90.2 13 100.1 13C110 13 111.8 2 120.9 2C130 2 134.9 13 144.2 13C153.5 13 156.6 2 165.1 2C173.5 2 177.2 13 188.3 13C199.5 13 199.9 2 209.2 2C218.5 2 223 13 232.5 13C242 13 244 2 253.3 2C262.6 2 269 13 274.5 13C280 13 285 8.5 285 7.5"
-              stroke="var(--color-accent)"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              fill="none"
-            />
-          </svg>
-          <p className="mt-4 text-base text-text-secondary">
-            Interactive experiments and creative coding.
+          <div className="mt-3">
+            <ZigzagDivider width={160} className="text-sky" />
+          </div>
+          <p className="mt-4 text-base text-ink-soft">
+            Interactive experiments and creative coding — the toy shelf.
           </p>
         </motion.div>
 
         <motion.div
-          className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+          className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3"
           variants={{
             hidden: {},
             visible: {
@@ -132,68 +126,44 @@ export function PlaygroundPageContent() {
             <motion.div
               key={exp.title}
               variants={cardVariant}
-              className="rounded-lg border border-border bg-bg-surface p-6 transition-[border-color,box-shadow] duration-300 hover:border-border-hover hover:shadow-[0_0_20px_rgba(206,121,107,0.06)]"
-            >
-              {exp.icon ?? (
-                <span className="text-3xl" aria-hidden="true">{exp.emoji}</span>
+              className={cn(
+                'flex flex-col items-start rounded-xl border-2 p-6 transition-[transform,box-shadow] duration-200',
+                exp.status === 'coming-soon'
+                  ? 'border-dashed border-ink/60'
+                  : 'border-ink hover:-translate-x-0.5 hover:-translate-y-0.5 hover:rotate-[-0.5deg] hover:shadow-lift',
+                exp.tileClassName,
               )}
-              <h3 className="mt-3 font-(family-name:--font-display) text-xl font-medium text-text-primary">
+            >
+              <span aria-hidden="true">{exp.icon}</span>
+              <h3 className="mt-4 font-display text-xl font-bold text-ink">
                 {exp.title}
               </h3>
-              <p className="mt-2 text-sm text-text-secondary">
+              <p className="mt-2 text-sm leading-relaxed text-ink-soft">
                 {exp.description}
               </p>
-              <div className="mt-4">
-                {exp.link && exp.link.startsWith('/') ? (
+              <div className="mt-5">
+                {exp.status === 'live' && exp.link ? (
                   <Link
                     href={exp.link}
-                    className="inline-flex items-center gap-1.5 rounded-md border border-accent px-3 py-1.5 text-sm text-accent transition-all duration-200 hover:bg-accent hover:text-bg"
+                    className="inline-flex items-center gap-2 rounded-full border-2 border-ink bg-ink px-4 py-1.5 font-display text-sm font-bold text-canvas transition-[transform,box-shadow] duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-lift-blurple"
                     data-cursor="interactive"
                   >
                     Launch App
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M3 7H11M11 7L7.5 3.5M11 7L7.5 10.5"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <ArrowBolt className="h-3.5 w-3.5" />
                   </Link>
                 ) : exp.link ? (
                   <a
                     href={exp.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-md border border-accent px-3 py-1.5 text-sm text-accent transition-all duration-200 hover:bg-accent hover:text-bg"
+                    className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-4 py-1.5 font-display text-sm font-bold text-ink transition-[transform,box-shadow,background-color] duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-lime hover:shadow-lift"
                     data-cursor="interactive"
                   >
                     View Project
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M3.5 10.5L10.5 3.5M10.5 3.5H5M10.5 3.5V9"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <ArrowBolt className="h-3.5 w-3.5" />
                   </a>
                 ) : (
-                  <span className="font-(family-name:--font-mono) text-xs text-text-tertiary italic">
+                  <span className="inline-flex items-center rounded-full border-[1.5px] border-ink/60 px-3 py-1 font-mono text-[11px] font-semibold tracking-wider text-ink-soft uppercase">
                     Coming soon
                   </span>
                 )}
@@ -204,9 +174,10 @@ export function PlaygroundPageContent() {
 
         <motion.p
           variants={scrollFadeUp}
-          className="mt-12 text-center text-sm text-text-tertiary italic"
+          className="mt-12 flex items-center justify-center gap-2 text-center font-mono text-xs text-ink-faint"
         >
-          More experiments coming soon...
+          <Star4 className="h-3 w-3 text-tangerine" />
+          More experiments coming soon
         </motion.p>
       </motion.div>
     </main>

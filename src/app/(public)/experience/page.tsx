@@ -3,6 +3,9 @@
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { scrollFadeUp, staggerContainer } from '@/lib/easings'
+import { StatSticker } from '@/components/ui/stat-sticker'
+import { ZigzagDivider } from '@/components/ui/zigzag-divider'
+import { Loops, Star4 } from '@/components/shapes'
 
 const contributions = [
   {
@@ -56,25 +59,15 @@ const technologies: { name: string; category: TechCategory }[] = [
 ]
 
 const stats = [
-  { value: '8+', label: 'Repositories' },
-  { value: '50+', label: 'PRs Merged' },
-  { value: '3', label: 'RFCs Authored' },
-  { value: '1', label: 'Year' },
+  { value: '8+', label: 'Repositories', hue: 'bg-lilac' },
+  { value: '50+', label: 'PRs Merged', hue: 'bg-lime' },
+  { value: '3', label: 'RFCs Authored', hue: 'bg-sky' },
+  { value: '1', label: 'Year', hue: 'bg-tangerine' },
 ]
 
 export default function ExperiencePage() {
   return (
     <main className="relative px-5 pb-20 pt-8 sm:px-6 lg:px-8 lg:pb-32 lg:pt-12">
-      {/* Ambient glow */}
-      <div
-        className="pointer-events-none absolute inset-0 -top-20"
-        style={{
-          background:
-            'radial-gradient(ellipse at 50% 0%, rgba(206, 121, 107, 0.05) 0%, transparent 60%)',
-        }}
-        aria-hidden="true"
-      />
-
       <motion.div
         className="relative mx-auto max-w-[800px]"
         variants={staggerContainer}
@@ -83,13 +76,14 @@ export default function ExperiencePage() {
       >
         {/* Hero header */}
         <motion.div variants={scrollFadeUp} className="mb-12">
-          <span className="mb-3 block font-(family-name:--font-mono) text-xs tracking-[0.2em] text-accent/70 uppercase">
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full border-2 border-ink bg-paper px-3.5 py-1.5 font-mono text-xs font-semibold tracking-[0.14em] text-ink uppercase">
+            <Star4 className="h-3 w-3 text-grass" />
             Work Experience
           </span>
-          <h1 className="font-(family-name:--font-display) text-4xl font-bold text-text-primary lg:text-5xl">
+          <h1 className="font-display text-4xl font-bold text-ink">
             Experience
           </h1>
-          <p className="mt-4 max-w-[560px] text-base text-text-secondary leading-relaxed">
+          <p className="mt-4 max-w-[560px] text-base text-ink-soft leading-relaxed">
             Where I&apos;ve been building software that matters — bridging
             engineering and design in the real world.
           </p>
@@ -98,41 +92,33 @@ export default function ExperiencePage() {
         {/* Role card */}
         <motion.div
           variants={scrollFadeUp}
-          className="card-shine relative overflow-hidden rounded-2xl border border-border bg-bg-surface p-6 sm:p-8 lg:p-10"
+          className="relative overflow-hidden rounded-2xl border-2 border-ink bg-paper p-6 sm:p-8 lg:p-10"
         >
-          {/* Decorative background pattern */}
-          <svg
-            className="pointer-events-none absolute right-4 top-4 h-28 w-28 opacity-[0.06] sm:h-36 sm:w-36"
-            viewBox="0 0 120 120"
-            fill="none"
-            stroke="var(--color-accent)"
-            strokeWidth="0.5"
+          {/* Corner shape */}
+          <div
+            className="pointer-events-none absolute -right-8 -top-10 w-32 rotate-12 sm:w-40"
             aria-hidden="true"
           >
-            <circle cx="60" cy="60" r="20" />
-            <circle cx="60" cy="60" r="35" />
-            <circle cx="60" cy="60" r="50" />
-            <line x1="60" y1="5" x2="60" y2="115" />
-            <line x1="5" y1="60" x2="115" y2="60" />
-          </svg>
+            <Loops className="w-full text-sky [--loops-inner:var(--color-lilac)]" />
+          </div>
 
           {/* Card header */}
           <div className="relative">
-            <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-green-500/20 bg-green-500/10 px-3 py-1 font-(family-name:--font-mono) text-xs text-green-400">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full border-2 border-ink bg-lime px-3 py-1 font-mono text-xs font-semibold text-ink">
               <span
-                className="h-1.5 w-1.5 rounded-full bg-green-400"
+                className="h-1.5 w-1.5 rounded-full bg-grass"
                 style={{ animation: 'ambient-pulse 2s ease-in-out infinite' }}
                 aria-hidden="true"
               />
               CURRENT ROLE
             </span>
-            <h2 className="mt-2 font-(family-name:--font-display) text-3xl font-bold text-text-primary sm:text-4xl">
+            <h2 className="mt-2 font-display text-3xl font-bold text-ink sm:text-4xl">
               Vendasta
             </h2>
-            <p className="mt-1 text-lg font-medium text-accent">
+            <p className="mt-1 font-display text-lg font-bold text-blurple">
               Developer I
             </p>
-            <p className="mt-1.5 font-(family-name:--font-mono) text-xs tracking-wider text-text-tertiary uppercase">
+            <p className="mt-1.5 font-mono text-xs tracking-wider text-ink-faint uppercase">
               May 2025 — Present · Saskatoon, SK
             </p>
           </div>
@@ -140,39 +126,27 @@ export default function ExperiencePage() {
           {/* Stats row */}
           <motion.div
             variants={scrollFadeUp}
-            className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4"
+            className="relative mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4"
           >
             {stats.map((stat) => (
-              <div
+              <StatSticker
                 key={stat.label}
-                className="rounded-lg border border-border bg-bg/60 px-4 py-3 text-center"
-              >
-                <span className="block font-(family-name:--font-display) text-xl font-bold text-accent">
-                  {stat.value}
-                </span>
-                <span className="mt-0.5 block font-(family-name:--font-mono) text-[10px] tracking-wider text-text-tertiary uppercase">
-                  {stat.label}
-                </span>
-              </div>
+                value={stat.value}
+                label={stat.label}
+                hueClassName={stat.hue}
+              />
             ))}
           </motion.div>
 
           {/* Divider */}
-          <div
-            className="my-8 h-px"
-            style={{
-              background:
-                'linear-gradient(to right, var(--color-accent), rgba(206,121,107,0.2), transparent)',
-            }}
-            aria-hidden="true"
-          />
+          <div className="my-8 h-px bg-ink/15" aria-hidden="true" />
 
           {/* What I Do */}
-          <motion.div variants={scrollFadeUp} className="mb-10">
-            <span className="mb-3 block font-(family-name:--font-mono) text-xs tracking-[0.15em] text-text-tertiary uppercase">
+          <motion.div variants={scrollFadeUp} className="relative mb-10">
+            <span className="mb-3 block font-mono text-xs font-semibold tracking-[0.15em] text-ink-soft uppercase">
               What I Do
             </span>
-            <p className="text-base text-text-secondary leading-relaxed">
+            <p className="text-base text-ink-soft leading-relaxed">
               I build AI-powered automation and data infrastructure that serve
               the backbone of a platform used by thousands of businesses. My work
               spans backend systems in Go, real-time data pipelines, and
@@ -183,7 +157,7 @@ export default function ExperiencePage() {
 
           {/* Key Contributions */}
           <motion.div variants={scrollFadeUp} className="mb-10">
-            <span className="mb-5 block font-(family-name:--font-mono) text-xs tracking-[0.15em] text-text-tertiary uppercase">
+            <span className="mb-5 block font-mono text-xs font-semibold tracking-[0.15em] text-ink-soft uppercase">
               Key Contributions
             </span>
             <div>
@@ -193,33 +167,22 @@ export default function ExperiencePage() {
                   variants={scrollFadeUp}
                   className="relative flex gap-4"
                 >
-                  {/* Dot + connector line */}
-                  <div className="flex flex-col items-center pt-2">
-                    <span
-                      className="h-2.5 w-2.5 shrink-0 rounded-full"
-                      style={{
-                        backgroundColor: item.color,
-                        boxShadow: `0 0 0 3px ${item.color}20`,
-                      }}
-                      aria-hidden="true"
-                    />
+                  {/* Star marker + connector line */}
+                  <div className="flex flex-col items-center pt-1.5">
+                    <span className="shrink-0" style={{ color: item.color }} aria-hidden="true">
+                      <Star4 className="h-4 w-4" />
+                    </span>
                     {i < contributions.length - 1 && (
-                      <div
-                        className="mt-1 w-px flex-1"
-                        style={{
-                          background: `linear-gradient(to bottom, ${item.color}40, ${contributions[i + 1].color}40)`,
-                        }}
-                        aria-hidden="true"
-                      />
+                      <div className="mt-1.5 w-px flex-1 bg-ink/15" aria-hidden="true" />
                     )}
                   </div>
 
                   {/* Content */}
                   <div className={cn('pb-7', i === contributions.length - 1 && 'pb-0')}>
-                    <h3 className="text-sm font-semibold text-text-primary leading-snug">
+                    <h3 className="text-sm text-ink leading-snug">
                       {item.title}
                     </h3>
-                    <p className="mt-1.5 text-sm text-text-secondary/80 leading-relaxed">
+                    <p className="mt-1.5 text-sm text-ink-soft leading-relaxed">
                       {item.description}
                     </p>
                   </div>
@@ -229,18 +192,11 @@ export default function ExperiencePage() {
           </motion.div>
 
           {/* Divider */}
-          <div
-            className="mb-8 h-px"
-            style={{
-              background:
-                'linear-gradient(to right, transparent, var(--color-border), transparent)',
-            }}
-            aria-hidden="true"
-          />
+          <div className="mb-8 h-px bg-ink/15" aria-hidden="true" />
 
           {/* Technologies */}
           <motion.div variants={scrollFadeUp}>
-            <span className="mb-4 block font-(family-name:--font-mono) text-xs tracking-[0.15em] text-text-tertiary uppercase">
+            <span className="mb-4 block font-mono text-xs font-semibold tracking-[0.15em] text-ink-soft uppercase">
               Technologies
             </span>
             <motion.div
@@ -253,10 +209,9 @@ export default function ExperiencePage() {
                   <motion.span
                     key={tech.name}
                     variants={scrollFadeUp}
-                    className="inline-block rounded-md border px-3 py-1 font-(family-name:--font-mono) text-xs transition-all duration-200 hover:scale-105"
+                    className="inline-block rounded-full border-[1.5px] border-ink px-3 py-1 font-mono text-xs font-semibold transition-transform duration-200 hover:-rotate-3 hover:scale-105"
                     style={{
                       backgroundColor: palette.bg,
-                      borderColor: `${palette.color}30`,
                       color: palette.color,
                     }}
                   >
@@ -270,17 +225,12 @@ export default function ExperiencePage() {
 
         {/* Bottom quote */}
         <motion.div variants={scrollFadeUp} className="mt-14 text-center">
-          <blockquote className="text-base italic text-text-tertiary leading-relaxed">
+          <blockquote className="text-base italic text-ink-soft leading-relaxed">
             &ldquo;I believe great software is built at the intersection of
             engineering rigor and genuine care for the people who use it.&rdquo;
           </blockquote>
-          <div
-            className="mx-auto mt-5 flex items-center justify-center gap-3"
-            aria-hidden="true"
-          >
-            <span className="h-px w-10 bg-gradient-to-r from-transparent to-accent/30" />
-            <span className="text-xs text-accent/50">&#10038;</span>
-            <span className="h-px w-10 bg-gradient-to-l from-transparent to-accent/30" />
+          <div className="mx-auto mt-6 flex justify-center" aria-hidden="true">
+            <ZigzagDivider width={80} className="text-tangerine" />
           </div>
         </motion.div>
       </motion.div>

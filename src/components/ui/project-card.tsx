@@ -7,7 +7,8 @@ import { easings } from '@/lib/easings'
 import { useIsTouchDevice, usePrefersReducedMotion } from '@/lib/hooks'
 import type { Project } from '@/lib/projects'
 import type { TreemapColor } from '@/lib/grid-layout'
-import { Arch, ArrowBolt, Bloom, HalfPipe, Loops, Pinwheel, Ring, Star4 } from '@/components/shapes'
+import { ArrowBolt, Bloom, HalfPipe, Pinwheel, Ring, Star4 } from '@/components/shapes'
+import { ProjectMascot } from '@/components/ui/project-mascot'
 
 interface TreemapProjectCardProps {
   project: Project
@@ -72,16 +73,6 @@ const arrowVariants = {
   },
 }
 
-/* One mascot shape per project order (docs/07 §3.3) */
-const MASCOTS: ((className: string) => React.ReactNode)[] = [
-  (c) => <Loops className={cn('text-lime [--loops-inner:var(--color-sky)]', c)} />,
-  (c) => <Bloom className={cn('text-grape', c)} />,
-  (c) => <Arch className={cn('text-ink', c)} />,
-  (c) => <ArrowBolt className={cn('text-ink', c)} />,
-  (c) => <Star4 className={cn('text-grape', c)} />,
-  (c) => <Ring className={cn('text-ink', c)} />,
-]
-
 function ProjectChip({ label, muted }: { label: string; muted?: boolean }) {
   return (
     <span
@@ -107,7 +98,6 @@ export function TreemapProjectCard({
   const prefersReducedMotion = usePrefersReducedMotion()
   const disableHoverAnimation = isTouch || prefersReducedMotion
   const maxTags = size === 'lg' ? 5 : size === 'md' ? 3 : 2
-  const mascot = MASCOTS[index % MASCOTS.length]
 
   return (
     <motion.div
@@ -139,7 +129,7 @@ export function TreemapProjectCard({
           )}
           aria-hidden="true"
         >
-          {mascot('w-full')}
+          <ProjectMascot index={index} className="w-full" />
         </motion.div>
 
         {/* Default content */}
