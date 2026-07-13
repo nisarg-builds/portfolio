@@ -6,6 +6,21 @@ export const easings = {
   springBouncy: { type: 'spring' as const, stiffness: 400, damping: 17 },
   springGentle: { type: 'spring' as const, stiffness: 150, damping: 20 },
   snappy: [0.25, 0.46, 0.45, 0.94] as const,
+  /* Toybox signatures (docs/07 §9) */
+  springPop: { type: 'spring' as const, stiffness: 400, damping: 17 },
+  springPlace: { type: 'spring' as const, stiffness: 300, damping: 24 },
+  springCursor: { type: 'spring' as const, stiffness: 500, damping: 28, mass: 0.5 },
+}
+
+/** Toybox pop-in: things arrive like toys dropped on the page */
+export const popVariants = {
+  hidden: { opacity: 0, scale: 0.4, y: 12 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: easings.springPop,
+  },
 }
 
 export const fadeUpVariants = {

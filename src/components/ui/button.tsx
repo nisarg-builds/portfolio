@@ -1,9 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { usePrefersReducedMotion } from '@/lib/hooks'
 
 interface ButtonProps {
   variant?: 'primary' | 'outline' | 'ghost'
@@ -18,22 +16,27 @@ interface ButtonProps {
   'aria-label'?: string
 }
 
+/* Sticker recipe (docs/07 Appendix B): pill, 2px ink border, flat at rest,
+   lifts onto a hard shadow on hover, physically clicks down on press. */
 const variantStyles = {
-  primary:
-    'bg-accent text-bg font-medium hover:bg-accent-hover hover:shadow-glow',
-  outline:
-    'border border-accent text-accent hover:bg-accent hover:text-bg',
-  ghost:
-    'text-text-secondary hover:text-text-primary hover:bg-bg-elevated',
+  primary: cn(
+    'border-2 border-ink bg-ink text-canvas',
+    'hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-lift-blurple',
+    'active:translate-x-0 active:translate-y-0 active:shadow-[1px_1px_0_0_var(--color-blurple)]',
+  ),
+  outline: cn(
+    'border-2 border-ink bg-transparent text-ink',
+    'hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-lime hover:shadow-lift',
+    'active:translate-x-0 active:translate-y-0 active:shadow-[1px_1px_0_0_var(--color-ink)]',
+  ),
+  ghost: 'border-2 border-transparent text-ink hover:text-blurple',
 }
 
 const sizeStyles = {
-  sm: 'px-3 py-1.5 text-sm min-h-[32px]',
-  md: 'px-4 py-2 text-base min-h-[40px]',
-  lg: 'px-6 py-3 text-lg min-h-[48px]',
+  sm: 'px-4 py-1.5 text-sm min-h-[32px] gap-1.5',
+  md: 'px-6 py-2 text-base min-h-[40px] gap-2',
+  lg: 'px-7 py-3 text-lg min-h-[48px] gap-2.5',
 }
-
-const springTransition = { type: 'spring', stiffness: 400, damping: 25 } as const
 
 export function Button({
   variant = 'outline',
@@ -47,62 +50,52 @@ export function Button({
   type,
   'aria-label': ariaLabel,
 }: ButtonProps) {
-  const prefersReduced = usePrefersReducedMotion()
-
   const classes = cn(
-    'inline-flex items-center justify-center rounded-md transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2',
+    'group inline-flex cursor-pointer items-center justify-center rounded-full font-display font-bold transition-[transform,box-shadow,background-color,color] duration-200',
     variantStyles[variant],
     sizeStyles[size],
+    disabled && 'pointer-events-none opacity-50',
     className,
   )
-
-  const motionProps = prefersReduced
-    ? {}
-    : {
-        whileHover: { y: -2 },
-        whileTap: { scale: 0.97 },
-        transition: springTransition,
-      }
 
   if (href) {
     if (external) {
       return (
-        <motion.a
+        <a
           href={href}
           target="_blank"
           rel="noopener noreferrer"
           className={classes}
           data-cursor="interactive"
-          {...motionProps}
+          aria-label={ariaLabel}
         >
           {children}
-        </motion.a>
+        </a>
       )
     }
 
     return (
-      <motion.div
-        className="inline-block"
-        {...motionProps}
+      <Link
+        href={href}
+        className={classes}
+        data-cursor="interactive"
+        aria-label={ariaLabel}
       >
-        <Link href={href} className={classes} data-cursor="interactive">
-          {children}
-        </Link>
-      </motion.div>
+        {children}
+      </Link>
     )
   }
 
   return (
-    <motion.button
+    <button
       className={classes}
       data-cursor="interactive"
       onClick={onClick}
       disabled={disabled}
       type={type}
       aria-label={ariaLabel}
-      {...motionProps}
     >
       {children}
-    </motion.button>
+    </button>
   )
 }
