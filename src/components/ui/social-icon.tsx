@@ -1,104 +1,94 @@
 import { cn } from '@/lib/utils'
+import type { SocialPlatform } from '@/lib/constants'
+
+/**
+ * One definition of each mark, used by the footer, the mobile menu and the
+ * contact section. Drawn on a 24px grid with a consistent 1.6 stroke so the
+ * set reads as one family rather than four borrowed logos.
+ */
+const PATHS: Record<SocialPlatform, React.ReactNode> = {
+  github: (
+    <path d="M9 19c-4.7 1.4-4.7-2.4-6.6-2.9m13.2 5.7v-3.6a3.2 3.2 0 0 0-.9-2.5c3-.3 6.1-1.5 6.1-6.6a5.1 5.1 0 0 0-1.4-3.6 4.8 4.8 0 0 0-.1-3.6s-1.1-.3-3.7 1.4a12.6 12.6 0 0 0-6.6 0C6.4 1.6 5.3 1.9 5.3 1.9a4.8 4.8 0 0 0-.1 3.6 5.1 5.1 0 0 0-1.4 3.6c0 5.1 3.1 6.3 6.1 6.6a3.2 3.2 0 0 0-.9 2.5v3.6" />
+  ),
+  linkedin: (
+    <>
+      <path d="M16 8.5a5.5 5.5 0 0 1 5.5 5.5v6.5h-3.7V14a1.8 1.8 0 0 0-3.6 0v6.5h-3.7V8.9h3.7v1.4A4.4 4.4 0 0 1 16 8.5Z" />
+      <path d="M3 8.9h3.7v11.6H3z" />
+      <circle cx="4.85" cy="4.4" r="1.9" />
+    </>
+  ),
+  instagram: (
+    <>
+      <rect x="2.8" y="2.8" width="18.4" height="18.4" rx="5.2" />
+      <circle cx="12" cy="12" r="4.1" />
+      <circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none" />
+    </>
+  ),
+  email: (
+    <>
+      <rect x="2.6" y="4.6" width="18.8" height="14.8" rx="2" />
+      <path d="m3.4 6.4 7.6 5.6a1.7 1.7 0 0 0 2 0l7.6-5.6" />
+    </>
+  ),
+}
 
 interface SocialIconProps {
-  platform: 'github' | 'linkedin' | 'instagram' | 'email'
-  href: string
+  platform: SocialPlatform
   size?: number
   className?: string
 }
 
-const icons: Record<SocialIconProps['platform'], (size: number) => React.ReactNode> = {
-  github: (size) => (
+export function SocialIcon({ platform, size = 20, className }: SocialIconProps) {
+  return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="1.6"
       strokeLinecap="round"
       strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+      className={cn('shrink-0', className)}
     >
-      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+      {PATHS[platform]}
     </svg>
-  ),
-  linkedin: (size) => (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-      <rect x="2" y="9" width="4" height="12" />
-      <circle cx="4" cy="4" r="2" />
-    </svg>
-  ),
-  instagram: (size) => (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-    </svg>
-  ),
-  email: (size) => (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="2" y="4" width="20" height="16" rx="2" />
-      <path d="M22 7l-10 7L2 7" />
-    </svg>
-  ),
+  )
 }
 
-const ariaLabels: Record<SocialIconProps['platform'], string> = {
-  github: 'Visit GitHub profile',
-  linkedin: 'Visit LinkedIn profile',
-  instagram: 'Visit Instagram profile',
-  email: 'Send an email',
+interface SocialLinkProps {
+  platform: SocialPlatform
+  href: string
+  label: string
+  size?: number
+  className?: string
 }
 
-export function SocialIcon({
+/** An icon wrapped in a correctly-labelled, correctly-targeted anchor. */
+export function SocialIconLink({
   platform,
   href,
-  size = 24,
+  label,
+  size = 20,
   className,
-}: SocialIconProps) {
+}: SocialLinkProps) {
   const isEmail = platform === 'email'
 
   return (
     <a
-      href={isEmail ? href : href}
+      href={href}
       target={isEmail ? undefined : '_blank'}
       rel={isEmail ? undefined : 'noopener noreferrer'}
-      aria-label={ariaLabels[platform]}
+      aria-label={isEmail ? `Email ${label}` : `${label} (opens in a new tab)`}
       data-cursor="interactive"
       className={cn(
-        'inline-flex items-center justify-center text-text-secondary transition-colors duration-250 hover:text-accent',
+        'inline-flex items-center justify-center text-text-tertiary transition-colors duration-200 hover:text-accent',
         className,
       )}
     >
-      {icons[platform](size)}
+      <SocialIcon platform={platform} size={size} />
     </a>
   )
 }

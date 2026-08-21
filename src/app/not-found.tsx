@@ -1,45 +1,55 @@
 import Link from 'next/link'
-import { DynamicHeading } from '@/components/ui/dynamic-heading'
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center px-5 text-center">
-      <span className="text-5xl" aria-hidden="true">
-        🌵
-      </span>
+    <main className="gutter mx-auto flex min-h-svh max-w-[1440px] flex-col justify-center py-20">
+      <div className="rule pt-3">
+        <p className="meta text-text-tertiary">Error</p>
+      </div>
 
-      <DynamicHeading
-        text="404"
-        as="h1"
-        className="mt-6 justify-center font-(family-name:--font-display) text-display font-bold text-accent"
-      />
-
-      <p className="mt-2 text-xl text-text-secondary">Page not found.</p>
-
-      <p className="mt-1 text-base text-text-tertiary">
-        Looks like you wandered off the path.
+      <p
+        className="masthead mt-10 select-none text-accent"
+        aria-hidden="true"
+        style={{ fontSize: 'clamp(4rem, 22vw, 14rem)' }}
+      >
+        404
       </p>
 
-      <Link
-        href="/"
-        className="mt-8 inline-flex items-center gap-2 rounded-md bg-accent px-5 py-2.5 text-base font-medium text-bg transition-all duration-200 hover:bg-accent-hover hover:shadow-glow"
-        data-cursor="interactive"
-      >
-        Go Home
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path
-            d="M6 4L10 8L6 12"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </Link>
+      <h1 className="mt-6 max-w-[20ch] font-(family-name:--font-display) text-2xl font-bold leading-[1.05] tracking-[-0.035em]">
+        This page isn&rsquo;t in the <span className="emph">index.</span>
+      </h1>
 
-      <span className="mt-12 text-3xl opacity-50" aria-hidden="true">
-        🌿
-      </span>
+      <p className="mt-4 max-w-[46ch] text-base text-text-secondary">
+        The link may be old, or the page may have been renamed. Everything that
+        does exist is one click away.
+      </p>
+
+      <div className="rule mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 pt-6">
+        <Link
+          href="/"
+          className="meta group inline-flex items-center gap-2 border border-(--color-line) px-4 py-2.5 text-text-primary transition-colors duration-200 hover:border-accent hover:text-accent"
+          data-cursor="interactive"
+        >
+          <span className="transition-transform duration-300 group-hover:-translate-x-0.5" aria-hidden="true">
+            &#8592;
+          </span>
+          Home
+        </Link>
+        <Link
+          href="/#projects"
+          className="meta link-underline text-text-secondary transition-colors duration-200 hover:text-accent"
+          data-cursor="interactive"
+        >
+          Selected work
+        </Link>
+        <Link
+          href="/experience"
+          className="meta link-underline text-text-secondary transition-colors duration-200 hover:text-accent"
+          data-cursor="interactive"
+        >
+          Experience
+        </Link>
+      </div>
     </main>
   )
 }
