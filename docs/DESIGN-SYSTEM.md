@@ -1,4 +1,4 @@
-# Ink & Paper — Design System
+# Prairie Ink — Design System
 
 The system the site is actually built on. Supersedes the design sections of
 `01-TECH-STACK` through `06-CONTENT-MAP`, which are retained as a record of the
@@ -9,8 +9,10 @@ original build but no longer describe the shipped site.
 1. **Type is the graphic. Structure is the ornament.** The name is the largest
    thing on the page; hairline rules and a numbered caption layer carry the
    composition. No gradients, glows, shimmer, blobs, or drop shadows as decoration.
-2. **One accent hue.** A single terracotta. Everything else is ink or paper.
-   The previous six-colour treemap palette is gone.
+2. **One accent hue.** A single canola yellow-green. Everything else is soil,
+   sage or bone. The earthiness lives in the *neutrals* — which is what keeps a
+   one-accent system from reading thin, and what keeps it out of the
+   warm-black-plus-coral default that every generated portfolio lands on.
 3. **One motion gesture, one curve.** A short rise into place on
    `cubic-bezier(0.16, 1, 0.3, 1)`. Nothing pulses, floats, or shimmers.
 4. **Every effect earns its place.** If it does not help someone read, scan, or
@@ -25,15 +27,19 @@ both work for free.
 
 | Token | Dark (default) | Light |
 | --- | --- | --- |
-| `--color-bg` | `#0c0b0a` | `#f7f4ef` |
-| `--color-bg-surface` | `#141311` | `#f0ece5` |
-| `--color-bg-elevated` | `#1c1a18` | `#e8e3da` |
-| `--color-text-primary` | `#f4efe8` | `#17150f` |
-| `--color-text-secondary` | `#b3aba2` | `#524d45` |
-| `--color-text-tertiary` | `#8a8279` | `#736c62` |
-| `--color-accent` | `#f2694f` | `#c93a24` |
-| `--color-border` | `#232120` | `#ddd7cc` |
-| `--color-line` | `rgb(244 239 232 / .11)` | `rgb(23 21 15 / .13)` |
+| `--color-bg` | `#101208` | `#f3f1e3` |
+| `--color-bg-surface` | `#171a0e` | `#eae7d4` |
+| `--color-bg-elevated` | `#1f2314` | `#e0dcc6` |
+| `--color-text-primary` | `#eceadc` | `#14160c` |
+| `--color-text-secondary` | `#adaf98` | `#4a4d38` |
+| `--color-text-tertiary` | `#82856e` | `#6b6e55` |
+| `--color-accent` | `#d4ce3f` | `#6b6410` |
+| `--color-border` | `#262a19` | `#d8d4be` |
+| `--color-line` | `rgb(236 234 220 / .12)` | `rgb(20 22 12 / .14)` |
+
+The ground is **olive-black, not neutral black** — that single decision does
+more to separate this site from the default than the accent does. The accent is
+one hue at two lightnesses: canola on soil (11.5:1), deep olive on bone (5.2:1).
 
 Every text/ground pair above meets WCAG AA (≥4.5:1) for body copy. The tertiary
 and accent values were chosen at the contrast boundary deliberately — do not
@@ -44,8 +50,20 @@ lighten tertiary on dark or lighten accent on light without re-checking.
 `.ground-invert` redefines the whole token set on a subtree, so a section can
 flip ink and paper and every child re-skins itself with no component changes.
 Used once, on Selected Work: **dark mode hangs the work on a white wall, light
-mode hangs it in a dark room.** It is the only structural device the site uses
-to say "this part matters most" — using it twice would spend the effect.
+mode hangs it in a dark room.**
+
+### Signal ground
+
+`.ground-signal` goes further: the accent stops being a highlight and becomes
+the entire field. Ink on canola reads at 11.3:1, so louder is not less legible.
+
+Reserved for **Contact**, and identical in both themes — the page always ends on
+the same shout. It is the one section on the site asking the visitor to act, and
+the only one with no imagery to fight a saturated ground. Inside it the accent
+role inverts to the *darkest* value, because the field is already the accent.
+
+Three grounds is the whole vocabulary. A fourth would make none of them mean
+anything.
 
 ## Typography
 
@@ -118,7 +136,7 @@ Projects section can never render empty in local dev or a preview deploy.
 
 ## Rules of thumb
 
-- New colour idea? There isn't one. Use ink, paper, or the accent.
+- New colour idea? There isn't one. Use soil, bone, sage, or the accent.
 - New animation idea? Use `Reveal`, or reconsider.
 - Reaching for a shadow? Reach for a hairline instead.
 - Writing a label? It goes in `.meta`.

@@ -1,6 +1,7 @@
 import { SectionMarker } from '@/components/ui/section-marker'
 import { Reveal } from '@/components/ui/reveal'
 import { ProjectIndex } from '@/components/ui/project-index'
+import { WORK_INTRO } from '@/lib/site-data'
 import type { Project } from '@/lib/projects'
 
 /**
@@ -23,9 +24,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
             The work, and what it <span className="emph">taught me.</span>
           </h2>
           <p className="mt-5 max-w-[54ch] text-base text-text-secondary">
-            Four projects from university and after — a twelve-person team build, a
-            forum shipped against a deadline, an algorithm you can watch think, and
-            the first time I led anything.
+            {WORK_INTRO}
           </p>
         </Reveal>
 

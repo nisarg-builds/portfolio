@@ -113,7 +113,7 @@ export function Navigation() {
         className={cn(
           'fixed inset-x-0 top-0 z-50 transition-colors duration-300',
           isScrolled
-            ? 'border-b border-(--color-line) bg-bg/85 backdrop-blur-xl'
+            ? 'border-b border-(--color-line) bg-bg/95 backdrop-blur-xl'
             : 'border-b border-transparent',
         )}
       >

@@ -50,6 +50,14 @@ export const PROFILE = {
   availability: 'Open to conversations about backend systems and design engineering.',
 } as const
 
+/**
+ * Deliberately does not enumerate the projects or state a count: the list is
+ * Firestore-driven, so any copy that describes its contents goes stale the
+ * first time a project is added or removed from the admin panel.
+ */
+export const WORK_INTRO =
+  'Products and coursework, newest first. Each one is here for what it taught me, not for how it photographs.'
+
 export const SKILL_GROUPS: SkillGroup[] = [
   { label: 'Languages', items: ['TypeScript', 'Go', 'Python', 'Java', 'C', 'SQL'] },
   {
@@ -110,14 +118,12 @@ export const EXPERIENCE = {
   ] satisfies Contribution[],
 } as const
 
+/**
+ * Side builds. FitGlass used to live here; it graduated to Selected Work once
+ * it became a real product, and listing it in both places would only make the
+ * site look bigger than it is.
+ */
 export const EXPERIMENTS: Experiment[] = [
-  {
-    title: 'Fit Glass',
-    description:
-      'AI nutrition tracking. Photograph a meal and get a calorie and macro breakdown back, plus a chat assistant that knows your targets.',
-    status: 'live',
-    href: '/fitglass',
-  },
   {
     title: 'Pathfinding Visualizer',
     description:

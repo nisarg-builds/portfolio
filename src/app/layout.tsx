@@ -105,7 +105,7 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <meta name="theme-color" content="#0c0b0a" />
+        <meta name="theme-color" content="#101208" />
         <Script
           id="theme-init"
           strategy="beforeInteractive"

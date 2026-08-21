@@ -24,6 +24,22 @@ export interface Project {
  */
 export const FALLBACK_PROJECTS: Project[] = [
   {
+    title: 'FitGlass',
+    slug: 'fitglass',
+    description:
+      'AI nutrition tracking — photograph a meal and get a calorie and macro breakdown back, plus a chat assistant that knows your targets.',
+    fullDescription:
+      "A full product rather than a course project: onboarding that derives your calorie and macro targets from height, weight, activity level and goal; a camera-first log where a photo of a meal comes back as structured nutrition data; a chat assistant that answers with your own numbers in context; and a weekly view that shows the trend rather than a single day's guilt. Built end to end — data models, Firestore schema, the Claude vision pipeline, the state layer, and every screen. The hard part was not the model call. It was deciding what to do when the model is unsure, and making a wrong estimate cheap to correct instead of something you have to argue with.",
+    tags: ['Next.js', 'TypeScript', 'Claude API', 'Firebase', 'Zustand'],
+    image: '',
+    screenshots: [],
+    link: '/fitglass',
+    featured: true,
+    role: 'Solo build',
+    year: '2026',
+    order: 0,
+  },
+  {
     title: 'PCubed',
     slug: 'pcubed',
     description:
@@ -43,7 +59,7 @@ export const FALLBACK_PROJECTS: Project[] = [
     featured: true,
     role: 'Project Manager',
     year: '2024',
-    order: 0,
+    order: 1,
   },
   {
     title: 'Code Community',
@@ -58,7 +74,7 @@ export const FALLBACK_PROJECTS: Project[] = [
     link: 'https://git.cs.usask.ca/ujc862/project-353-the-code-community.git',
     featured: false,
     year: '2024',
-    order: 1,
+    order: 2,
   },
   {
     title: 'Pathfinding Visualizer',
@@ -78,7 +94,7 @@ export const FALLBACK_PROJECTS: Project[] = [
     link: 'https://github.com/nisarg-11-here/Pathfinding_Visualizer',
     featured: false,
     year: '2024',
-    order: 2,
+    order: 3,
   },
   {
     title: 'Volunteer Connect',
@@ -98,6 +114,6 @@ export const FALLBACK_PROJECTS: Project[] = [
     featured: false,
     role: 'Team Lead',
     year: '2023',
-    order: 3,
+    order: 4,
   },
 ]

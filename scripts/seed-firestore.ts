@@ -17,6 +17,21 @@ const db = getFirestore(app)
 
 const projects = [
   {
+    title: 'FitGlass',
+    slug: 'fitglass',
+    description:
+      'AI nutrition tracking — photograph a meal and get a calorie and macro breakdown back, plus a chat assistant that knows your targets.',
+    fullDescription:
+      "A full product rather than a course project: onboarding that derives your calorie and macro targets from height, weight, activity level and goal; a camera-first log where a photo of a meal comes back as structured nutrition data; a chat assistant that answers with your own numbers in context; and a weekly view that shows the trend rather than a single day's guilt. Built end to end — data models, Firestore schema, the Claude vision pipeline, the state layer, and every screen. The hard part was not the model call. It was deciding what to do when the model is unsure, and making a wrong estimate cheap to correct instead of something you have to argue with.",
+    tags: ['Next.js', 'TypeScript', 'Claude API', 'Firebase', 'Zustand'],
+    image: '',
+    screenshots: [],
+    link: '/fitglass',
+    featured: true,
+    role: 'Solo build',
+    year: '2026',
+  },
+  {
     title: 'PCubed',
     slug: 'pcubed',
     description:
@@ -34,6 +49,7 @@ const projects = [
     ],
     link: 'https://github.com/UniversityOfSaskatchewanCMPT371/term-project-2024-team-4',
     featured: true,
+    year: '2024',
     role: 'Project Manager',
   },
   {
@@ -48,6 +64,7 @@ const projects = [
     screenshots: ['/images/projects/code-community.png'],
     link: 'https://git.cs.usask.ca/ujc862/project-353-the-code-community.git',
     featured: false,
+    year: '2024',
   },
   {
     title: 'Volunteer Connect',
@@ -65,6 +82,7 @@ const projects = [
     ],
     link: 'https://git.cs.usask.ca/ujc862/cmpt-370-fall-2023.git',
     featured: false,
+    year: '2023',
   },
   {
     title: 'Pathfinding Visualizer',
@@ -83,6 +101,7 @@ const projects = [
     ],
     link: 'https://github.com/nisarg-11-here/Pathfinding_Visualizer',
     featured: false,
+    year: '2024',
   },
 ]
 

@@ -67,7 +67,8 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
 
   const handleEnter = useCallback(
     (index: number, event: React.PointerEvent<HTMLAnchorElement>) => {
-      if (!showPreview) return
+      // Nothing to preview for a project that has no imagery yet.
+      if (!showPreview || !projects[index]?.image) return
       // Jump the springs themselves, not just their source: otherwise the
       // panel eases in from wherever the last hover left it, which reads as
       // lag rather than as following the pointer.
@@ -77,10 +78,11 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
       y.jump(event.clientY)
       setActiveIndex(index)
     },
-    [pointerX, pointerY, x, y, showPreview],
+    [pointerX, pointerY, x, y, showPreview, projects],
   )
 
-  const activeProject = activeIndex === null ? null : projects[activeIndex]
+  const active = activeIndex === null ? null : projects[activeIndex]
+  const activeProject = active?.image ? active : null
 
   return (
     <>
@@ -136,15 +138,17 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
                 </div>
 
                 {/* Mobile keeps the image inline — there is no cursor to follow. */}
-                <div className="relative mt-5 aspect-[16/10] overflow-hidden border border-(--color-line) bg-bg-surface sm:hidden">
-                  <Image
-                    src={project.image}
-                    alt=""
-                    fill
-                    className="object-cover object-top"
-                    sizes="100vw"
-                  />
-                </div>
+                {project.image && (
+                  <div className="relative mt-5 aspect-[16/10] overflow-hidden border border-(--color-line) bg-bg-surface sm:hidden">
+                    <Image
+                      src={project.image}
+                      alt=""
+                      fill
+                      className="object-cover object-top"
+                      sizes="100vw"
+                    />
+                  </div>
+                )}
                 <p className="mt-4 text-sm text-text-secondary sm:hidden">
                   {project.description}
                 </p>

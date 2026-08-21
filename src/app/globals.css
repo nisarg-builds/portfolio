@@ -12,27 +12,28 @@
    ============================================================ */
 
 @theme {
-  /* ---- Surfaces (dark / "ink" is the default) ---- */
-  --color-bg: #0c0b0a;
-  --color-bg-surface: #141311;
-  --color-bg-elevated: #1c1a18;
+  /* ---- Surfaces: tilled soil at night, not neutral black ---- */
+  --color-bg: #101208;
+  --color-bg-surface: #171a0e;
+  --color-bg-elevated: #1f2314;
 
-  /* ---- Ink ---- */
-  --color-text-primary: #f4efe8;
-  --color-text-secondary: #b3aba2;
-  --color-text-tertiary: #8a8279;
+  /* ---- Ink: bone and dry sage. The earthiness lives in the
+         neutrals, which is what keeps one accent from feeling thin. ---- */
+  --color-text-primary: #eceadc;
+  --color-text-secondary: #adaf98;
+  --color-text-tertiary: #82856e;
 
-  /* ---- Accent: a single terracotta, the only hue on the page ---- */
-  --color-accent: #f2694f;
-  --color-accent-hover: #ff7f66;
-  --color-accent-secondary: #f2694f;
-  --color-accent-muted: rgba(242, 105, 79, 0.11);
+  /* ---- Accent: canola. One hue, 11.5:1 on the ground. ---- */
+  --color-accent: #d4ce3f;
+  --color-accent-hover: #e4de55;
+  --color-accent-secondary: #d4ce3f;
+  --color-accent-muted: rgba(212, 206, 63, 0.12);
 
   /* ---- Structure ---- */
-  --color-border: #232120;
-  --color-border-hover: #383431;
-  --color-line: rgba(244, 239, 232, 0.11);
-  --color-line-soft: rgba(244, 239, 232, 0.06);
+  --color-border: #262a19;
+  --color-border-hover: #3a3f26;
+  --color-line: rgba(236, 234, 220, 0.12);
+  --color-line-soft: rgba(236, 234, 220, 0.06);
 
   /* ---- Typography ------------------------------------------
      Display  Space Grotesk — the voice
@@ -84,23 +85,24 @@
    ============================================================ */
 
 html.light {
-  --color-bg: #f7f4ef;
-  --color-bg-surface: #f0ece5;
-  --color-bg-elevated: #e8e3da;
+  --color-bg: #f3f1e3;
+  --color-bg-surface: #eae7d4;
+  --color-bg-elevated: #e0dcc6;
 
-  --color-text-primary: #17150f;
-  --color-text-secondary: #524d45;
-  --color-text-tertiary: #736c62;
+  --color-text-primary: #14160c;
+  --color-text-secondary: #4a4d38;
+  --color-text-tertiary: #6b6e55;
 
-  --color-accent: #c93a24;
-  --color-accent-hover: #a82d19;
-  --color-accent-secondary: #c93a24;
-  --color-accent-muted: rgba(201, 58, 36, 0.1);
+  /* Same hue, dropped in lightness so it survives on paper. */
+  --color-accent: #6b6410;
+  --color-accent-hover: #524d0a;
+  --color-accent-secondary: #6b6410;
+  --color-accent-muted: rgba(107, 100, 16, 0.1);
 
-  --color-border: #ddd7cc;
-  --color-border-hover: #c4bcae;
-  --color-line: rgba(23, 21, 15, 0.13);
-  --color-line-soft: rgba(23, 21, 15, 0.07);
+  --color-border: #d8d4be;
+  --color-border-hover: #bdb8a0;
+  --color-line: rgba(20, 22, 12, 0.14);
+  --color-line-soft: rgba(20, 22, 12, 0.07);
 
   --shadow-subtle: 0 1px 2px rgba(23, 21, 15, 0.06);
   --shadow-card: 0 12px 28px -14px rgba(23, 21, 15, 0.22);
@@ -332,38 +334,70 @@ body.custom-cursor * {
    ============================================================ */
 
 .ground-invert {
-  --color-bg: #f7f4ef;
-  --color-bg-surface: #f0ece5;
-  --color-bg-elevated: #e8e3da;
-  --color-text-primary: #17150f;
-  --color-text-secondary: #524d45;
-  --color-text-tertiary: #736c62;
-  --color-accent: #c93a24;
-  --color-accent-hover: #a82d19;
-  --color-accent-muted: rgba(201, 58, 36, 0.1);
-  --color-border: #ddd7cc;
-  --color-border-hover: #c4bcae;
-  --color-line: rgba(23, 21, 15, 0.13);
-  --color-line-soft: rgba(23, 21, 15, 0.07);
+  --color-bg: #f3f1e3;
+  --color-bg-surface: #eae7d4;
+  --color-bg-elevated: #e0dcc6;
+  --color-text-primary: #14160c;
+  --color-text-secondary: #4a4d38;
+  --color-text-tertiary: #6b6e55;
+  --color-accent: #6b6410;
+  --color-accent-hover: #524d0a;
+  --color-accent-muted: rgba(107, 100, 16, 0.1);
+  --color-border: #d8d4be;
+  --color-border-hover: #bdb8a0;
+  --color-line: rgba(20, 22, 12, 0.14);
+  --color-line-soft: rgba(20, 22, 12, 0.07);
 
   background-color: var(--color-bg);
   color: var(--color-text-secondary);
 }
 
 html.light .ground-invert {
-  --color-bg: #0c0b0a;
-  --color-bg-surface: #141311;
-  --color-bg-elevated: #1c1a18;
-  --color-text-primary: #f4efe8;
-  --color-text-secondary: #b3aba2;
-  --color-text-tertiary: #8a8279;
-  --color-accent: #f2694f;
-  --color-accent-hover: #ff7f66;
-  --color-accent-muted: rgba(242, 105, 79, 0.11);
-  --color-border: #232120;
-  --color-border-hover: #383431;
-  --color-line: rgba(244, 239, 232, 0.11);
-  --color-line-soft: rgba(244, 239, 232, 0.06);
+  --color-bg: #101208;
+  --color-bg-surface: #171a0e;
+  --color-bg-elevated: #1f2314;
+  --color-text-primary: #eceadc;
+  --color-text-secondary: #adaf98;
+  --color-text-tertiary: #82856e;
+  --color-accent: #d4ce3f;
+  --color-accent-hover: #e4de55;
+  --color-accent-muted: rgba(212, 206, 63, 0.12);
+  --color-border: #262a19;
+  --color-border-hover: #3a3f26;
+  --color-line: rgba(236, 234, 220, 0.12);
+  --color-line-soft: rgba(236, 234, 220, 0.06);
+}
+
+/* ============================================================
+   SIGNAL GROUND
+   The accent stops being a highlight and becomes the whole
+   field. Reserved for Contact — the one place on the site where
+   maximum attention is the actual goal — and identical in both
+   themes, so the page always ends on the same shout.
+
+   Ink on canola reads at 11.3:1. Louder is not less legible.
+   ============================================================ */
+
+.ground-signal,
+html.light .ground-signal {
+  --color-bg: #d4ce3f;
+  --color-bg-surface: #cbc53a;
+  --color-bg-elevated: #c1bc34;
+  --color-text-primary: #14160c;
+  --color-text-secondary: #3e3f18;
+  --color-text-tertiary: #525327;
+  /* On this ground the accent role is the darkest value, not the
+     brightest: the field is already the accent. */
+  --color-accent: #14160c;
+  --color-accent-hover: #000000;
+  --color-accent-muted: rgba(20, 22, 12, 0.12);
+  --color-border: rgba(20, 22, 12, 0.24);
+  --color-border-hover: rgba(20, 22, 12, 0.45);
+  --color-line: rgba(20, 22, 12, 0.26);
+  --color-line-soft: rgba(20, 22, 12, 0.13);
+
+  background-color: var(--color-bg);
+  color: var(--color-text-secondary);
 }
 
 /* ============================================================

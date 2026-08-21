@@ -18,6 +18,20 @@ export function isValidUrl(val: unknown): boolean {
   }
 }
 
+/**
+ * A same-origin path: exactly one leading slash, so protocol-relative URLs
+ * ("//evil.com") are rejected along with "javascript:" and "data:" schemes.
+ * Projects that live on this site — like /fitglass — need this.
+ */
+export function isInternalPath(val: unknown): boolean {
+  return typeof val === 'string' && /^\/(?!\/)\S*$/.test(val)
+}
+
+/** A project may link to an external URL or to a page on this site. */
+export function isValidProjectLink(val: unknown): boolean {
+  return isValidUrl(val) || isInternalPath(val)
+}
+
 export function isStringArray(val: unknown): val is string[] {
   return Array.isArray(val) && val.every((v) => typeof v === 'string')
 }
@@ -94,6 +108,7 @@ const PROJECT_ALLOWED_FIELDS = new Set([
   'link',
   'featured',
   'role',
+  'year',
   'order',
 ])
 
@@ -123,8 +138,8 @@ export function validateProjectData(data: Record<string, unknown>): { valid: boo
   if (data.tags !== undefined && !isStringArray(data.tags)) {
     return { valid: false, error: 'Tags must be an array of strings' }
   }
-  if (data.link !== undefined && !isValidUrl(data.link)) {
-    return { valid: false, error: 'Invalid project URL' }
+  if (data.link !== undefined && !isValidProjectLink(data.link)) {
+    return { valid: false, error: 'Link must be an http(s) URL or a path beginning with /' }
   }
   if (data.image !== undefined && typeof data.image !== 'string') {
     return { valid: false, error: 'Image must be a string URL' }
@@ -134,6 +149,9 @@ export function validateProjectData(data: Record<string, unknown>): { valid: boo
   }
   if (data.featured !== undefined && typeof data.featured !== 'boolean') {
     return { valid: false, error: 'Featured must be a boolean' }
+  }
+  if (data.year !== undefined && !/^\d{4}$/.test(String(data.year))) {
+    return { valid: false, error: 'Year must be four digits' }
   }
   return { valid: true }
 }

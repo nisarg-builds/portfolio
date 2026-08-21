@@ -55,6 +55,8 @@ export default async function ProjectPage({ params }: Props) {
   const previous = index > 0 ? projects[index - 1] : null
   const next = index >= 0 && index < projects.length - 1 ? projects[index + 1] : null
   const plates = project.screenshots.filter((src) => src !== project.image)
+  // An internal link is the running app; an external one is the source.
+  const isInternalLink = project.link.startsWith('/')
 
   return (
     <article className="pb-20 lg:pb-28">
@@ -144,12 +146,12 @@ export default async function ProjectPage({ params }: Props) {
             {project.link && (
               <a
                 href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
+                target={isInternalLink ? undefined : '_blank'}
+                rel={isInternalLink ? undefined : 'noopener noreferrer'}
                 className="meta group mt-8 inline-flex items-center gap-2 border border-(--color-line) px-4 py-2.5 text-text-primary transition-colors duration-200 hover:border-accent hover:text-accent"
                 data-cursor="interactive"
               >
-                View source
+                {isInternalLink ? 'Open the app' : 'View source'}
                 <span
                   className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                   aria-hidden="true"
