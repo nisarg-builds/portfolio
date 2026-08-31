@@ -7,28 +7,29 @@ import Script from 'next/script'
 import { ThemeProvider } from '@/components/theme-provider'
 
 const spaceGrotesk = localFont({
-  variable: '--font-display',
+  variable: '--font-space-grotesk',
   display: 'swap',
   src: [
-    { path: '../../public/fonts/SpaceGrotesk-Medium.woff2', weight: '500' },
-    { path: '../../public/fonts/SpaceGrotesk-Bold.woff2', weight: '700' },
+    { path: '../../public/fonts/SpaceGrotesk-Medium.woff2', weight: '500', style: 'normal' },
+    { path: '../../public/fonts/SpaceGrotesk-Bold.woff2', weight: '700', style: 'normal' },
   ],
 })
 
-const inter = localFont({
-  variable: '--font-body',
+const dmSans = localFont({
+  variable: '--font-dm-sans-body',
   display: 'swap',
   src: [
-    { path: '../../public/fonts/Inter-Light.woff2', weight: '300' },
-    { path: '../../public/fonts/Inter-Regular.woff2', weight: '400' },
+    { path: '../../public/fonts/DMSans-Regular.woff2', weight: '400', style: 'normal' },
+    { path: '../../public/fonts/DMSans-Medium.woff2', weight: '500', style: 'normal' },
+    { path: '../../public/fonts/DMSans-SemiBold.woff2', weight: '600', style: 'normal' },
   ],
 })
 
 const jetbrainsMono = localFont({
-  variable: '--font-mono',
+  variable: '--font-jetbrains-mono',
   display: 'swap',
   src: [
-    { path: '../../public/fonts/JetBrainsMono-Regular.woff2', weight: '400' },
+    { path: '../../public/fonts/JetBrainsMono-Regular.woff2', weight: '400', style: 'normal' },
   ],
 })
 
@@ -97,14 +98,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
       data-scroll-behavior="smooth"
     >
       <head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <meta name="theme-color" content="#111110" />
+        <meta name="theme-color" content="#101208" />
         <Script
           id="theme-init"
           strategy="beforeInteractive"

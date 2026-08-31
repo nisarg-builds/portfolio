@@ -15,6 +15,7 @@ interface ProjectData {
   link: string
   featured: boolean
   role?: string
+  year?: string
 }
 
 interface ProjectFormProps {
@@ -43,6 +44,7 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
   const [tagsInput, setTagsInput] = useState(initialData?.tags.join(', ') ?? '')
   const [link, setLink] = useState(initialData?.link ?? '')
   const [role, setRole] = useState(initialData?.role ?? '')
+  const [year, setYear] = useState(initialData?.year ?? '')
   const [featured, setFeatured] = useState(initialData?.featured ?? false)
   const [heroImage, setHeroImage] = useState(initialData?.image ?? '')
   const [screenshots, setScreenshots] = useState<string[]>(initialData?.screenshots ?? [])
@@ -83,6 +85,7 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
       link,
       featured,
       ...(role ? { role } : {}),
+      ...(year ? { year } : {}),
     }
 
     try {
@@ -176,23 +179,38 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
       <div>
         <label className={labelClasses}>Link</label>
         <input
-          type="url"
+          type="text"
           value={link}
           onChange={(e) => setLink(e.target.value)}
           className={inputClasses}
-          placeholder="https://github.com/..."
+          placeholder="https://github.com/... or /fitglass"
         />
       </div>
 
-      <div>
-        <label className={labelClasses}>Role (optional)</label>
-        <input
-          type="text"
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          className={inputClasses}
-          placeholder="Full-Stack Developer"
-        />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label className={labelClasses}>Role (optional)</label>
+          <input
+            type="text"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className={inputClasses}
+            placeholder="Project Manager"
+          />
+        </div>
+
+        <div>
+          <label className={labelClasses}>Year (optional)</label>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="\d{4}"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            className={inputClasses}
+            placeholder="2026"
+          />
+        </div>
       </div>
 
       <div className="flex items-center gap-3">

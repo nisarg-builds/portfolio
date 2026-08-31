@@ -14,7 +14,7 @@ export default function PublicLayout({
     <>
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[9999] focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-bg focus:outline-none"
+        className="meta sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[9999] focus:bg-accent focus:px-4 focus:py-2.5 focus:text-bg focus:outline-none"
       >
         Skip to content
       </a>
@@ -22,9 +22,9 @@ export default function PublicLayout({
       <CustomCursor />
       <ScrollProgress />
       <Navigation />
-      <div id="main-content" className="pt-14 lg:pt-16">
+      <main id="main-content" className="pt-14 lg:pt-[4.5rem]">
         <PageTransition>{children}</PageTransition>
-      </div>
+      </main>
       <Footer />
     </>
   )

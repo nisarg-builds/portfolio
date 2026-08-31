@@ -1,11 +1,11 @@
 {
-  "name": "Nisarg Chaudhary — Portfolio",
+  "name": "Nisarg Chaudhary \u2014 Portfolio",
   "short_name": "Nisarg",
-  "description": "Portfolio of Nisarg Chaudhary — CS Honours student and Studio Arts minor.",
+  "description": "Portfolio of Nisarg Chaudhary \u2014 CS Honours student and Studio Arts minor.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#111110",
-  "theme_color": "#ce796b",
+  "background_color": "#101208",
+  "theme_color": "#d4ce3f",
   "icons": [
     {
       "src": "/favicon.ico",

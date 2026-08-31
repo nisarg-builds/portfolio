@@ -1,114 +1,110 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 
 type CursorState = 'default' | 'interactive' | 'text'
 
+const SIZE: Record<CursorState, { width: number; height: number; radius: number }> = {
+  default: { width: 7, height: 7, radius: 999 },
+  interactive: { width: 42, height: 42, radius: 999 },
+  text: { width: 2, height: 22, radius: 1 },
+}
+
+/**
+ * A precise dot that opens into a ring over anything clickable.
+ *
+ * Drawn in white with `mix-blend-mode: difference` so it stays legible over
+ * the ink ground, the inverted paper band, and the accent alike — no theme
+ * awareness required. Never mounted on coarse pointers or under reduced
+ * motion, where a lagging custom cursor is only a cost.
+ */
 export function CustomCursor() {
-  const [isVisible, setIsVisible] = useState(false)
-  const [cursorState, setCursorState] = useState<CursorState>('default')
-  const [isTouch] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches,
-  )
+  const [enabled, setEnabled] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const [state, setState] = useState<CursorState>('default')
 
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
+  const mouseX = useMotionValue(-100)
+  const mouseY = useMotionValue(-100)
+  const x = useSpring(mouseX, { stiffness: 900, damping: 42, mass: 0.35 })
+  const y = useSpring(mouseY, { stiffness: 900, damping: 42, mass: 0.35 })
 
-  const springX = useSpring(mouseX, { stiffness: 500, damping: 28, mass: 0.5 })
-  const springY = useSpring(mouseY, { stiffness: 500, damping: 28, mass: 0.5 })
-
-  const trailSpringX = useSpring(mouseX, { stiffness: 200, damping: 35, mass: 0.8 })
-  const trailSpringY = useSpring(mouseY, { stiffness: 200, damping: 35, mass: 0.8 })
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      mouseX.set(e.clientX)
-      mouseY.set(e.clientY)
-      if (!isVisible) setIsVisible(true)
+  const handleMove = useCallback(
+    (event: MouseEvent) => {
+      mouseX.set(event.clientX)
+      mouseY.set(event.clientY)
+      setVisible(true)
     },
-    [mouseX, mouseY, isVisible],
+    [mouseX, mouseY],
   )
 
-  const handleMouseOver = useCallback((e: MouseEvent) => {
-    const target = e.target as HTMLElement
-    const cursorEl = target.closest('[data-cursor]')
-    if (cursorEl) {
-      const value = (cursorEl as HTMLElement).dataset.cursor
-      if (value === 'text') {
-        setCursorState('text')
-      } else if (value === 'interactive') {
-        setCursorState('interactive')
-      } else {
-        setCursorState('default')
-      }
-    } else {
-      setCursorState('default')
-    }
-  }, [])
-
-  const handleMouseLeave = useCallback(() => {
-    setIsVisible(false)
+  const handleOver = useCallback((event: MouseEvent) => {
+    const target = (event.target as HTMLElement | null)?.closest?.('[data-cursor]')
+    const value = target instanceof HTMLElement ? target.dataset.cursor : undefined
+    setState(value === 'text' ? 'text' : value === 'interactive' ? 'interactive' : 'default')
   }, [])
 
   useEffect(() => {
-    if (isTouch) return
+    const fine = window.matchMedia('(pointer: fine)')
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
 
-    const prefersReduced = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches
-    if (prefersReduced) return
+    function sync() {
+      setEnabled(fine.matches && !reduced.matches)
+    }
+
+    sync()
+    fine.addEventListener('change', sync)
+    reduced.addEventListener('change', sync)
+    return () => {
+      fine.removeEventListener('change', sync)
+      reduced.removeEventListener('change', sync)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!enabled) return
+
+    const hide = () => setVisible(false)
 
     document.body.classList.add('custom-cursor')
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mouseover', handleMouseOver)
-    document.addEventListener('mouseleave', handleMouseLeave)
+    window.addEventListener('mousemove', handleMove, { passive: true })
+    window.addEventListener('mouseover', handleOver, { passive: true })
+    document.addEventListener('mouseleave', hide)
+    window.addEventListener('blur', hide)
 
     return () => {
       document.body.classList.remove('custom-cursor')
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mouseover', handleMouseOver)
-      document.removeEventListener('mouseleave', handleMouseLeave)
+      window.removeEventListener('mousemove', handleMove)
+      window.removeEventListener('mouseover', handleOver)
+      document.removeEventListener('mouseleave', hide)
+      window.removeEventListener('blur', hide)
     }
-  }, [isTouch, handleMouseMove, handleMouseOver, handleMouseLeave])
+  }, [enabled, handleMove, handleOver])
 
-  if (isTouch) return null
+  if (!enabled) return null
+
+  const { width, height, radius } = SIZE[state]
 
   return (
-    <>
-      {/* Trail */}
+    <motion.div
+      className="pointer-events-none fixed left-0 top-0 z-[9998] mix-blend-difference"
+      style={{ x, y, translateX: '-50%', translateY: '-50%' }}
+      animate={{ opacity: visible ? 1 : 0 }}
+      transition={{ duration: 0.2 }}
+      aria-hidden="true"
+    >
       <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-[9997]"
-        style={{ x: trailSpringX, y: trailSpringY, translateX: '-50%', translateY: '-50%' }}
-        animate={{ opacity: isVisible ? 0.3 : 0 }}
-        transition={{ duration: 0.15 }}
-        aria-hidden="true"
-      >
-        <div className="h-1 w-1 rounded-full bg-accent" />
-      </motion.div>
-
-      {/* Main cursor */}
-      <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-[9998] mix-blend-difference"
-        style={{ x: springX, y: springY, translateX: '-50%', translateY: '-50%' }}
-        animate={{ opacity: isVisible ? 1 : 0 }}
-        transition={{ duration: 0.15 }}
-        aria-hidden="true"
-      >
-        <motion.div
-          className="bg-accent"
-          animate={{
-            width: cursorState === 'text' ? 2 : cursorState === 'interactive' ? 40 : 8,
-            height: cursorState === 'text' ? 24 : cursorState === 'interactive' ? 40 : 8,
-            borderRadius: cursorState === 'text' ? 1 : 9999,
-            opacity: cursorState === 'interactive' ? 0.5 : 1,
-          }}
-          style={{
-            mixBlendMode: cursorState === 'text' ? 'normal' : 'difference',
-          }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        />
-      </motion.div>
-    </>
+        animate={{
+          width,
+          height,
+          borderRadius: radius,
+          borderWidth: state === 'interactive' ? 1 : 0,
+          backgroundColor:
+            state === 'interactive' ? 'rgba(255,255,255,0)' : 'rgba(255,255,255,1)',
+        }}
+        transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+        style={{ borderStyle: 'solid', borderColor: '#fff' }}
+      />
+    </motion.div>
   )
 }
