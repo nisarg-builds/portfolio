@@ -178,6 +178,17 @@ export const PLANNED_WRITING: PlannedPost[] = [
   },
 ]
 
+/**
+ * The GitHub figure at the foot of About. The private-work line shows only
+ * when GitHub reports private contributions, so the claim cannot go stale.
+ */
+export const ACTIVITY = {
+  lead: 'contributions in the last twelve months.',
+  leadWithPrivate: 'contributions in the last twelve months, including private work.',
+  linkLabel: 'View on GitHub',
+  caption: 'One square per day',
+} as const
+
 /** Colophon. A designed page should say how it was made. */
 export const COLOPHON = {
   built: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],

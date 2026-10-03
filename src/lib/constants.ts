@@ -6,8 +6,10 @@ export const SITE_CONFIG = {
   url: 'https://nisargchaudhary.com',
 } as const
 
+export const GITHUB_HANDLE = 'nisarg-11-here'
+
 export const SOCIAL_LINKS = {
-  github: 'https://github.com/nisarg-11-here',
+  github: `https://github.com/${GITHUB_HANDLE}`,
   linkedin: 'https://www.linkedin.com/in/nisargchaudhary/',
   instagram: 'https://www.instagram.com/nisarg.11/',
   email: 'mailto:chaudharynisarg555@gmail.com',
@@ -32,7 +34,7 @@ export const SOCIAL_PROFILES: {
   handle: string
   href: string
 }[] = [
-  { platform: 'github', label: 'GitHub', handle: 'nisarg-11-here', href: SOCIAL_LINKS.github },
+  { platform: 'github', label: 'GitHub', handle: GITHUB_HANDLE, href: SOCIAL_LINKS.github },
   {
     platform: 'linkedin',
     label: 'LinkedIn',

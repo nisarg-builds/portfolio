@@ -45,6 +45,15 @@ Every text/ground pair above meets WCAG AA (≥4.5:1) for body copy. The tertiar
 and accent values were chosen at the contrast boundary deliberately — do not
 lighten tertiary on dark or lighten accent on light without re-checking.
 
+### Contribution scale
+
+`--color-heat-1` to `--color-heat-4` shade the GitHub graph in About. Each
+step mixes the accent over the ground: 35, 60, 80, and 100% in dark, and 55,
+70, 85, and 100% in light, because olive on bone needs a higher floor. An
+empty day uses `--color-bg-elevated`. The ramp passed an ordinal check: each
+step contrasts more with the ground than the last, and the faintest step
+clears 2:1 on the ground. The tokens are defined for the page ground only.
+
 ### Ground inversion
 
 `.ground-invert` redefines the whole token set on a subtree, so a section can
@@ -118,6 +127,7 @@ degraded one.
 | `ui/section-marker.tsx` | Numbered section header on a rule; `as="h2"` when it is the section's only heading |
 | `ui/page-header.tsx` | Sub-page masthead, so every page reads as one publication |
 | `ui/project-index.tsx` | The work index and its cursor-following preview |
+| `ui/contribution-graph.tsx` | Fig. 02: a year of GitHub activity, rendered on the server |
 | `ui/signature-mark.tsx` | Single-stroke sign-off, drawn in code |
 | `ui/local-time.tsx` | Client island for the live clock |
 | `ui/email-link.tsx` | Address plus copy-to-clipboard |
@@ -133,6 +143,11 @@ inline prose.
 record, but `src/lib/firebase/projects.ts` falls back to the static list when
 credentials are missing, the collection is empty, or a read throws — so the
 Projects section can never render empty in local dev or a preview deploy.
+
+`src/lib/github.ts` reads the GitHub contribution calendar with `GITHUB_TOKEN`.
+If the token is missing or GitHub fails, it returns null and the figure does
+not render. There is no static fallback, because a snapshot would misstate
+current activity.
 
 ## Rules of thumb
 
