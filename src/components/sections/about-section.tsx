@@ -1,14 +1,18 @@
 import Image from 'next/image'
 import { PROFILE, SKILL_GROUPS } from '@/lib/site-data'
+import type { ContributionCalendar } from '@/lib/github'
 import { SectionMarker } from '@/components/ui/section-marker'
 import { Reveal } from '@/components/ui/reveal'
+import { ContributionGraph } from '@/components/ui/contribution-graph'
 
 interface AboutSectionProps {
   portraitUrl: string
   portraitCrop?: { x: number; y: number; width: number; height: number } | null
+  /** Null when GitHub is not configured or unreachable. The row then does not render. */
+  contributions: ContributionCalendar | null
 }
 
-export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
+export function AboutSection({ portraitUrl, portraitCrop, contributions }: AboutSectionProps) {
   // The admin panel stores a percentage crop; translate it into an
   // object-position plus scale so the same source image can be reframed
   // without re-uploading.
@@ -90,6 +94,10 @@ export function AboutSection({ portraitUrl, portraitCrop }: AboutSectionProps) {
           </Reveal>
         </div>
       </div>
+
+      {contributions && (
+        <ContributionGraph calendar={contributions} className="mt-16 lg:mt-20" />
+      )}
     </section>
   )
 }

@@ -1,5 +1,6 @@
 import { getProjects } from '@/lib/firebase/projects'
 import { getAboutSettings } from '@/lib/firebase/about'
+import { getContributions } from '@/lib/github'
 import { HeroSection } from '@/components/sections/hero-section'
 import { AboutSection } from '@/components/sections/about-section'
 import { ProjectsSection } from '@/components/sections/projects-section'
@@ -36,7 +37,11 @@ const jsonLd = {
 }
 
 export default async function HomePage() {
-  const [projects, aboutSettings] = await Promise.all([getProjects(), getAboutSettings()])
+  const [projects, aboutSettings, contributions] = await Promise.all([
+    getProjects(),
+    getAboutSettings(),
+    getContributions(),
+  ])
 
   return (
     <>
@@ -48,6 +53,7 @@ export default async function HomePage() {
       <AboutSection
         portraitUrl={aboutSettings.portraitUrl}
         portraitCrop={aboutSettings.portraitCrop}
+        contributions={contributions}
       />
       <ProjectsSection projects={projects} />
       <ContactSection />

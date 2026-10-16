@@ -29,6 +29,16 @@
   --color-accent-secondary: #d4ce3f;
   --color-accent-muted: rgba(212, 206, 63, 0.12);
 
+  /* ---- Contribution scale: the accent in four steps over the
+         ground, for the GitHub graph in About. Validated as an
+         ordinal ramp: each step contrasts more with the ground than
+         the last, and the faintest clears 2:1. Defined for the page
+         ground only, not for .ground-invert or .ground-signal. ---- */
+  --color-heat-1: color-mix(in srgb, var(--color-accent) 35%, var(--color-bg));
+  --color-heat-2: color-mix(in srgb, var(--color-accent) 60%, var(--color-bg));
+  --color-heat-3: color-mix(in srgb, var(--color-accent) 80%, var(--color-bg));
+  --color-heat-4: var(--color-accent);
+
   /* ---- Structure ---- */
   --color-border: #262a19;
   --color-border-hover: #3a3f26;
@@ -98,6 +108,11 @@ html.light {
   --color-accent-hover: #524d0a;
   --color-accent-secondary: #6b6410;
   --color-accent-muted: rgba(107, 100, 16, 0.1);
+
+  /* Olive on bone needs a higher floor to stay visible. */
+  --color-heat-1: color-mix(in srgb, var(--color-accent) 55%, var(--color-bg));
+  --color-heat-2: color-mix(in srgb, var(--color-accent) 70%, var(--color-bg));
+  --color-heat-3: color-mix(in srgb, var(--color-accent) 85%, var(--color-bg));
 
   --color-border: #d8d4be;
   --color-border-hover: #bdb8a0;
