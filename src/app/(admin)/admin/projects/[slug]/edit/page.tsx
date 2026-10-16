@@ -24,10 +24,13 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
     fullDescription: data.fullDescription ?? '',
     tags: data.tags ?? [],
     image: data.image ?? '',
+    logo: data.logo ?? '',
+    download: data.download ?? '',
     screenshots: data.screenshots ?? [],
     link: data.link ?? '',
     featured: data.featured ?? false,
     role: data.role ?? undefined,
+    year: data.year ?? undefined,
   }
 
   return (

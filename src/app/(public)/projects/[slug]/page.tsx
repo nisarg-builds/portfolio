@@ -57,6 +57,8 @@ export default async function ProjectPage({ params }: Props) {
   const plates = project.screenshots.filter((src) => src !== project.image)
   // An internal link is the running app; an external one is the source.
   const isInternalLink = project.link.startsWith('/')
+  const buttonClasses =
+    'meta group inline-flex items-center gap-2 border border-(--color-line) px-4 py-2.5 text-text-primary transition-colors duration-200 hover:border-accent hover:text-accent'
 
   return (
     <article className="pb-20 lg:pb-28">
@@ -143,22 +145,49 @@ export default async function ProjectPage({ params }: Props) {
               ))}
             </ul>
 
-            {project.link && (
-              <a
-                href={project.link}
-                target={isInternalLink ? undefined : '_blank'}
-                rel={isInternalLink ? undefined : 'noopener noreferrer'}
-                className="meta group mt-8 inline-flex items-center gap-2 border border-(--color-line) px-4 py-2.5 text-text-primary transition-colors duration-200 hover:border-accent hover:text-accent"
-                data-cursor="interactive"
-              >
-                {isInternalLink ? 'Open the app' : 'View source'}
-                <span
-                  className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                  aria-hidden="true"
-                >
-                  &#8599;
-                </span>
-              </a>
+            {(project.download || project.link) && (
+              <div className="mt-8 flex flex-wrap gap-3">
+                {project.download && (
+                  <a
+                    href={project.download}
+                    download
+                    className={buttonClasses}
+                    data-cursor="interactive"
+                  >
+                    Download
+                    <span
+                      className="transition-transform duration-300 group-hover:translate-y-0.5"
+                      aria-hidden="true"
+                    >
+                      &#8595;
+                    </span>
+                  </a>
+                )}
+                {project.link && (
+                  <a
+                    href={project.link}
+                    target={isInternalLink ? undefined : '_blank'}
+                    rel={isInternalLink ? undefined : 'noopener noreferrer'}
+                    className={buttonClasses}
+                    data-cursor="interactive"
+                  >
+                    {isInternalLink ? 'Open the app' : 'View source'}
+                    <span
+                      className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                      aria-hidden="true"
+                    >
+                      &#8599;
+                    </span>
+                  </a>
+                )}
+              </div>
+            )}
+            {/* An unnotarized Mac app is blocked on first open. Without this, most visitors stop there. */}
+            {project.download?.endsWith('.dmg') && (
+              <p className="mt-3 max-w-[40ch] text-sm text-text-tertiary">
+                macOS blocks the app the first time you open it. Open System Settings, then
+                Privacy &amp; Security, and click Open Anyway.
+              </p>
             )}
           </Reveal>
         </div>

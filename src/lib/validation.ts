@@ -104,6 +104,8 @@ const PROJECT_ALLOWED_FIELDS = new Set([
   'fullDescription',
   'tags',
   'image',
+  'logo',
+  'download',
   'screenshots',
   'link',
   'featured',
@@ -138,11 +140,24 @@ export function validateProjectData(data: Record<string, unknown>): { valid: boo
   if (data.tags !== undefined && !isStringArray(data.tags)) {
     return { valid: false, error: 'Tags must be an array of strings' }
   }
-  if (data.link !== undefined && !isValidProjectLink(data.link)) {
+  // An empty link is allowed: a private project has nothing to link to.
+  if (data.link !== undefined && data.link !== '' && !isValidProjectLink(data.link)) {
     return { valid: false, error: 'Link must be an http(s) URL or a path beginning with /' }
   }
   if (data.image !== undefined && typeof data.image !== 'string') {
     return { valid: false, error: 'Image must be a string URL' }
+  }
+  // An empty string clears the logo. Any other host would make next/image
+  // throw and take the home page down with it.
+  if (
+    data.logo !== undefined &&
+    data.logo !== '' &&
+    !(isInternalPath(data.logo) || (typeof data.logo === 'string' && isAllowedProxyUrl(data.logo)))
+  ) {
+    return { valid: false, error: 'Logo must be an uploaded image or a path beginning with /' }
+  }
+  if (data.download !== undefined && data.download !== '' && !isValidProjectLink(data.download)) {
+    return { valid: false, error: 'Download must be an http(s) URL or a path beginning with /' }
   }
   if (data.screenshots !== undefined && !isStringArray(data.screenshots)) {
     return { valid: false, error: 'Screenshots must be an array of strings' }

@@ -11,6 +11,8 @@ function docToProject(doc: FirebaseFirestore.DocumentSnapshot): Project {
     fullDescription: data.fullDescription ?? '',
     tags: data.tags ?? [],
     image: data.image ?? '',
+    logo: data.logo || undefined,
+    download: data.download || undefined,
     screenshots: data.screenshots ?? [],
     link: data.link ?? '',
     featured: data.featured ?? false,
