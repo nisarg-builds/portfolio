@@ -11,6 +11,8 @@ interface ProjectData {
   fullDescription: string
   tags: string[]
   image: string
+  logo?: string
+  download?: string
   screenshots: string[]
   link: string
   featured: boolean
@@ -47,6 +49,8 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
   const [year, setYear] = useState(initialData?.year ?? '')
   const [featured, setFeatured] = useState(initialData?.featured ?? false)
   const [heroImage, setHeroImage] = useState(initialData?.image ?? '')
+  const [logo, setLogo] = useState(initialData?.logo ?? '')
+  const [download, setDownload] = useState(initialData?.download ?? '')
   const [screenshots, setScreenshots] = useState<string[]>(initialData?.screenshots ?? [])
 
   function handleTitleChange(value: string) {
@@ -81,6 +85,9 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
       fullDescription,
       tags,
       image: heroImage,
+      // Always sent, so an empty string clears a removed logo.
+      logo,
+      download,
       screenshots,
       link,
       featured,
@@ -187,6 +194,17 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
         />
       </div>
 
+      <div>
+        <label className={labelClasses}>Download (optional)</label>
+        <input
+          type="text"
+          value={download}
+          onChange={(e) => setDownload(e.target.value)}
+          className={inputClasses}
+          placeholder="/downloads/Isle.dmg or https://..."
+        />
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className={labelClasses}>Role (optional)</label>
@@ -224,6 +242,32 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
         <label htmlFor="featured" className="text-sm text-text-secondary">
           Featured project
         </label>
+      </div>
+
+      <div>
+        <ImageUpload
+          // A new key remounts the uploader, so its preview clears on remove.
+          key={logo ? 'logo' : 'no-logo'}
+          label="Logo (optional)"
+          storagePath="projects/logos"
+          currentUrl={logo || undefined}
+          onUploaded={setLogo}
+        />
+        <div className="mt-1.5 flex items-start justify-between gap-4">
+          <p className="text-xs text-text-tertiary">
+            Shown beside the title in the project list. Without a logo, the list shows no image.
+            Use a square image with its own background, so it reads on both themes.
+          </p>
+          {logo && (
+            <button
+              type="button"
+              onClick={() => setLogo('')}
+              className="shrink-0 text-sm text-text-tertiary hover:text-red-400 cursor-pointer"
+            >
+              Remove logo
+            </button>
+          )}
+        </div>
       </div>
 
       <ImageUpload

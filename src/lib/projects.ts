@@ -5,6 +5,10 @@ export interface Project {
   fullDescription: string
   tags: string[]
   image: string
+  /** Shown beside the title in the project index. Without one, the row has no image. */
+  logo?: string
+  /** A file visitors can download, such as a .dmg. Shown on the detail page. */
+  download?: string
   screenshots: string[]
   link: string
   featured: boolean
@@ -32,12 +36,64 @@ export const FALLBACK_PROJECTS: Project[] = [
       "A full product rather than a course project: onboarding that derives your calorie and macro targets from height, weight, activity level and goal; a camera-first log where a photo of a meal comes back as structured nutrition data; a chat assistant that answers with your own numbers in context; and a weekly view that shows the trend rather than a single day's guilt. Built end to end — data models, Firestore schema, the Claude vision pipeline, the state layer, and every screen. The hard part was not the model call. It was deciding what to do when the model is unsure, and making a wrong estimate cheap to correct instead of something you have to argue with.",
     tags: ['Next.js', 'TypeScript', 'Claude API', 'Firebase', 'Zustand'],
     image: '',
+    logo: '/images/projects/logos/fitglass.png',
     screenshots: [],
     link: '/fitglass',
     featured: true,
     role: 'Solo build',
     year: '2026',
     order: 0,
+  },
+  {
+    title: 'Isle',
+    slug: 'isle',
+    description:
+      'A to-do list that lives in the MacBook notch. Press ⌃⌥T, type “groceries 5pm”, and the island reminds you at five.',
+    fullDescription:
+      'A native macOS app in SwiftUI and AppKit that turns the notch into a small Dynamic Island for tasks. Closed, it hides in the notch and shows only a progress ring and the time of the next task. Press ⌃⌥T from any app, type “groceries 5pm”, and the task exists before the thought is gone; at five the island drops down and asks if it is done. The interesting problem was the parser. It reads only the last words of a task, so “Monday night football” stays a title instead of becoming a Monday reminder, and the chips under the field write their words into it, so you always see what the task will get. Everything stays in one JSON file on your Mac: no account, no network.',
+    tags: ['Swift', 'SwiftUI', 'AppKit'],
+    image: '/images/projects/isle-quick-add.png',
+    logo: '/images/projects/logos/isle.png',
+    download: '/downloads/Isle.dmg',
+    screenshots: ['/images/projects/isle-quick-add.png'],
+    link: 'https://github.com/nisarg-11-here/Isle',
+    featured: false,
+    role: 'Solo build',
+    year: '2026',
+    order: 1,
+  },
+  {
+    title: 'MindOcean',
+    slug: 'mindocean',
+    description:
+      'Notes for iPad and iPhone where text, Apple Pencil sketches and code share one page, and the page is becoming a canvas.',
+    fullDescription:
+      'A notes app where text, Apple Pencil sketches and code blocks live in one document. It began as a rebuild of a prototype that did not work: its export buttons were stubs and its data synced through CloudKit twice. The rebuild moved it to Swift 6, SwiftData and the Observation framework, with PencilKit for ink. The current work turns the page from a list into a canvas. A block gains a position and a width, nothing reflows, and reading order comes from the layout through a recursive XY cut, so search, export and the PDF writer keep working without an edit. Deciding what a document is, once its blocks have coordinates, was the hard part.',
+    tags: ['Swift 6', 'SwiftUI', 'SwiftData', 'PencilKit'],
+    image: '',
+    logo: '/images/projects/logos/mindocean.png',
+    screenshots: [],
+    link: '',
+    featured: false,
+    role: 'Solo build',
+    year: '2026',
+    order: 2,
+  },
+  {
+    title: 'MonitorBar',
+    slug: 'monitorbar',
+    description:
+      'A macOS menu bar app that controls an MSI ultrawide over DDC/CI: brightness, contrast, volume, input and colour, without the buttons on the back.',
+    fullDescription:
+      "A native menu bar app built for one monitor, the MSI Optix MAG342CQR. The monitor has no USB port, so MSI's own software cannot reach it. MonitorBar talks to it over DDC/CI on the DisplayPort cable instead, through Apple's private IOAVService API on Apple silicon. Most of the work was learning how the monitor misbehaves. It drops the first write it receives, so every request goes out twice. It also drops a setting that arrives while it is still applying the last one, and reports success anyway, so each write is read back and resent until the monitor agrees. Probing found 45 VCP codes, four of them undocumented, which now sit under an Experimental panel. The lesson: when hardware says yes, check.",
+    tags: ['Swift', 'SwiftUI', 'Objective-C', 'DDC/CI'],
+    image: '',
+    screenshots: [],
+    link: '',
+    featured: false,
+    role: 'Claude quick · Personal problem',
+    year: '2026',
+    order: 3,
   },
   {
     title: 'PCubed',
@@ -59,7 +115,7 @@ export const FALLBACK_PROJECTS: Project[] = [
     featured: true,
     role: 'Project Manager',
     year: '2024',
-    order: 1,
+    order: 4,
   },
   {
     title: 'Code Community',
@@ -74,7 +130,7 @@ export const FALLBACK_PROJECTS: Project[] = [
     link: 'https://git.cs.usask.ca/ujc862/project-353-the-code-community.git',
     featured: false,
     year: '2024',
-    order: 2,
+    order: 5,
   },
   {
     title: 'Pathfinding Visualizer',
@@ -94,7 +150,7 @@ export const FALLBACK_PROJECTS: Project[] = [
     link: 'https://github.com/nisarg-11-here/Pathfinding_Visualizer',
     featured: false,
     year: '2024',
-    order: 3,
+    order: 6,
   },
   {
     title: 'Volunteer Connect',
@@ -114,6 +170,6 @@ export const FALLBACK_PROJECTS: Project[] = [
     featured: false,
     role: 'Team Lead',
     year: '2023',
-    order: 4,
+    order: 7,
   },
 ]

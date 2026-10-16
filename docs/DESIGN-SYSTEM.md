@@ -126,7 +126,8 @@ degraded one.
 | `ui/reveal.tsx` | The entrance gesture |
 | `ui/section-marker.tsx` | Numbered section header on a rule; `as="h2"` when it is the section's only heading |
 | `ui/page-header.tsx` | Sub-page masthead, so every page reads as one publication |
-| `ui/project-index.tsx` | The work index and its cursor-following preview |
+| `ui/project-index.tsx` | The work index; a row shows the project logo only when one is set |
+| `ui/project-pages.tsx` | Client island that shows the index five rows at a time |
 | `ui/contribution-graph.tsx` | Fig. 02: a year of GitHub activity, rendered on the server |
 | `ui/signature-mark.tsx` | Single-stroke sign-off, drawn in code |
 | `ui/local-time.tsx` | Client island for the live clock |

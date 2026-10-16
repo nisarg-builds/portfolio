@@ -71,11 +71,12 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
   }
 
-  const slug = data.slug
-  if (!isValidSlug(slug)) {
-    return NextResponse.json({ error: 'Invalid slug' }, { status: 400 })
+  const validation = validateProjectData(data)
+  if (!validation.valid) {
+    return NextResponse.json({ error: validation.error }, { status: 400 })
   }
 
+  const slug = data.slug as string
   const sanitized = sanitizeProjectData(data)
   delete sanitized.slug
 

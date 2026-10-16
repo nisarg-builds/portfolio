@@ -13,11 +13,3 @@ export function usePrefersReducedMotion(): boolean {
     () => false,
   )
 }
-
-export function useIsTouchDevice(): boolean {
-  return useSyncExternalStore(
-    () => () => {},
-    () => window.matchMedia('(pointer: coarse)').matches,
-    () => false,
-  )
-}
