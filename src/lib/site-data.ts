@@ -35,8 +35,11 @@ export const PROFILE = {
   study: 'CS Honours + Studio Arts',
   university: 'University of Saskatchewan',
 
-  /** The one line that has to work. Everything else supports it. */
-  tagline: 'I build the systems, and draw the rest by hand.',
+  /** The one line that has to work. Everything else supports it. `emph` is the italic serif phrase. */
+  tagline: {
+    lead: 'Most of what I build started as',
+    emph: 'something that annoyed me.',
+  },
 
   lead:
     'Software engineer at Vendasta, working on AI-powered automation and listing data infrastructure in Go, gRPC and Temporal. Computer Science Honours with a Studio Arts minor at the University of Saskatchewan.',

@@ -71,8 +71,8 @@ export function HeroSection() {
       <div className="rule grid gap-8 pt-6 lg:grid-cols-12 lg:gap-10">
         <div className="rise lg:col-span-7" style={{ animationDelay: '0.45s' }}>
           <p className="font-(family-name:--font-display) text-2xl font-medium leading-[1.15] tracking-[-0.03em] text-text-primary">
-            I build the systems, and{' '}
-            <span className="emph">draw the rest by hand.</span>
+            {PROFILE.tagline.lead}{' '}
+            <span className="emph">{PROFILE.tagline.emph}</span>
           </p>
           <p className="mt-5 max-w-[52ch] text-base text-text-secondary">
             {PROFILE.lead}
