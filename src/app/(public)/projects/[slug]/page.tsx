@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import { getProjects, getProjectBySlug, getProjectSlugs } from '@/lib/firebase/projects'
 import { SITE_CONFIG } from '@/lib/constants'
 import { SectionMarker } from '@/components/ui/section-marker'
+import { ProjectLogo } from '@/components/ui/project-logo'
 import { Reveal } from '@/components/ui/reveal'
 
 export const revalidate = 60
@@ -96,6 +97,7 @@ export default async function ProjectPage({ params }: Props) {
         <Reveal immediate className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-7">
             <h1 className="font-(family-name:--font-display) text-3xl font-bold leading-[0.98] tracking-[-0.04em]">
+              {project.logo && <ProjectLogo src={project.logo} />}
               {project.title}
             </h1>
             {project.role && <p className="mt-3 text-lg text-accent">{project.role}</p>}
@@ -106,15 +108,21 @@ export default async function ProjectPage({ params }: Props) {
         </Reveal>
       </div>
 
-      {/* Lead plate, full bleed to the page gutter. */}
+      {/*
+        Lead plate. Every image shows whole, at its own shape, on a mat: a phone
+        screenshot is tall and a web one is wide, and a fixed frame crops one of
+        them. ponytail: no stored image size, so width/height are 0 and the mat
+        sizes itself on load. Store the size at upload if layout shift matters.
+      */}
       {project.image && (
         <Reveal className="gutter mx-auto mt-12 max-w-[1440px] lg:mt-16">
-          <div className="relative aspect-[16/10] overflow-hidden border border-(--color-line) bg-bg-surface lg:aspect-[21/9]">
+          <div className="border border-(--color-line) bg-bg-surface p-4 sm:p-6">
             <Image
               src={project.image}
               alt={`${project.title} — main view`}
-              fill
-              className="object-cover object-top"
+              width={0}
+              height={0}
+              className="block h-auto max-h-[min(75vh,720px)] w-full object-contain"
               sizes="(max-width: 1440px) 100vw, 1440px"
               priority
             />
@@ -201,15 +209,16 @@ export default async function ProjectPage({ params }: Props) {
             label="Plates"
             annotation={String(plates.length).padStart(2, '0')}
           />
-          <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:mt-14">
+          <div className="mt-10 grid items-start gap-8 sm:grid-cols-2 lg:mt-14">
             {plates.map((src, i) => (
               <Reveal as="figure" key={src} index={i}>
-                <div className="relative aspect-[16/10] overflow-hidden border border-(--color-line) bg-bg-surface">
+                <div className="border border-(--color-line) bg-bg-surface p-4 sm:p-6">
                   <Image
                     src={src}
                     alt={`${project.title} — view ${i + 2}`}
-                    fill
-                    className="object-cover object-top"
+                    width={0}
+                    height={0}
+                    className="block h-auto max-h-[min(70vh,640px)] w-full object-contain"
                     sizes="(max-width: 640px) 100vw, 50vw"
                   />
                 </div>

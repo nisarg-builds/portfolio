@@ -270,12 +270,30 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
         </div>
       </div>
 
-      <ImageUpload
-        label="Hero Image"
-        storagePath="projects/heroes"
-        currentUrl={heroImage || undefined}
-        onUploaded={setHeroImage}
-      />
+      <div>
+        <ImageUpload
+          // A new key remounts the uploader, so its preview clears on remove.
+          key={heroImage ? 'hero' : 'no-hero'}
+          label="Hero Image (optional)"
+          storagePath="projects/heroes"
+          currentUrl={heroImage || undefined}
+          onUploaded={setHeroImage}
+        />
+        <div className="mt-1.5 flex items-start justify-between gap-4">
+          <p className="text-xs text-text-tertiary">
+            The large image at the top of the project page. Use a screenshot, not the logo.
+          </p>
+          {heroImage && (
+            <button
+              type="button"
+              onClick={() => setHeroImage('')}
+              className="shrink-0 text-sm text-text-tertiary hover:text-red-400 cursor-pointer"
+            >
+              Remove hero image
+            </button>
+          )}
+        </div>
+      </div>
 
       <div>
         <label className={labelClasses}>Screenshots</label>
