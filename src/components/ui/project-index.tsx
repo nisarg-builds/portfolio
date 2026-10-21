@@ -1,6 +1,6 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import type { Project } from '@/lib/projects'
+import { ProjectLogo } from './project-logo'
 import { ProjectPages } from './project-pages'
 
 function Arrow({ className }: { className?: string }) {
@@ -49,23 +49,7 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
 
           <div className="min-w-0 flex-1 lg:grid lg:grid-cols-12 lg:items-baseline lg:gap-8">
             <h3 className="font-(family-name:--font-display) text-2xl font-medium tracking-[-0.03em] text-text-primary transition-transform duration-500 ease-out group-hover:translate-x-1.5 lg:col-span-5">
-              {project.logo && (
-                // Inline and sized in em, so the logo scales with the
-                // title and the row keeps the title's baseline.
-                <span
-                  // App icons ship square; the platform rounds them. This does the same.
-                  className="relative mr-[0.4em] inline-block size-[1.2em] overflow-hidden rounded-[22%] align-[-0.25em]"
-                  aria-hidden="true"
-                >
-                  <Image
-                    src={project.logo}
-                    alt=""
-                    fill
-                    className="object-contain"
-                    sizes="48px"
-                  />
-                </span>
-              )}
+              {project.logo && <ProjectLogo src={project.logo} />}
               {project.title}
             </h3>
 
